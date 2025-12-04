@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    "portal",
 ]
 
 MIDDLEWARE = [
@@ -115,8 +116,17 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
-
+STATICFILES_DIRS = [
+    BASE_DIR / "portal" / "static"
+]
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Sau này dùng login_required sẽ redirect tới tên url này
+LOGIN_URL = "portal:login"
+
+# Nếu dùng generic view login thì dùng 2 cái này, còn mình tự redirect rồi:
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/"
