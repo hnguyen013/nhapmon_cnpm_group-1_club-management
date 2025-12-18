@@ -1,0 +1,44 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}Cổng CLB{% endblock %}</title>
+
+    <link rel="stylesheet" href="{% static 'portal/css/base_home.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<header class="site-header">
+    <div class="container header-inner">
+        <div class="logo">
+            <a href="{% url 'portal:home' %}">University Clubs</a>
+        </div>
+
+        <nav class="main-nav">
+            <ul>
+                <li><a href="{% url 'portal:home' %}">Trang chủ</a></li>
+                <li><a href="{% url 'portal:club_list' %}">Danh sách CLB</a></li>
+                <li><a href="{% url 'portal:login' %}">Đăng nhập</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main class="site-content">
+    <div class="container">
+        {% block content %}
+        {% endblock %}
+    </div>
+</main>
+
+<footer class="site-footer">
+    <div class="container">
+        <p>© {% now "Y" %} Cổng CLB Đại học</p>
+    </div>
+</footer>
+
+</body>
+</html>
