@@ -1,27 +1,75 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <title>Admin Panel</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'portal/css/admin.css' %}">
+    <meta charset="utf-8">
+    <title>{% block title %}Admin – Quản lý CLB{% endblock %}</title>
+
+    <link rel="stylesheet" href="{% static 'portal/css/base_admin.css' %}">
+    {% block extra_css %}{% endblock %}
 </head>
 <body>
 
-<div class="admin-wrapper">
-    <aside class="sidebar">
-        <h2>Admin</h2>
-        <ul>
-            <li>Dashboard</li>
-            <li>Quản lý CLB</li>
-            <li>Quản lý thành viên</li>
-            <li>Đăng xuất</li>
-        </ul>
+<div class="admin-layout">
+
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+        <div class="sidebar-logo">
+            <span class="logo-circle">CLB</span>
+            <span class="logo-text">Admin Panel</span>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="{% url 'portal:admin_panel:dashboard' %}"
+               class="nav-item {% block menu_dashboard_active %}{% endblock %}">
+                🔹 Dashboard
+            </a>
+            <a href="#"
+               class="nav-item {% block menu_club_active %}{% endblock %}">
+                📚 Quản lý CLB
+            </a>
+            <a href="#"
+               class="nav-item {% block menu_member_active %}{% endblock %}">
+                👥 Quản lý thành viên
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="{% url 'portal:home' %}" class="nav-item nav-secondary">
+                ⬅ Về trang chủ
+            </a>
+            <a href="{% url 'portal:auth:logout' %}" class="nav-item nav-secondary">
+                🚪 Đăng xuất
+            </a>
+        </div>
     </aside>
 
-    <main class="content">
-        {% block content %}{% endblock %}
-    </main>
+    <!-- Main content -->
+    <div class="admin-main">
+        <header class="admin-header">
+            <div class="header-title">
+                <h1>{% block header_title %}Bảng điều khiển{% endblock %}</h1>
+                <p class="header-subtitle">
+                    {% block header_subtitle %}
+                    Tổng quan hệ thống quản lý câu lạc bộ.
+                    {% endblock %}
+                </p>
+            </div>
+            <div class="header-user">
+                <span class="user-avatar">HA</span>
+                <span class="user-name">Quản trị viên</span>
+            </div>
+        </header>
+
+        <main class="admin-content">
+            {% block content %}{% endblock %}
+        </main>
+
+        <footer class="admin-footer">
+            © {% now "Y" %} Cổng thông tin quản lý CLB – Admin
+        </footer>
+    </div>
 </div>
 
 </body>
