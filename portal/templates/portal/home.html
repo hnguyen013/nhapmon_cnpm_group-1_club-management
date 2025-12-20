@@ -1,22 +1,82 @@
 {% extends "portal/base_home.html" %}
+{% load static %}
 
-{% block title %}Trang chủ | Cổng quản lý CLB{% endblock %}
+{% block title %}CLB Portal – ĐHSP Huế{% endblock %}
 
-{% block content %}
-<h1>Cổng quản lý Câu lạc bộ</h1>
+{% block body_class %}is-home{% endblock %}
 
-<p>
-    Hệ thống quản lý CLB giúp sinh viên dễ dàng xem thông tin các Câu lạc bộ,
-    theo dõi hoạt động và đăng ký tham gia phù hợp với sở thích của mình.
-</p>
-<p>
-    Đối với Ban chủ nhiệm CLB và nhà trường, hệ thống hỗ trợ quản lý thông tin CLB,
-    thành viên, sự kiện và thông báo một cách tập trung, thuận tiện và đồng bộ.
-</p>
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'portal/css/home.css' %}">
+{% endblock %}
 
-<ul>
-    <li>Xem danh sách tất cả các CLB trong trường</li>
-    <li>Xem thông tin chi tiết từng CLB và hoạt động nổi bật</li>
-    <li>Điều hướng nhanh đến trang đăng nhập để quản lý dành cho Ban chủ nhiệm</li>
-</ul>
+{# Home tự render header nằm trên ảnh hero #}
+{% block header %}
+<section class="hero" style="background-image:url('{% static 'portal/img/truong.jpg' %}');">
+  <div class="hero-overlay"></div>
+
+  <header class="hero-header">
+    <div class="container header-inner">
+      <nav class="nav-left">
+        <a class="nav-item active" href="{% url 'portal:home' %}">Trang chủ</a>
+        <a class="nav-item" href="{% url 'portal:club_list' %}">Câu lạc bộ</a>
+      </nav>
+
+      <div class="nav-right">
+        {% if user.is_authenticated %}
+          <a class="btn btn-primary" href="/panel/">Vào quản trị</a>
+          <a class="btn btn-ghost" href="{% url 'portal:auth:logout' %}">Đăng xuất</a>
+        {% else %}
+          <a class="btn btn-primary" href="{% url 'portal:auth:login' %}">Đăng nhập</a>
+        {% endif %}
+      </div>
+    </div>
+  </header>
+
+  <div class="container hero-content">
+    <div class="hero-text">
+      <h1>Khám phá &amp; kết nối</h1>
+      <p>
+        Tìm hiểu các câu lạc bộ, hoạt động nổi bật và thông tin liên hệ.
+        Dành cho sinh viên và Ban Chủ nhiệm CLB.
+      </p>
+
+      <div class="hero-actions">
+        <a class="btn btn-accent" href="{% url 'portal:club_list' %}">Xem danh sách CLB</a>
+        <a class="btn btn-ghost" href="#about">Giới thiệu</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{# Cho home full-width thay vì container của base #}
+{% block main %}
+<main class="content">
+  <div class="container">
+    <section id="about" class="about-card">
+      <h2>Giới thiệu về CLB Portal</h2>
+      <p>
+        CLB Portal là hệ thống hỗ trợ quản lý và công khai thông tin câu lạc bộ tại Trường Đại học Sư phạm – Đại học Huế.
+        Người dùng thông thường có thể xem danh sách câu lạc bộ, mô tả hoạt động và các thông tin liên hệ mà không cần đăng nhập.
+        Ban Chủ nhiệm (BCN) có thể đăng nhập để cập nhật thông tin câu lạc bộ của mình, đăng sự kiện và quản lý nội dung liên quan.
+        Quản trị viên (Admin) có toàn quyền quản lý hệ thống, bao gồm quản lý câu lạc bộ, tài khoản BCN và các dữ liệu vận hành.
+      </p>
+
+      <div class="about-grid">
+        <div class="about-item">
+          <div class="about-title">Public</div>
+          <div class="about-desc">Xem thông tin CLB, sự kiện, giới thiệu (không cần đăng nhập).</div>
+        </div>
+        <div class="about-item">
+          <div class="about-title">BCN</div>
+          <div class="about-desc">Cập nhật CLB của mình, đăng hoạt động/sự kiện.</div>
+        </div>
+        <div class="about-item">
+          <div class="about-title">Admin</div>
+          <div class="about-desc">Toàn quyền quản lý CLB, BCN và dữ liệu hệ thống.</div>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
 {% endblock %}

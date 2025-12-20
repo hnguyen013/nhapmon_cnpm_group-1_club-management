@@ -33,10 +33,10 @@ def login_view(request):
 def logout_view(request):
     if request.user.is_authenticated:
         logout(request)
-    return redirect("portal:login")
+    return redirect("portal:auth:login")
 
 
 def redirect_after_login(user):
     if user.is_staff or user.is_superuser:
-        return redirect("/admin/")
+        return redirect("portal:admin_panel:dashboard")
     return redirect("/")
