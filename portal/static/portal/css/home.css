@@ -1,0 +1,125 @@
+/* portal/css/home.css */
+
+.hero {
+  position: relative;
+  min-height: 520px;
+  background-size: cover;
+  background-position: center;
+}
+
+.hero-overlay{
+  position:absolute;
+  inset:0;
+  background: rgba(0,0,0,0.35);
+}
+
+.hero-header{
+  position: relative;
+  z-index: 2;
+  padding: 18px 0;
+}
+
+.nav-left{
+  display:flex;
+  gap: 18px;
+  align-items:center;
+}
+
+.nav-item{
+  color: #fff;
+  text-decoration:none;
+  opacity: .9;
+  font-weight: 600;
+}
+.nav-item.active{ opacity: 1; }
+
+.nav-right{
+  margin-left:auto;
+  display:flex;
+  gap: 10px;
+  align-items:center;
+}
+
+.header-inner{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.hero-content{
+  position: relative;
+  z-index: 2;
+  padding: 120px 0 80px;
+}
+
+.hero-text h1{
+  color:#fff;
+  font-size: 56px;
+  margin: 0 0 10px;
+  font-weight: 800;
+}
+
+.hero-text p{
+  color: rgba(255,255,255,0.9);
+  max-width: 640px;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.hero-actions{
+  margin-top: 22px;
+  display:flex;
+  gap: 12px;
+}
+
+.btn{
+  display:inline-block;
+  padding: 10px 16px;
+  border-radius: 999px;
+  text-decoration:none;
+  font-weight: 700;
+}
+
+.btn-primary{
+  background: #ff5a6b;
+  color: #fff;
+}
+
+.btn-accent{
+  background: #ff8a2a;
+  color:#fff;
+}
+
+.btn-ghost{
+  background: rgba(255,255,255,0.18);
+  color:#fff;
+  border: 1px solid rgba(255,255,255,0.25);
+}
+
+.content{
+  background:#f4f6f9;
+  padding: 24px 0 60px;
+}
+
+.about-card{
+  background:#fff;
+  border-radius: 16px;
+  padding: 22px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  margin-top: -40px; /* kéo card lên giống ảnh 2 */
+}
+
+.about-grid{
+  display:grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.about-item{
+  background:#f7f8fa;
+  border-radius: 12px;
+  padding: 14px;
+}
+.about-title{ font-weight: 800; margin-bottom: 6px; }
+.about-desc{ color:#444; }

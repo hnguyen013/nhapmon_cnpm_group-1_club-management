@@ -1,43 +1,54 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="utf-8">
-    <title>{% block title %}Cổng thông tin quản lý CLB{% endblock %}</title>
+  <meta charset="utf-8">
+  <title>{% block title %}Cổng thông tin quản lý CLB{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" href="{% static 'portal/css/base_home.css' %}">
-    {% block extra_css %}{% endblock %}
+  <link rel="stylesheet" href="{% static 'portal/css/base_home.css' %}">
+  {% block extra_css %}{% endblock %}
 </head>
-<body>
+<body class="{% block body_class %}{% endblock %}">
 
+{# Cho phép home page tự render header kiểu hero #}
+{% block header %}
 <header class="site-header">
-    <div class="container header-inner">
-        <div class="logo">
-            <a href="{% url 'portal:home' %}">University Clubs</a>
-        </div>
-
-        <nav class="main-nav">
-            <ul>
-                <li><a href="{% url 'portal:home' %}">Trang chủ</a></li>
-                <li><a href="{% url 'portal:club_list' %}">Danh sách CLB</a></li>
-                <li><a href="{% url 'portal:auth:login' %}">Đăng nhập</a></li>
-            </ul>
-        </nav>
+  <div class="container header-inner">
+    <div class="logo">
+      <a href="{% url 'portal:home' %}">University Clubs</a>
     </div>
+
+    <nav class="main-nav">
+      <ul>
+        <li><a href="{% url 'portal:home' %}">Trang chủ</a></li>
+        <li><a href="{% url 'portal:club_list' %}">Danh sách CLB</a></li>
+
+        {% if user.is_authenticated %}
+          <li><a href="/panel/">Vào quản trị</a></li>
+          <li><a href="{% url 'portal:auth:logout' %}">Đăng xuất</a></li>
+        {% else %}
+          <li><a href="{% url 'portal:auth:login' %}">Đăng nhập</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+  </div>
 </header>
+{% endblock %}
 
+{# Cho phép home page dùng full-width (không bó trong .container) #}
+{% block main %}
 <main class="site-content">
-    <div class="container">
-        {% block content %}
-        {% endblock %}
-    </div>
+  <div class="container">
+    {% block content %}{% endblock %}
+  </div>
 </main>
+{% endblock %}
 
 <footer class="site-footer">
-    <div class="container">
-        <p>© {% now "Y" %} Cổng thông tin quản lý CLB Đại học</p>
-    </div>
+  <div class="container">
+    <p>© {% now "Y" %} Cổng thông tin quản lý CLB Đại học</p>
+  </div>
 </footer>
 
 </body>
