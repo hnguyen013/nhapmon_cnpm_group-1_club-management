@@ -48,9 +48,10 @@ Tổng quan nhanh về số lượng câu lạc bộ, ban chủ nhiệm và thà
     <section class="panel-box">
         <h2>Gợi ý thao tác nhanh</h2>
         <ul class="quick-actions">
-            <li><a href="#">➕ Thêm CLB mới</a></li>
+            <li><a href="{% url 'admin:portal_club_add' %}">➕ Thêm CLB mới</a></li>
             <li><a href="#">📅 Tạo sự kiện cho CLB</a></li>
             <li><a href="#">👥 Quản lý thành viên CLB</a></li>
+            <li><a href="{% url 'portal:admin_panel:create_bcn' %}">🧑‍💼 Tạo tài khoản BCN</a></li>
         </ul>
     </section>
 </div>

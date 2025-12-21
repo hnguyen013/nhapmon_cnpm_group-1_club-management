@@ -1,0 +1,42 @@
+{% extends "portal/base_admin.html" %} {# hoặc base_home nếu bạn dùng layout đó #}
+
+{% block content %}
+<h1>Tạo tài khoản BCN</h1>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+
+    <div class="form-row">
+        <label for="{{ form.first_name.id_for_label }}">Họ</label><br>
+        {{ form.first_name }}
+        {{ form.first_name.errors }}
+    </div>
+
+    <div class="form-row">
+        <label for="{{ form.last_name.id_for_label }}">Tên</label><br>
+        {{ form.last_name }}
+        {{ form.last_name.errors }}
+    </div>
+
+    <div class="form-row">
+        <label for="{{ form.email.id_for_label }}">Email</label><br>
+        {{ form.email }}
+        {{ form.email.errors }}
+    </div>
+
+    <div class="form-row">
+        <label for="{{ form.username.id_for_label }}">Tên đăng nhập</label><br>
+        {{ form.username }}
+        {{ form.username.errors }}
+    </div>
+
+    <div class="form-row">
+        <label for="{{ form.club.id_for_label }}">Câu lạc bộ</label><br>
+        {{ form.club }}
+        {{ form.club.errors }}
+    </div>
+
+    <button type="submit">Tạo BCN</button>
+</form>
+{% endblock %}

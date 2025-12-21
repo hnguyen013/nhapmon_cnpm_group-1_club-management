@@ -1,8 +1,10 @@
+# portal/views/auth.py
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.shortcuts import render, redirect
 
 from portal.forms import LoginForm
+
 
 def login_view(request):
     if request.user.is_authenticated:
@@ -33,10 +35,13 @@ def login_view(request):
 def logout_view(request):
     if request.user.is_authenticated:
         logout(request)
+    # quay về trang login
     return redirect("portal:auth:login")
 
 
 def redirect_after_login(user):
+    # Admin / staff -> dashboard
     if user.is_staff or user.is_superuser:
         return redirect("portal:admin_panel:dashboard")
-    return redirect("/")
+    # User thường -> trang chủ
+    return redirect("portal:home")
