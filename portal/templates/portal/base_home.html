@@ -11,6 +11,7 @@
 </head>
 <body class="{% block body_class %}{% endblock %}">
 
+{# Cho phép home page tự render header kiểu hero #}
 {% block header %}
 <header class="site-header">
   <div class="container header-inner">
@@ -24,11 +25,7 @@
         <li><a href="{% url 'portal:club_list' %}">Danh sách CLB</a></li>
 
         {% if user.is_authenticated %}
-          <li>
-            <a href="{% url 'portal:admin_panel:dashboard' %}">
-              Vào quản trị
-            </a>
-          </li>
+          <li><a href="/panel/">Vào quản trị</a></li>
           <li><a href="{% url 'portal:auth:logout' %}">Đăng xuất</a></li>
         {% else %}
           <li><a href="{% url 'portal:auth:login' %}">Đăng nhập</a></li>
@@ -39,6 +36,7 @@
 </header>
 {% endblock %}
 
+{# Cho phép home page dùng full-width (không bó trong .container) #}
 {% block main %}
 <main class="site-content">
   <div class="container">
