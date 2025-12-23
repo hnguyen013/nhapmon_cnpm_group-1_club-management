@@ -9,11 +9,11 @@ class LoginForm(forms.Form):
     """
 
     username = forms.CharField(
-        label="Email",
+        label="Tài khoản",
         widget=forms.TextInput(
             attrs={
                 "class": "form-control",
-                "placeholder": "Nhập email của bạn",
+                "placeholder": "Nhập username của bạn",
             }
         ),
     )

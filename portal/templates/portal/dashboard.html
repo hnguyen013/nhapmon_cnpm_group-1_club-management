@@ -1,6 +1,57 @@
-{% extends "portal/admin/base_admin.html" %}
+{% extends "portal/base_admin.html" %}
+
+{% block title %}Dashboard – Quản lý CLB{% endblock %}
+
+{% block menu_dashboard_active %}active{% endblock %}
+{% block header_title %}Admin Dashboard{% endblock %}
+{% block header_subtitle %}
+Tổng quan nhanh về số lượng câu lạc bộ, ban chủ nhiệm và thành viên.
+{% endblock %}
 
 {% block content %}
-<h1>Trang quản trị</h1>
-<p>Chào mừng admin</p>
+<div class="stats-grid">
+    <div class="stat-card">
+        <h3>Tổng số CLB</h3>
+        <p class="stat-number">12</p>
+        <p class="stat-note">CLB đang hoạt động</p>
+    </div>
+
+    <div class="stat-card">
+        <h3>Ban chủ nhiệm</h3>
+        <p class="stat-number">24</p>
+        <p class="stat-note">Thành viên BCN</p>
+    </div>
+
+    <div class="stat-card">
+        <h3>Thành viên</h3>
+        <p class="stat-number">230</p>
+        <p class="stat-note">Sinh viên tham gia CLB</p>
+    </div>
+
+    <div class="stat-card">
+        <h3>Sự kiện sắp tới</h3>
+        <p class="stat-number">5</p>
+        <p class="stat-note">Hoạt động trong tuần này</p>
+    </div>
+</div>
+
+<div class="two-columns">
+    <section class="panel-box">
+        <h2>Hoạt động gần đây</h2>
+        <ul class="activity-list">
+            <li>🎉 CLB Văn nghệ thêm 10 thành viên mới.</li>
+            <li>📢 CLB Học thuật tạo sự kiện “Workshop Python cơ bản”.</li>
+            <li>✅ CLB Tình nguyện cập nhật thông tin buổi hiến máu.</li>
+        </ul>
+    </section>
+
+    <section class="panel-box">
+        <h2>Gợi ý thao tác nhanh</h2>
+        <ul class="quick-actions">
+            <li><a href="#">➕ Thêm CLB mới</a></li>
+            <li><a href="#">📅 Tạo sự kiện cho CLB</a></li>
+            <li><a href="#">👥 Quản lý thành viên CLB</a></li>
+        </ul>
+    </section>
+</div>
 {% endblock %}

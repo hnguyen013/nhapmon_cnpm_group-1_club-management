@@ -33,4 +33,4 @@ def dashboard(request):
         "recent_activities": recent_activities,
     }
 
-    return render(request, "portal/admin/dashboard.html", context)
+    return render(request, "portal/dashboard.html", context)
