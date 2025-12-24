@@ -25,10 +25,17 @@
                class="nav-item {% block menu_dashboard_active %}{% endblock %}">
                 🔹 Dashboard
             </a>
+
+            <a href="{% url 'portal:admin_panel:bcn_list' %}"
+               class="nav-item {% block menu_bcn_active %}{% endblock %}">
+                🔐 Tài khoản BCN
+            </a>
+
             <a href="#"
                class="nav-item {% block menu_club_active %}{% endblock %}">
                 📚 Quản lý CLB
             </a>
+
             <a href="#"
                class="nav-item {% block menu_member_active %}{% endblock %}">
                 👥 Quản lý thành viên
@@ -63,6 +70,17 @@
         </header>
 
         <main class="admin-content">
+
+            {% if messages %}
+              <div style="margin: 12px 0;">
+                {% for message in messages %}
+                  <div style="padding:10px 12px; border-radius:10px; margin-bottom:10px; border:1px solid #e5e7eb; background:#fff;">
+                    {{ message }}
+                  </div>
+                {% endfor %}
+              </div>
+            {% endif %}
+
             {% block content %}{% endblock %}
         </main>
 

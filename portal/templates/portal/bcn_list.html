@@ -1,0 +1,57 @@
+{% extends "portal/base_admin.html" %}
+
+{% block title %}Tài khoản BCN{% endblock %}
+
+{% block content %}
+  <h1 style="margin-top:0;">Quản lý tài khoản BCN</h1>
+
+  <form method="get" style="display:flex; gap:10px; align-items:center; margin: 12px 0 16px;">
+    <input
+      type="text"
+      name="q"
+      value="{{ q }}"
+      placeholder="Tìm theo username / email / tên..."
+      style="padding:10px 12px; border:1px solid #e5e7eb; border-radius:10px; width: 380px;"
+    />
+    <button type="submit" style="padding:10px 14px; border-radius:10px; border:0; background:#111827; color:#fff; cursor:pointer;">
+      Tìm
+    </button>
+    <a href="{% url 'portal:admin_panel:bcn_list' %}" style="margin-left:auto; color:#2563eb;">Xoá lọc</a>
+  </form>
+
+  <div style="overflow:auto; background:#fff; border-radius:14px; box-shadow:0 1px 3px rgba(15,23,42,0.08);">
+    <table style="width:100%; border-collapse:collapse;">
+      <thead>
+        <tr style="background:#f9fafb;">
+          <th style="text-align:left; padding:12px; border-bottom:1px solid #e5e7eb;">Username</th>
+          <th style="text-align:left; padding:12px; border-bottom:1px solid #e5e7eb;">Email</th>
+          <th style="text-align:left; padding:12px; border-bottom:1px solid #e5e7eb;">Họ tên</th>
+          <th style="text-align:left; padding:12px; border-bottom:1px solid #e5e7eb;">Hành động</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for u in bcn_users %}
+          <tr>
+            <td style="padding:12px; border-bottom:1px solid #f1f5f9;">{{ u.username }}</td>
+            <td style="padding:12px; border-bottom:1px solid #f1f5f9;">{{ u.email }}</td>
+            <td style="padding:12px; border-bottom:1px solid #f1f5f9;">
+              {{ u.first_name }} {{ u.last_name }}
+            </td>
+            <td style="padding:12px; border-bottom:1px solid #f1f5f9;">
+              <a
+                href="{% url 'portal:admin_panel:bcn_reset_password' u.id %}"
+                style="display:inline-block; padding:8px 12px; border-radius:10px; background:#10b981; color:#fff;"
+              >
+                Reset mật khẩu
+              </a>
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="4" style="padding:14px;">Chưa có tài khoản BCN.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}
