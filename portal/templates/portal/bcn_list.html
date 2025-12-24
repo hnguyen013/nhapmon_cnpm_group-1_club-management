@@ -1,0 +1,49 @@
+{% extends "portal/base_admin.html" %}
+
+{% block title %}Quản lý tài khoản BCN{% endblock %}
+
+{% block content %}
+  <h2>US-A3.4 – Khoá/Mở khoá tài khoản BCN</h2>
+
+  {% if messages %}
+    <div style="margin: 12px 0;">
+      {% for message in messages %}
+        <div style="padding:10px 12px; border-radius:8px; margin-bottom:8px;
+                    background:#f3f4f6; border:1px solid #e5e7eb;">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <table style="width:100%; border-collapse:collapse; background:#fff;">
+    <thead>
+      <tr>
+        <th style="text-align:left; padding:10px; border-bottom:1px solid #e5e7eb;">Username</th>
+        <th style="text-align:left; padding:10px; border-bottom:1px solid #e5e7eb;">Email</th>
+        <th style="text-align:left; padding:10px; border-bottom:1px solid #e5e7eb;">Trạng thái</th>
+        <th style="text-align:left; padding:10px; border-bottom:1px solid #e5e7eb;">Hành động</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for u in bcns %}
+        <tr>
+          <td style="padding:10px; border-bottom:1px solid #f1f5f9;">{{ u.username }}</td>
+          <td style="padding:10px; border-bottom:1px solid #f1f5f9;">{{ u.email }}</td>
+          <td style="padding:10px; border-bottom:1px solid #f1f5f9;">
+            {% if u.is_active %}Đang hoạt động{% else %}Đã khoá{% endif %}
+          </td>
+          <td style="padding:10px; border-bottom:1px solid #f1f5f9;">
+            <a href="{% url 'portal:admin_panel:bcn_toggle_lock' u.id %}">
+              {% if u.is_active %}Khoá{% else %}Mở khoá{% endif %}
+            </a>
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="4" style="padding:12px;">Chưa có tài khoản BCN.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
