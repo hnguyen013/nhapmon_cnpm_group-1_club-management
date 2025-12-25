@@ -1,0 +1,45 @@
+{% extends "portal/base_admin.html" %}
+{% block menu_bcn_active %}active{% endblock %}
+{% load static %}
+
+{% block title %}Tài khoản BCN{% endblock %}
+{% block header_title %}Tài khoản BCN{% endblock %}
+{% block header_subtitle %}Danh sách BCN theo CLB, tìm kiếm theo tên/username/email/CLB.{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'portal/css/bcn.css' %}">
+
+<div class="panel-box">
+  <div class="bcn-toolbar">
+    <form method="get" class="bcn-search">
+      <input name="q" value="{{ q }}" placeholder="Tìm theo tên / username / email / CLB" />
+      <button type="submit">Tìm</button>
+    </form>
+
+    <a class="btn-primary" href="{% url 'portal:admin_panel:bcn_create' %}">+ Tạo tài khoản BCN</a>
+  </div>
+
+  <table class="bcn-table">
+    <thead>
+      <tr>
+        <th>Họ tên</th>
+        <th>Username</th>
+        <th>Email</th>
+        <th>CLB</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for p in profiles %}
+        <tr>
+          <td>{{ p.full_name }}</td>
+          <td>{{ p.user.username }}</td>
+          <td>{{ p.user.email }}</td>
+          <td>{{ p.club.name }}</td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="4">Chưa có tài khoản BCN.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

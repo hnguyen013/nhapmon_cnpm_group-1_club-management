@@ -1,0 +1,52 @@
+{% extends "portal/base_admin.html" %}
+{% block menu_bcn_active %}active{% endblock %}
+{% load static %}
+
+{% block title %}Tạo tài khoản BCN{% endblock %}
+{% block header_title %}Tạo tài khoản BCN{% endblock %}
+{% block header_subtitle %}Nhập đầy đủ họ tên, email, username và CLB được gán.{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'portal/css/bcn.css' %}">
+
+<div class="panel-box">
+  <h2>Tạo tài khoản BCN</h2>
+
+  <form method="post" class="bcn-form">
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+      <div class="error-messages">{{ form.non_field_errors }}</div>
+    {% endif %}
+
+    <div class="form-row">
+      <label>{{ form.full_name.label }}</label>
+      {{ form.full_name }}
+      {% for e in form.full_name.errors %}<div class="field-error">{{ e }}</div>{% endfor %}
+    </div>
+
+    <div class="form-row">
+      <label>{{ form.email.label }}</label>
+      {{ form.email }}
+      {% for e in form.email.errors %}<div class="field-error">{{ e }}</div>{% endfor %}
+    </div>
+
+    <div class="form-row">
+      <label>{{ form.username.label }}</label>
+      {{ form.username }}
+      {% for e in form.username.errors %}<div class="field-error">{{ e }}</div>{% endfor %}
+    </div>
+
+    <div class="form-row">
+      <label>{{ form.club.label }}</label>
+      {{ form.club }}
+      {% for e in form.club.errors %}<div class="field-error">{{ e }}</div>{% endfor %}
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn-primary">Tạo tài khoản</button>
+      <a class="btn-secondary" href="{% url 'portal:admin_panel:bcn_list' %}">Quay lại</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
