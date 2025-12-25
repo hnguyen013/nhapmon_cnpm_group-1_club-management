@@ -25,8 +25,10 @@
         <th>Email</th>
         <th>CLB</th>
         <th>Trạng thái</th>
+        <th>Hành động</th>
       </tr>
     </thead>
+
     <tbody>
       {% for p in profiles %}
         <tr>
@@ -34,6 +36,7 @@
           <td>{{ p.user.username }}</td>
           <td>{{ p.user.email }}</td>
           <td>{% if p.club %}{{ p.club.name }}{% else %}-{% endif %}</td>
+
           <td>
             {% if p.is_locked %}
               <span class="badge badge-danger">Khoá</span>
@@ -41,9 +44,20 @@
               <span class="badge badge-success">Hoạt động</span>
             {% endif %}
           </td>
+
+          <td>
+            <a
+              class="btn-secondary"
+              href="{% url 'portal:admin_panel:bcn_reset_password' p.user.id %}"
+              onclick="return confirm('Bạn chắc chắn muốn reset mật khẩu cho BCN: {{ p.user.username }} ?');"
+              style="text-decoration:none;"
+            >
+              Reset mật khẩu
+            </a>
+          </td>
         </tr>
       {% empty %}
-        <tr><td colspan="5">Chưa có tài khoản BCN.</td></tr>
+        <tr><td colspan="6">Chưa có tài khoản BCN.</td></tr>
       {% endfor %}
     </tbody>
   </table>
