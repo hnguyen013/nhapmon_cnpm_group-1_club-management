@@ -1,13 +1,43 @@
 {% extends "portal/base_home.html" %}
 
-{% block title %}Danh sách CLB | Cổng CLB{% endblock %}
+{% block title %}
+Danh sách câu lạc bộ
+{% endblock %}
 
 {% block content %}
-<h1>Danh sách Câu lạc bộ</h1>
+<h1>Danh sách Câu Lạc Bộ</h1>
 
-<ul>
-    <li>CLB 1 (demo)</li>
-    <li>CLB 2 (demo)</li>
-    <li>CLB 3 (demo)</li>
-</ul>
+{% if clubs %}
+<table class="table">
+    <thead>
+        <tr>
+            <th>Tên CLB</th>
+            <th>Lĩnh vực</th>
+            <th>Khoa</th>
+            <th>Trạng thái</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for club in clubs %}
+        <tr>
+            <td>{{ club.name }}</td>
+            <td>{{ club.field|default:"-" }}</td>
+            <td>{{ club.faculty|default:"-" }}</td>
+            <td>
+                {% if club.status == "active" %}
+                    🔵 Đang hoạt động
+                {% else %}
+                    🔴 Tạm dừng
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% else %}
+<p>Hiện chưa có câu lạc bộ nào.</p>
+{% endif %}
+
 {% endblock %}
