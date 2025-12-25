@@ -1,43 +1,228 @@
 {% extends "portal/base_home.html" %}
+{% load static %}
 
-{% block title %}
-Danh sách câu lạc bộ
+{% block title %}Danh sách CLB{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'portal/css/club_list.css' %}">
 {% endblock %}
 
 {% block content %}
-<h1>Danh sách Câu Lạc Bộ</h1>
+<section class="club-page">
 
-{% if clubs %}
-<table class="table">
-    <thead>
-        <tr>
-            <th>Tên CLB</th>
-            <th>Lĩnh vực</th>
-            <th>Khoa</th>
-            <th>Trạng thái</th>
-        </tr>
-    </thead>
+  <!-- Top categories row (giống hình bạn gửi) -->
+  <div class="club-categories" aria-label="Danh mục CLB">
+    <button class="cat" type="button" data-cat="hoc-thuat">
+      <span class="cat__icon">💬</span>
+      <span class="cat__text">Học thuật,<br>Chuyên môn</span>
+    </button>
 
-    <tbody>
-        {% for club in clubs %}
-        <tr>
-            <td>{{ club.name }}</td>
-            <td>{{ club.field|default:"-" }}</td>
-            <td>{{ club.faculty|default:"-" }}</td>
-            <td>
-                {% if club.status == "active" %}
-                    🔵 Đang hoạt động
-                {% else %}
-                    🔴 Tạm dừng
-                {% endif %}
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+    <button class="cat" type="button" data-cat="nghe-thuat">
+      <span class="cat__icon">🎨</span>
+      <span class="cat__text">Nghệ thuật,<br>Sáng tạo</span>
+    </button>
 
-{% else %}
-<p>Hiện chưa có câu lạc bộ nào.</p>
-{% endif %}
+    <button class="cat" type="button" data-cat="truyen-thong">
+      <span class="cat__icon">📣</span>
+      <span class="cat__text">Truyền thông,<br>Dịch vụ</span>
+    </button>
 
+    <button class="cat" type="button" data-cat="the-thao">
+      <span class="cat__icon">🏃</span>
+      <span class="cat__text">Thể thao,<br>Sức khoẻ</span>
+    </button>
+
+    <button class="cat" type="button" data-cat="so-thich">
+      <span class="cat__icon">♣️</span>
+      <span class="cat__text">Sở thích,<br>Giải trí</span>
+    </button>
+
+    <button class="cat" type="button" data-cat="tinh-nguyen">
+      <span class="cat__icon">🤝</span>
+      <span class="cat__text">Tình nguyện,<br>Cộng đồng</span>
+    </button>
+
+    <button class="cat" type="button" data-cat="ngon-ngu">
+      <span class="cat__icon">🌐</span>
+      <span class="cat__text">Ngôn ngữ,<br>Văn hoá</span>
+    </button>
+
+    <button class="cat" type="button" data-cat="esports">
+      <span class="cat__icon">🎮</span>
+      <span class="cat__text">Thể thao,<br>Điện tử</span>
+    </button>
+  </div>
+
+  <!-- Search + Filters row -->
+  <div class="club-toolbar">
+    <form class="toolbar" method="get" action="">
+      <div class="search">
+        <span class="search__icon">🔎</span>
+        <input
+          id="clubSearch"
+          type="search"
+          name="q"
+          value="{{ request.GET.q|default_if_none:'' }}"
+          placeholder="Tìm kiếm Câu Lạc Bộ"
+          autocomplete="off"
+        >
+        <button class="search__clear" type="button" id="clearSearch" aria-label="Xoá từ khoá">✕</button>
+      </div>
+
+      <div class="filters">
+        <!-- Các filter này là UI giống mẫu; backend có thể làm sau -->
+        <label class="select">
+          <span class="select__label">Khu vực</span>
+          <select name="area" id="areaSelect">
+            <option value="">Tất cả</option>
+            <option value="hcm" {% if request.GET.area == "hcm" %}selected{% endif %}>Hồ Chí Minh</option>
+            <option value="hn" {% if request.GET.area == "hn" %}selected{% endif %}>Hà Nội</option>
+          </select>
+        </label>
+
+        <label class="select">
+          <span class="select__label">Thuộc trường</span>
+          <select name="school" id="schoolSelect">
+            <option value="">Tất cả</option>
+            <option value="vanhoa" {% if request.GET.school == "vanhoa" %}selected{% endif %}>ĐH Văn hoá</option>
+            <option value="bachkhoa" {% if request.GET.school == "bachkhoa" %}selected{% endif %}>Bách khoa</option>
+          </select>
+        </label>
+
+        <label class="select">
+          <span class="select__label">Sắp xếp theo</span>
+          <select name="sort" id="sortSelect">
+            <option value="alpha" {% if request.GET.sort|default:"alpha" == "alpha" %}selected{% endif %}>Alphabet (A → Z)</option>
+            <option value="newest" {% if request.GET.sort == "newest" %}selected{% endif %}>Mới nhất</option>
+          </select>
+        </label>
+
+        <a class="btn btn-ghost" href="{% url 'portal:club_list' %}">Bỏ lọc</a>
+      </div>
+    </form>
+  </div>
+
+  <!-- List -->
+  <div class="club-list-wrap">
+    <div class="club-count">
+      <strong id="resultCount">{{ clubs|length }}</strong> CLB
+      {% if request.GET.q %}
+        <span class="hint">• Kết quả cho “{{ request.GET.q }}”</span>
+      {% endif %}
+    </div>
+
+    <div class="club-grid" id="clubGrid">
+      {% for club in clubs %}
+      <article class="club-card" data-name="{{ club.name|lower }}">
+        <div class="club-card__left">
+          <!-- Avatar (chữ cái) -->
+          <div class="club-avatar" aria-hidden="true">
+            {{ club.name|slice:":1"|upper }}
+          </div>
+        </div>
+
+        <div class="club-card__main">
+          <div class="club-badges">
+            {# Nếu model có field/category thì hiển thị, không có thì bỏ #}
+            {% if club.field %}
+              <span class="badge badge-green">{{ club.field }}</span>
+            {% elif club.category %}
+              <span class="badge badge-green">{{ club.category }}</span>
+            {% endif %}
+
+            {% if club.status %}
+              <span class="badge badge-gray">{{ club.status }}</span>
+            {% endif %}
+          </div>
+
+          <h3 class="club-title">{{ club.name }}</h3>
+
+          {% if club.description %}
+            <p class="club-desc">{{ club.description|truncatechars:120 }}</p>
+          {% else %}
+            <p class="club-desc club-desc--muted">Chưa có mô tả cho CLB này.</p>
+          {% endif %}
+
+          <div class="club-meta">
+            {% if club.location %}
+              <span class="meta-item">📍 {{ club.location }}</span>
+            {% elif club.area %}
+              <span class="meta-item">📍 {{ club.area }}</span>
+            {% endif %}
+
+            {% if club.school %}
+              <span class="meta-item">🏫 {{ club.school }}</span>
+            {% elif club.faculty %}
+              <span class="meta-item">🏫 {{ club.faculty }}</span>
+            {% endif %}
+
+            {% if club.member_count %}
+              <span class="meta-item">👥 {{ club.member_count }} thành viên</span>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="club-card__right">
+          {# Nếu có ảnh cover/logo thì show; nếu chưa có thì show placeholder #}
+          {% if club.cover_image %}
+            <img class="club-cover" src="{{ club.cover_image.url }}" alt="Ảnh CLB {{ club.name }}">
+          {% elif club.logo %}
+            <img class="club-cover" src="{{ club.logo.url }}" alt="Logo CLB {{ club.name }}">
+          {% else %}
+            <div class="club-cover club-cover--placeholder" aria-hidden="true">
+              <div class="ph-title">CLB</div>
+              <div class="ph-sub">University Clubs</div>
+            </div>
+          {% endif %}
+        </div>
+      </article>
+      {% empty %}
+      <div class="empty">
+        <div class="empty__icon">🔎</div>
+        <h3>Không tìm thấy CLB phù hợp</h3>
+        <p>Hãy thử từ khoá khác hoặc bấm “Bỏ lọc”.</p>
+        <a class="btn" href="{% url 'portal:club_list' %}">Quay về danh sách</a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+</section>
+
+<script>
+  // US-B1.2: nhập từ khoá -> lọc theo tên; xoá từ khoá -> hiện lại đầy đủ
+  (function () {
+    const input = document.getElementById("clubSearch");
+    const clearBtn = document.getElementById("clearSearch");
+    const grid = document.getElementById("clubGrid");
+    const cards = Array.from(grid.querySelectorAll(".club-card"));
+    const countEl = document.getElementById("resultCount");
+
+    function applyFilter() {
+      const q = (input.value || "").trim().toLowerCase();
+      let visible = 0;
+
+      cards.forEach(card => {
+        const name = card.getAttribute("data-name") || "";
+        const ok = !q || name.includes(q);
+        card.style.display = ok ? "" : "none";
+        if (ok) visible++;
+      });
+
+      if (countEl) countEl.textContent = String(visible);
+      clearBtn.style.visibility = q ? "visible" : "hidden";
+    }
+
+    clearBtn.addEventListener("click", () => {
+      input.value = "";
+      input.focus();
+      applyFilter();
+    });
+
+    input.addEventListener("input", applyFilter);
+
+    // init
+    applyFilter();
+  })();
+</script>
 {% endblock %}

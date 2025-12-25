@@ -1,9 +1,5 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
 from portal.models import Club
-
-
-def home(request):
-    return render(request, "portal/home.html")
 
 
 def club_list(request):
@@ -12,19 +8,20 @@ def club_list(request):
     US-B1.2: Tìm kiếm CLB theo tên
     """
 
-    # 1. Lấy từ khoá tìm kiếm
+    # 1. Lấy từ khoá tìm kiếm (?q=...)
     keyword = request.GET.get("q", "").strip()
 
-    # 2. Lấy toàn bộ CLB
+    # 2. Lấy danh sách CLB
     clubs = Club.objects.all()
 
-    # 3. Nếu có keyword → lọc theo tên
+    # 3. Nếu có nhập từ khoá → lọc theo tên
     if keyword:
         clubs = clubs.filter(name__icontains=keyword)
 
     # 4. Sắp xếp theo alphabet (A → Z)
     clubs = clubs.order_by("name")
 
+    # 5. Render ra giao diện
     return render(
         request,
         "portal/club_list.html",
@@ -32,8 +29,3 @@ def club_list(request):
             "clubs": clubs
         }
     )
-
-
-def club_detail(request, club_id):
-    club = get_object_or_404(Club, id=club_id)
-    return render(request, "portal/club_detail.html", {"club": club})
