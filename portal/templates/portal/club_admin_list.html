@@ -1,0 +1,21 @@
+{% extends "portal/base_admin.html" %}
+
+{% block title %}Quản lý CLB{% endblock %}
+{% block menu_club_active %}active{% endblock %}
+
+{% block content %}
+  <h2>Danh sách CLB</h2>
+  <p><a href="{% url 'portal:admin_panel:club_create' %}">+ Tạo CLB</a></p>
+
+  <ul>
+    {% for c in clubs %}
+      <li>
+        {{ c.name|default:"(Chưa có tên)" }}
+        - <a href="{% url 'portal:admin_panel:club_edit' c.id %}">Sửa</a>
+        - <a href="{% url 'portal:admin_panel:club_delete' c.id %}">Xoá</a>
+      </li>
+    {% empty %}
+      <li>Chưa có CLB nào.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

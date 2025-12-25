@@ -27,13 +27,13 @@
                 📊 Dashboard
             </a>
 
-            <!-- Quản lý CLB -->
-            <a href="{% url 'portal:club_list' %}"
+            <!-- Quản lý CLB (US-B3.1) -->
+            <a href="{% url 'portal:admin_panel:club_list' %}"
                class="nav-item {% block menu_club_active %}{% endblock %}">
                 🏫 Quản lý CLB
             </a>
 
-            <!-- TÀI KHOẢN BCN – BỔ SUNG US-A3.1 -->
+            <!-- TÀI KHOẢN BCN – US-A3.1 -->
             <a href="{% url 'portal:admin_panel:bcn_list' %}"
                class="nav-item {% block menu_bcn_active %}{% endblock %}">
                 👥 Tài khoản BCN
@@ -65,6 +65,18 @@
         </header>
 
         <section class="admin-content">
+
+            {% if messages %}
+              <div class="messages" style="margin-bottom: 12px;">
+                {% for message in messages %}
+                  <div style="padding:10px; border-radius:10px; margin-bottom:8px;
+                              background:#ecfeff; border:1px solid #a5f3fc;">
+                    {{ message }}
+                  </div>
+                {% endfor %}
+              </div>
+            {% endif %}
+
             {% block content %}{% endblock %}
         </section>
 

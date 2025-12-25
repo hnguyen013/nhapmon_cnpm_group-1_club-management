@@ -1,17 +1,13 @@
-from django.shortcuts import render
-
+from django.shortcuts import render, get_object_or_404
+from portal.models import Club
 
 def home(request):
     return render(request, "portal/home.html")
 
-
 def club_list(request):
-    # Sau này sẽ truyền danh sách CLB thật ở đây
-    return render(request, "portal/club_list.html")
-
+    clubs = Club.objects.all()
+    return render(request, "portal/club_list.html", {"clubs": clubs})
 
 def club_detail(request, club_id: int):
-    context = {
-        "club_id": club_id,
-    }
-    return render(request, "portal/club_detail.html", context)
+    club = get_object_or_404(Club, id=club_id)
+    return render(request, "portal/club_detail.html", {"club": club})

@@ -7,60 +7,47 @@
 {% block content %}
 <link rel="stylesheet" href="{% static 'portal/css/bcn.css' %}">
 
-<h1>Tạo tài khoản BCN</h1>
-<p>Nhập đầy đủ họ tên, email, username và CLB được gán.</p>
-
-{% if messages %}
-  {% for m in messages %}
-    <div class="alert">{{ m }}</div>
-  {% endfor %}
-{% endif %}
-
 <div class="panel-box">
+  <h2>Tạo tài khoản BCN</h2>
+  <p>Nhập đầy đủ họ tên, email, username, mật khẩu và CLB được gán.</p>
+
+  {% if messages %}
+    {% for m in messages %}
+      <div class="alert">{{ m }}</div>
+    {% endfor %}
+  {% endif %}
+
   <form method="post" class="form">
     {% csrf_token %}
 
-    {{ form.non_field_errors }}
-
     <div class="form-row">
-      <label>{{ form.full_name.label }}</label>
+      <label>Họ tên</label>
       {{ form.full_name }}
       <div class="err">{{ form.full_name.errors }}</div>
     </div>
 
     <div class="form-row">
-      <label>{{ form.username.label }}</label>
+      <label>Username</label>
       {{ form.username }}
       <div class="err">{{ form.username.errors }}</div>
     </div>
 
     <div class="form-row">
-      <label>{{ form.email.label }}</label>
+      <label>Email</label>
       {{ form.email }}
       <div class="err">{{ form.email.errors }}</div>
     </div>
 
     <div class="form-row">
-      <label>{{ form.club.label }}</label>
+      <label>Mật khẩu</label>
+      {{ form.password }}
+      <div class="err">{{ form.password.errors }}</div>
+    </div>
+
+    <div class="form-row">
+      <label>CLB</label>
       {{ form.club }}
       <div class="err">{{ form.club.errors }}</div>
-    </div>
-
-    <div class="form-row">
-      <label>{{ form.password1.label }}</label>
-      {{ form.password1 }}
-      <div class="err">{{ form.password1.errors }}</div>
-    </div>
-
-    <div class="form-row">
-      <label>{{ form.password2.label }}</label>
-      {{ form.password2 }}
-      <div class="err">{{ form.password2.errors }}</div>
-    </div>
-
-    <div class="form-row checkbox">
-      {{ form.is_locked }} <label>{{ form.is_locked.label }}</label>
-      <div class="err">{{ form.is_locked.errors }}</div>
     </div>
 
     <div class="form-actions">
