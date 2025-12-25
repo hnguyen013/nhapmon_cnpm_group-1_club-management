@@ -1,10 +1,8 @@
 {% extends "portal/base_admin.html" %}
-{% block menu_bcn_active %}active{% endblock %}
 {% load static %}
 
 {% block title %}Tài khoản BCN{% endblock %}
-{% block header_title %}Tài khoản BCN{% endblock %}
-{% block header_subtitle %}Danh sách BCN theo CLB, tìm kiếm theo tên/username/email/CLB.{% endblock %}
+{% block menu_bcn_active %}active{% endblock %}
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'portal/css/bcn.css' %}">
@@ -26,6 +24,7 @@
         <th>Username</th>
         <th>Email</th>
         <th>CLB</th>
+        <th>Trạng thái</th>
       </tr>
     </thead>
     <tbody>
@@ -34,10 +33,17 @@
           <td>{{ p.full_name }}</td>
           <td>{{ p.user.username }}</td>
           <td>{{ p.user.email }}</td>
-          <td>{{ p.club.name }}</td>
+          <td>{% if p.club %}{{ p.club.name }}{% else %}-{% endif %}</td>
+          <td>
+            {% if p.is_locked %}
+              <span class="badge badge-danger">Khoá</span>
+            {% else %}
+              <span class="badge badge-success">Hoạt động</span>
+            {% endif %}
+          </td>
         </tr>
       {% empty %}
-        <tr><td colspan="4">Chưa có tài khoản BCN.</td></tr>
+        <tr><td colspan="5">Chưa có tài khoản BCN.</td></tr>
       {% endfor %}
     </tbody>
   </table>

@@ -1,0 +1,31 @@
+{% extends "portal/base_admin.html" %}
+{% load static %}
+
+{% block title %}Tạo CLB{% endblock %}
+{% block menu_club_active %}active{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'portal/css/club.css' %}">
+
+<div class="panel-box">
+  <h1>Tạo câu lạc bộ</h1>
+  <p>Nhập tên CLB rồi bấm tạo.</p>
+
+  <form method="post" class="form-box">
+    {% csrf_token %}
+
+    <div class="form-row">
+      <label>Tên CLB</label>
+      {{ form.name }}
+      {% if form.name.errors %}
+        <div class="form-error">{{ form.name.errors }}</div>
+      {% endif %}
+    </div>
+
+    <div class="form-actions">
+      <button class="btn-primary" type="submit">Tạo CLB</button>
+      <a class="btn-ghost" href="{% url 'portal:admin_panel:club_list' %}">Quay lại</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

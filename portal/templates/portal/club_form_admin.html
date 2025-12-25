@@ -1,0 +1,13 @@
+{% extends "portal/base_admin.html" %}
+{% block menu_club_active %}active{% endblock %}
+
+{% block content %}
+<h1>{% if mode == "edit" %}Sửa CLB{% else %}Tạo CLB{% endif %}</h1>
+
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button class="btn btn-primary" type="submit">Lưu</button>
+  <a class="btn btn-ghost" href="{% url 'portal:admin_panel:club_list' %}">Quay lại</a>
+</form>
+{% endblock %}

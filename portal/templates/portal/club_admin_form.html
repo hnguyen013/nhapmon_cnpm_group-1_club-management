@@ -1,0 +1,53 @@
+{% extends "portal/base_admin.html" %}
+{% load static %}
+
+{% block title %}Admin – Tạo CLB{% endblock %}
+{% block menu_club_active %}active{% endblock %}
+
+{% block header_title %}Tạo CLB mới{% endblock %}
+{% block header_subtitle %}Nhập thông tin để tạo câu lạc bộ{% endblock %}
+
+{% block content %}
+
+<form method="post" style="max-width: 600px;">
+    {% csrf_token %}
+
+    <div style="margin-bottom: 16px;">
+        <label for="name" style="font-weight:600;">Tên CLB <span style="color:red;">*</span></label>
+        <input
+            type="text"
+            id="name"
+            name="name"
+            placeholder="Ví dụ: CLB Văn nghệ"
+            required
+            style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;"
+        >
+    </div>
+
+    <div style="margin-bottom: 16px;">
+        <label for="description" style="font-weight:600;">Mô tả</label>
+        <textarea
+            id="description"
+            name="description"
+            rows="4"
+            placeholder="Mô tả ngắn về CLB (không bắt buộc)"
+            style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;"
+        ></textarea>
+    </div>
+
+    <div style="display:flex; gap:10px;">
+        <button type="submit"
+                style="padding:10px 18px; border-radius:8px; border:none;
+                       background:#2563eb; color:white; font-weight:600;">
+            💾 Lưu CLB
+        </button>
+
+        <a href="{% url 'portal:admin_panel:club_list' %}"
+           style="padding:10px 18px; border-radius:8px;
+                  border:1px solid #ccc; text-decoration:none;">
+            ↩ Quay lại
+        </a>
+    </div>
+</form>
+
+{% endblock %}
