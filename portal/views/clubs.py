@@ -1,31 +1,29 @@
 from django.shortcuts import render
 from portal.models import Club
 
-
 def club_list(request):
-    """
-    US-B1.1: Xem danh sách CLB (alphabet, không cần login)
-    US-B1.2: Tìm kiếm CLB theo tên
-    """
+    q = (request.GET.get("q") or "").strip()
+    field = (request.GET.get("field") or "").strip()
+    status = (request.GET.get("status") or "").strip()
 
-    # 1. Lấy từ khoá tìm kiếm (?q=...)
-    keyword = request.GET.get("q", "").strip()
+    qs = Club.objects.all()
 
-    # 2. Lấy danh sách CLB
-    clubs = Club.objects.all()
+    # (Nếu bạn đã làm US-B1.2) tìm theo tên
+    if q:
+        qs = qs.filter(name__icontains=q)
 
-    # 3. Nếu có nhập từ khoá → lọc theo tên
-    if keyword:
-        clubs = clubs.filter(name__icontains=keyword)
+    # ✅ US-B1.3: lọc theo lĩnh vực hoặc trạng thái
+    if field:
+        qs = qs.filter(field=field)
 
-    # 4. Sắp xếp theo alphabet (A → Z)
-    clubs = clubs.order_by("name")
+    if status:
+        qs = qs.filter(status=status)
 
-    # 5. Render ra giao diện
-    return render(
-        request,
-        "portal/club_list.html",
-        {
-            "clubs": clubs
-        }
-    )
+    # US-B1.1: sắp xếp alphabet
+    qs = qs.order_by("name")
+
+    return render(request, "portal/club_list.html", {
+        "clubs": qs,
+        "FIELD_CHOICES": Club.FIELD_CHOICES,
+        "STATUS_CHOICES": Club._meta.get_field("status").choices,
+    })
