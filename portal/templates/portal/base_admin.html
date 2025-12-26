@@ -23,23 +23,30 @@
 
             <!-- Dashboard -->
             <a href="{% url 'portal:admin_panel:dashboard' %}"
-               class="nav-item {% block menu_dashboard_active %}{% endblock %}">
+                class="nav-item {% block menu_dashboard_active %}{% endblock %}">
                 📊 Dashboard
             </a>
 
-            <!-- Quản lý CLB (US-B3.1) -->
+            <!-- Quản lý CLB -->
             <a href="{% url 'portal:admin_panel:club_list' %}"
-               class="nav-item {% block menu_club_active %}{% endblock %}">
-                🏫 Quản lý CLB
+                class="nav-item {% block menu_club_active %}{% endblock %}">
+                🏛 Quản lý CLB
             </a>
 
-            <!-- TÀI KHOẢN BCN – US-A3.1 -->
+            <!-- Tài khoản BCN -->
             <a href="{% url 'portal:admin_panel:bcn_list' %}"
-               class="nav-item {% block menu_bcn_active %}{% endblock %}">
+                class="nav-item {% block menu_bcn_active %}{% endblock %}">
                 👥 Tài khoản BCN
             </a>
 
+            <!-- Đổi mật khẩu (BCN / Admin) -->
+            <a href="{% url 'bcn:change_password' %}"
+                class="nav-item {% block menu_change_password_active %}{% endblock %}">
+                🔐 Đổi mật khẩu
+            </a>
+
         </nav>
+
 
         <div class="sidebar-footer">
             <a href="{% url 'portal:home' %}" class="nav-item">

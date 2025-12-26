@@ -2,7 +2,6 @@
 
 from django.urls import path
 from portal.views import admin as admin_views
-from portal.views import bcn as bcn_views
 
 app_name = "admin_panel"
 
@@ -23,8 +22,8 @@ urlpatterns = [
     # ======================
     # BCN (US-A3.1 + US-A3.2)
     # ======================
-    path("bcn/", bcn_views.bcn_list, name="bcn_list"),
-    path("bcn/create/", bcn_views.bcn_create, name="bcn_create"),
+    path("bcn/", admin_views.bcn_list, name="bcn_list"),
+    path("bcn/create/", admin_views.bcn_create, name="bcn_create"),
 
     # 🔐 US-A3.2 — Reset mật khẩu BCN
     path(

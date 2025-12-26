@@ -1,53 +1,40 @@
+# portal/views/bcn.py
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
+from django.contrib.auth import update_session_auth_hash
 from django.shortcuts import render, redirect
 
-from portal.forms.bcn import BCNCreateForm
-from portal.models import BCNProfile
+from portal.forms.bcn import BCNChangePasswordForm
 
 
 @login_required
-def bcn_list(request):
-    q = (request.GET.get("q") or "").strip()
-
-    profiles = BCNProfile.objects.select_related("user", "club").order_by("-created_at")
-
-    if q:
-        profiles = profiles.filter(
-            Q(full_name__icontains=q)
-            | Q(user__username__icontains=q)
-            | Q(user__email__icontains=q)
-            | Q(club__name__icontains=q)
-        )
-
-    return render(request, "portal/bcn_list.html", {"profiles": profiles, "q": q})
-
-
-@login_required
-def bcn_create(request):
+def change_password(request):
+    """
+    Cho phép tài khoản BCN (hay bất kỳ user đang đăng nhập) tự đổi mật khẩu.
+    - Bắt buộc nhập đúng mật khẩu cũ (form sẽ kiểm tra)
+    - Nhập và xác nhận mật khẩu mới
+    """
     if request.method == "POST":
-        form = BCNCreateForm(request.POST)
+        # Truyền request.user vào form để form kiểm tra mật khẩu cũ
+        form = BCNChangePasswordForm(request.user, request.POST)
         if form.is_valid():
-            full_name = form.cleaned_data["full_name"].strip()
-            username = form.cleaned_data["username"].strip()
-            email = form.cleaned_data["email"].strip()
-            password = form.cleaned_data["password"]
-            club = form.cleaned_data["club"]
+            new_password = form.cleaned_data["new_password1"]
 
-            from django.contrib.auth.models import User
-            user = User.objects.create_user(username=username, email=email, password=password)
+            user = request.user
+            user.set_password(new_password)
+            user.save()
 
-            BCNProfile.objects.create(
-                user=user,
-                full_name=full_name,
-                club=club,
-                is_locked=False
-            )
+            # Giữ trạng thái đăng nhập sau khi đổi mật khẩu
+            update_session_auth_hash(request, user)
 
-            messages.success(request, "Tạo tài khoản BCN thành công!")
-            return redirect("portal:admin_panel:bcn_list")
+            messages.success(request, "Đổi mật khẩu thành công.")
+            # Reload lại trang đổi mật khẩu
+            return redirect("bcn:change_password")
     else:
-        form = BCNCreateForm()
+        form = BCNChangePasswordForm(request.user)
 
-    return render(request, "portal/bcn_create.html", {"form": form})
+    context = {
+        "form": form,
+    }
+    return render(request, "portal/bcn_change_password.html", context)

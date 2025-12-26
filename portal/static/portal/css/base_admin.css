@@ -219,3 +219,93 @@
     color: #9ca3af;
     text-align: right;
 }
+
+/* ====== Change Password & Admin Forms ====== */
+
+.form-page {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.form-card {
+  margin-top: 24px;
+  padding: 24px 28px;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #0f172a;
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+  font-size: 14px;
+  background-color: #ffffff;
+  box-sizing: border-box;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.15);
+}
+
+.form-actions {
+  margin-top: 12px;
+}
+
+.btn-primary {
+  display: inline-block;
+  padding: 10px 22px;
+  border-radius: 999px;
+  border: none;
+  background-color: #16a34a; /* xanh giống nút + Tạo tài khoản BCN */
+  color: #ffffff;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background-color: #15803d;
+}
+
+.form-card input,
+.form-card select {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid #d1d5db;
+    font-size: 14px;
+}
+
+.form-card button {
+    padding: 10px 22px;
+    border-radius: 999px;
+    border: none;
+    background: #16a34a;
+    color: white;
+    font-weight: 600;
+}
+
+
+.alert-success {
+  background: #d1fae5;
+  color: #065f46;
+  padding: 12px 16px;
+  border-radius: 10px;
+  margin-bottom: 14px;
+  font-size: 14px;
+  border: 1px solid #6ee7b7;
+}
