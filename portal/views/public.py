@@ -10,28 +10,40 @@ def club_list(request):
     """
     US-B1.1: Xem danh sách CLB (alphabet, không cần login)
     US-B1.2: Tìm kiếm CLB theo tên
+    US-B1.3: Lọc theo lĩnh vực & trạng thái
     """
 
-    # 1. Lấy từ khoá tìm kiếm
-    keyword = request.GET.get("q", "").strip()
+    q = request.GET.get("q", "").strip()
+    field = request.GET.get("field", "").strip()
+    status = request.GET.get("status", "").strip()
 
-    # 2. Lấy toàn bộ CLB
     clubs = Club.objects.all()
 
-    # 3. Nếu có keyword → lọc theo tên
-    if keyword:
-        clubs = clubs.filter(name__icontains=keyword)
+    # Tìm kiếm theo tên
+    if q:
+        clubs = clubs.filter(name__icontains=q)
 
-    # 4. Sắp xếp theo alphabet (A → Z)
+    # Lọc theo lĩnh vực
+    if field:
+        clubs = clubs.filter(field=field)
+
+    # Lọc theo trạng thái
+    if status:
+        clubs = clubs.filter(status=status)
+
+    # Sắp xếp alphabet
     clubs = clubs.order_by("name")
 
     return render(
         request,
         "portal/club_list.html",
         {
-            "clubs": clubs
+            "clubs": clubs,
+            "FIELD_CHOICES": Club._meta.get_field("field").choices,
+            "STATUS_CHOICES": Club._meta.get_field("status").choices,
         }
     )
+
 
 
 def club_detail(request, club_id):
