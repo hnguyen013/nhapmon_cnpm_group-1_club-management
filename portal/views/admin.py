@@ -110,3 +110,49 @@ def bcn_reset_password(request, user_id: int):
         f"Reset mật khẩu thành công cho BCN '{user.username}'. Mật khẩu mới: {new_password}"
     )
     return redirect("portal:admin_panel:bcn_list")
+
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib import messages
+
+from portal.models import Club, BCNProfile
+from portal.forms.club import ClubCreateForm
+
+
+@login_required
+def club_edit(request, club_id):
+    club = get_object_or_404(Club, id=club_id)
+
+    # Nếu là Admin -> cho phép
+    if request.user.is_staff or request.user.is_superuser:
+        allowed = True
+    else:
+        # Nếu là BCN -> chỉ được sửa CLB của mình
+        try:
+            bcn = request.user.bcn_profile
+            allowed = (bcn.club == club)
+        except BCNProfile.DoesNotExist:
+            allowed = False
+
+    if not allowed:
+        messages.error(request, "Bạn không có quyền chỉnh sửa CLB này.")
+        return redirect("portal:admin_panel:club_list")
+
+    # --------------------
+    # Xử lý Submit
+    # --------------------
+    if request.method == "POST":
+        form = ClubCreateForm(request.POST, instance=club)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Cập nhật thông tin CLB thành công!")
+            return redirect("portal:admin_panel:club_list")
+    else:
+        form = ClubCreateForm(instance=club)
+
+    return render(request, "portal/club_form_admin.html", {
+        "form": form,
+        "mode": "edit",
+        "club": club
+    })

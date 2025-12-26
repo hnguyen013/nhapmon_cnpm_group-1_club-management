@@ -17,7 +17,7 @@ urlpatterns = [
     # ======================
     path("clubs/", admin_views.club_admin_list, name="club_list"),
     path("clubs/create/", admin_views.club_admin_create, name="club_create"),
-    path("clubs/<int:club_id>/edit/", admin_views.club_admin_edit, name="club_edit"),
+    path("clubs/<int:club_id>/edit/", admin_views.club_edit, name="club_edit"),
     path("clubs/<int:club_id>/delete/", admin_views.club_admin_delete, name="club_delete"),
 
     # ======================
