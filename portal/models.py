@@ -3,28 +3,15 @@ from django.contrib.auth.models import User
 
 
 class Club(models.Model):
-    FIELD_CHOICES = (
-        ("hoc-thuat", "Học thuật, Chuyên môn"),
-        ("nghe-thuat", "Nghệ thuật, Sáng tạo"),
-        ("truyen-thong", "Truyền thông, Dịch vụ"),
-        ("the-thao", "Thể thao, Sức khoẻ"),
-        ("so-thich", "Sở thích, Giải trí"),
-        ("tinh-nguyen", "Tình nguyện, Cộng đồng"),
-        ("ngon-ngu", "Ngôn ngữ, Văn hoá"),
-        ("esport", "Thể thao, Điện tử"),
-    )
-
     name = models.CharField(max_length=150, unique=True)
 
-    # ✅ US-B1.3: Lĩnh vực hoạt động của CLB (fixed choices để lọc chuẩn)
+    # Lĩnh vực hoạt động của CLB (ví dụ: Học thuật, Văn nghệ, Thể thao...)
     field = models.CharField(
-    "Lĩnh vực",
-    max_length=150,
-    blank=True,
-    null=True,
-    choices=FIELD_CHOICES,
-)
-
+        "Lĩnh vực",
+        max_length=150,
+        blank=True,
+        null=True,
+    )
 
     # Khoa / đơn vị phụ trách
     faculty = models.CharField(
@@ -34,7 +21,7 @@ class Club(models.Model):
         null=True,
     )
 
-    # ✅ US-B1.3: Trạng thái hoạt động (đã có)
+    # Trạng thái hoạt động
     status = models.CharField(
         "Trạng thái",
         max_length=20,
@@ -45,7 +32,9 @@ class Club(models.Model):
         ),
     )
 
+    # Mô tả chi tiết hơn (tuỳ chọn)
     description = models.TextField(blank=True, null=True)
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

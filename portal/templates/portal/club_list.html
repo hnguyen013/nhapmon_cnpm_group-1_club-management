@@ -10,164 +10,219 @@
 {% block content %}
 <section class="club-page">
 
-  <!-- ICON CATEGORY (click để lọc field) -->
-  <div class="cats">
-    <button class="cat {% if request.GET.field == 'hoc-thuat' %}is-active{% endif %}" type="button" data-field="hoc-thuat">
-      <span class="cat__circle">💬</span>
-      <span class="cat__label">Học thuật,<br>Chuyên môn</span>
+  <!-- Top categories row (giống hình bạn gửi) -->
+  <div class="club-categories" aria-label="Danh mục CLB">
+    <button class="cat" type="button" data-cat="hoc-thuat">
+      <span class="cat__icon">💬</span>
+      <span class="cat__text">Học thuật,<br>Chuyên môn</span>
     </button>
 
-    <button class="cat {% if request.GET.field == 'nghe-thuat' %}is-active{% endif %}" type="button" data-field="nghe-thuat">
-      <span class="cat__circle">🎨</span>
-      <span class="cat__label">Nghệ thuật,<br>Sáng tạo</span>
+    <button class="cat" type="button" data-cat="nghe-thuat">
+      <span class="cat__icon">🎨</span>
+      <span class="cat__text">Nghệ thuật,<br>Sáng tạo</span>
     </button>
 
-    <button class="cat {% if request.GET.field == 'truyen-thong' %}is-active{% endif %}" type="button" data-field="truyen-thong">
-      <span class="cat__circle">📣</span>
-      <span class="cat__label">Truyền thông,<br>Dịch vụ</span>
+    <button class="cat" type="button" data-cat="truyen-thong">
+      <span class="cat__icon">📣</span>
+      <span class="cat__text">Truyền thông,<br>Dịch vụ</span>
     </button>
 
-    <button class="cat {% if request.GET.field == 'the-thao' %}is-active{% endif %}" type="button" data-field="the-thao">
-      <span class="cat__circle">🏃</span>
-      <span class="cat__label">Thể thao,<br>Sức khoẻ</span>
+    <button class="cat" type="button" data-cat="the-thao">
+      <span class="cat__icon">🏃</span>
+      <span class="cat__text">Thể thao,<br>Sức khoẻ</span>
     </button>
 
-    <button class="cat {% if request.GET.field == 'so-thich' %}is-active{% endif %}" type="button" data-field="so-thich">
-      <span class="cat__circle">♣️</span>
-      <span class="cat__label">Sở thích,<br>Giải trí</span>
+    <button class="cat" type="button" data-cat="so-thich">
+      <span class="cat__icon">♣️</span>
+      <span class="cat__text">Sở thích,<br>Giải trí</span>
     </button>
 
-    <button class="cat {% if request.GET.field == 'tinh-nguyen' %}is-active{% endif %}" type="button" data-field="tinh-nguyen">
-      <span class="cat__circle">🤝</span>
-      <span class="cat__label">Tình nguyện,<br>Cộng đồng</span>
+    <button class="cat" type="button" data-cat="tinh-nguyen">
+      <span class="cat__icon">🤝</span>
+      <span class="cat__text">Tình nguyện,<br>Cộng đồng</span>
     </button>
 
-    <button class="cat {% if request.GET.field == 'ngon-ngu' %}is-active{% endif %}" type="button" data-field="ngon-ngu">
-      <span class="cat__circle">🌐</span>
-      <span class="cat__label">Ngôn ngữ,<br>Văn hoá</span>
+    <button class="cat" type="button" data-cat="ngon-ngu">
+      <span class="cat__icon">🌐</span>
+      <span class="cat__text">Ngôn ngữ,<br>Văn hoá</span>
     </button>
 
-    <button class="cat {% if request.GET.field == 'esport' %}is-active{% endif %}" type="button" data-field="esport">
-      <span class="cat__circle">🎮</span>
-      <span class="cat__label">Thể thao,<br>Điện tử</span>
+    <button class="cat" type="button" data-cat="esports">
+      <span class="cat__icon">🎮</span>
+      <span class="cat__text">Thể thao,<br>Điện tử</span>
     </button>
   </div>
 
-  <!-- SEARCH + FILTERS -->
-  <form class="toolbar" method="get">
-    <div class="search">
-      <span class="search__icon">🔎</span>
-      <input
-        id="qInput"
-        type="search"
-        name="q"
-        value="{{ request.GET.q|default_if_none:'' }}"
-        placeholder="Tìm kiếm Câu Lạc Bộ"
-      >
-      <button class="search__clear" type="button" id="clearBtn" aria-label="Xoá">✕</button>
-    </div>
+  <!-- Search + Filters row -->
+  <div class="club-toolbar">
+    <form class="toolbar" method="get" action="">
+      <div class="search">
+        <span class="search__icon">🔎</span>
+        <input
+          id="clubSearch"
+          type="search"
+          name="q"
+          value="{{ request.GET.q|default_if_none:'' }}"
+          placeholder="Tìm kiếm Câu Lạc Bộ"
+          autocomplete="off"
+        >
+        <button class="search__clear" type="button" id="clearSearch" aria-label="Xoá từ khoá">✕</button>
+      </div>
 
-    <div class="filters">
-      <select name="field" id="fieldSelect">
-        <option value="">Tất cả lĩnh vực</option>
-        {% for value,label in FIELD_CHOICES %}
-          <option value="{{ value }}" {% if request.GET.field == value %}selected{% endif %}>{{ label }}</option>
-        {% endfor %}
-      </select>
+      <div class="filters">
+        <!-- Các filter này là UI giống mẫu; backend có thể làm sau -->
+        <label class="select">
+          <span class="select__label">Khu vực</span>
+          <select name="area" id="areaSelect">
+            <option value="">Tất cả</option>
+            <option value="hcm" {% if request.GET.area == "hcm" %}selected{% endif %}>Hồ Chí Minh</option>
+            <option value="hn" {% if request.GET.area == "hn" %}selected{% endif %}>Hà Nội</option>
+          </select>
+        </label>
 
-      <select name="status" id="statusSelect">
-        <option value="">Trạng thái (Tất cả)</option>
-        {% for value,label in STATUS_CHOICES %}
-          <option value="{{ value }}" {% if request.GET.status == value %}selected{% endif %}>{{ label }}</option>
-        {% endfor %}
-      </select>
+        <label class="select">
+          <span class="select__label">Thuộc trường</span>
+          <select name="school" id="schoolSelect">
+            <option value="">Tất cả</option>
+            <option value="vanhoa" {% if request.GET.school == "vanhoa" %}selected{% endif %}>ĐH Văn hoá</option>
+            <option value="bachkhoa" {% if request.GET.school == "bachkhoa" %}selected{% endif %}>Bách khoa</option>
+          </select>
+        </label>
 
-      <a class="btn-ghost" href="{% url 'portal:club_list' %}">Bỏ lọc</a>
-    </div>
-  </form>
+        <label class="select">
+          <span class="select__label">Sắp xếp theo</span>
+          <select name="sort" id="sortSelect">
+            <option value="alpha" {% if request.GET.sort|default:"alpha" == "alpha" %}selected{% endif %}>Alphabet (A → Z)</option>
+            <option value="newest" {% if request.GET.sort == "newest" %}selected{% endif %}>Mới nhất</option>
+          </select>
+        </label>
 
-  <!-- RESULT LIST -->
-  <div class="result-head">
-    <strong>{{ clubs|length }}</strong> CLB
-    {% if request.GET.field %}
-      <span class="hint">• Đang lọc theo lĩnh vực</span>
-    {% endif %}
-    {% if request.GET.status %}
-      <span class="hint">• Trạng thái đã chọn</span>
-    {% endif %}
+        <a class="btn btn-ghost" href="{% url 'portal:club_list' %}">Bỏ lọc</a>
+      </div>
+    </form>
   </div>
 
-  <div class="club-grid">
-    {% for club in clubs %}
-      <a class="club-card" href="{% url 'portal:club_detail' club.id %}">
-        <div class="club-card__avatar">
-          {{ club.name|slice:":1"|upper }}
+  <!-- List -->
+  <div class="club-list-wrap">
+    <div class="club-count">
+      <strong id="resultCount">{{ clubs|length }}</strong> CLB
+      {% if request.GET.q %}
+        <span class="hint">• Kết quả cho “{{ request.GET.q }}”</span>
+      {% endif %}
+    </div>
+
+    <div class="club-grid" id="clubGrid">
+      {% for club in clubs %}
+      <article class="club-card" data-name="{{ club.name|lower }}">
+        <div class="club-card__left">
+          <!-- Avatar (chữ cái) -->
+          <div class="club-avatar" aria-hidden="true">
+            {{ club.name|slice:":1"|upper }}
+          </div>
         </div>
 
-        <div class="club-card__info">
-          <div class="badges">
+        <div class="club-card__main">
+          <div class="club-badges">
+            {# Nếu model có field/category thì hiển thị, không có thì bỏ #}
             {% if club.field %}
-              <span class="badge badge-green">{{ club.get_field_display }}</span>
+              <span class="badge badge-green">{{ club.field }}</span>
+            {% elif club.category %}
+              <span class="badge badge-green">{{ club.category }}</span>
             {% endif %}
-            <span class="badge badge-gray">{{ club.get_status_display }}</span>
+
+            {% if club.status %}
+              <span class="badge badge-gray">{{ club.status }}</span>
+            {% endif %}
           </div>
 
-          <h3 class="title">{{ club.name }}</h3>
-
-          {% if club.faculty %}
-            <div class="meta">🏫 {{ club.faculty }}</div>
-          {% endif %}
+          <h3 class="club-title">{{ club.name }}</h3>
 
           {% if club.description %}
-            <p class="desc">{{ club.description|truncatechars:110 }}</p>
+            <p class="club-desc">{{ club.description|truncatechars:120 }}</p>
           {% else %}
-            <p class="desc muted">Chưa có mô tả.</p>
+            <p class="club-desc club-desc--muted">Chưa có mô tả cho CLB này.</p>
           {% endif %}
+
+          <div class="club-meta">
+            {% if club.location %}
+              <span class="meta-item">📍 {{ club.location }}</span>
+            {% elif club.area %}
+              <span class="meta-item">📍 {{ club.area }}</span>
+            {% endif %}
+
+            {% if club.school %}
+              <span class="meta-item">🏫 {{ club.school }}</span>
+            {% elif club.faculty %}
+              <span class="meta-item">🏫 {{ club.faculty }}</span>
+            {% endif %}
+
+            {% if club.member_count %}
+              <span class="meta-item">👥 {{ club.member_count }} thành viên</span>
+            {% endif %}
+          </div>
         </div>
 
-        <div class="club-card__cover" aria-hidden="true">
-          <div class="cover-text">University Clubs</div>
+        <div class="club-card__right">
+          {# Nếu có ảnh cover/logo thì show; nếu chưa có thì show placeholder #}
+          {% if club.cover_image %}
+            <img class="club-cover" src="{{ club.cover_image.url }}" alt="Ảnh CLB {{ club.name }}">
+          {% elif club.logo %}
+            <img class="club-cover" src="{{ club.logo.url }}" alt="Logo CLB {{ club.name }}">
+          {% else %}
+            <div class="club-cover club-cover--placeholder" aria-hidden="true">
+              <div class="ph-title">CLB</div>
+              <div class="ph-sub">University Clubs</div>
+            </div>
+          {% endif %}
         </div>
-      </a>
-    {% empty %}
+      </article>
+      {% empty %}
       <div class="empty">
         <div class="empty__icon">🔎</div>
-        <h3>Không có CLB phù hợp</h3>
-        <p>Hãy thử thay đổi bộ lọc hoặc bấm “Bỏ lọc”.</p>
-        <a class="btn-ghost" href="{% url 'portal:club_list' %}">Bỏ lọc</a>
+        <h3>Không tìm thấy CLB phù hợp</h3>
+        <p>Hãy thử từ khoá khác hoặc bấm “Bỏ lọc”.</p>
+        <a class="btn" href="{% url 'portal:club_list' %}">Quay về danh sách</a>
       </div>
-    {% endfor %}
+      {% endfor %}
+    </div>
   </div>
 
 </section>
 
 <script>
-  // Submit khi đổi dropdown (US-B1.3)
-  document.getElementById("fieldSelect").addEventListener("change", (e) => e.target.form.submit());
-  document.getElementById("statusSelect").addEventListener("change", (e) => e.target.form.submit());
+  // US-B1.2: nhập từ khoá -> lọc theo tên; xoá từ khoá -> hiện lại đầy đủ
+  (function () {
+    const input = document.getElementById("clubSearch");
+    const clearBtn = document.getElementById("clearSearch");
+    const grid = document.getElementById("clubGrid");
+    const cards = Array.from(grid.querySelectorAll(".club-card"));
+    const countEl = document.getElementById("resultCount");
 
-  // Click icon -> set field dropdown -> submit (US-B1.3)
-  document.querySelectorAll("[data-field]").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const v = btn.getAttribute("data-field");
-      const select = document.getElementById("fieldSelect");
-      select.value = v;
-      select.form.submit();
+    function applyFilter() {
+      const q = (input.value || "").trim().toLowerCase();
+      let visible = 0;
+
+      cards.forEach(card => {
+        const name = card.getAttribute("data-name") || "";
+        const ok = !q || name.includes(q);
+        card.style.display = ok ? "" : "none";
+        if (ok) visible++;
+      });
+
+      if (countEl) countEl.textContent = String(visible);
+      clearBtn.style.visibility = q ? "visible" : "hidden";
+    }
+
+    clearBtn.addEventListener("click", () => {
+      input.value = "";
+      input.focus();
+      applyFilter();
     });
-  });
 
-  // Clear search
-  const qInput = document.getElementById("qInput");
-  const clearBtn = document.getElementById("clearBtn");
-  function toggleClear(){
-    clearBtn.style.visibility = (qInput.value || "").trim() ? "visible" : "hidden";
-  }
-  toggleClear();
-  qInput.addEventListener("input", toggleClear);
-  clearBtn.addEventListener("click", () => {
-    qInput.value = "";
-    toggleClear();
-    qInput.form.submit();
-  });
+    input.addEventListener("input", applyFilter);
+
+    // init
+    applyFilter();
+  })();
 </script>
 {% endblock %}
