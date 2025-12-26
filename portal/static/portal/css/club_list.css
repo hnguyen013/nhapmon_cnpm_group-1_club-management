@@ -1,61 +1,59 @@
-.club-page{
-  padding: 18px 0 40px;
-}
+.club-page{ padding: 18px 0 40px; }
 
-/* Categories */
-.club-categories{
+/* Categories row */
+.cats{
   display:flex;
   flex-wrap:wrap;
-  gap:18px;
+  gap:26px;
   justify-content:center;
-  padding: 6px 0 18px;
+  padding: 6px 0 22px;
 }
 
 .cat{
-  width: 120px;
+  width: 135px;
   border: none;
   background: transparent;
   cursor:pointer;
   text-align:center;
-  padding: 8px 6px;
+  padding: 6px 6px;
 }
 
-.cat__icon{
+.cat__circle{
   display:grid;
   place-items:center;
-  width: 66px;
-  height: 66px;
+  width: 78px;
+  height: 78px;
   margin: 0 auto 10px;
   border-radius: 999px;
-  border: 2px solid #c06b5c;
+  border: 3px solid #c06b5c;
   color:#c06b5c;
-  font-size: 28px;
+  font-size: 34px;
 }
 
-.cat__text{
-  font-size: 13px;
+.cat__label{
+  font-size: 15px;
   line-height: 1.25;
   color:#222;
-  opacity: 0.95;
+}
+
+.cat.is-active .cat__circle{
+  box-shadow: 0 0 0 5px rgba(192,107,92,.18);
 }
 
 /* Toolbar */
-.club-toolbar{
-  margin: 10px 0 18px;
-}
-
 .toolbar{
   display:flex;
   gap: 14px;
   flex-wrap:wrap;
   align-items:center;
   justify-content:center;
+  margin-bottom: 14px;
 }
 
 .search{
   position:relative;
   flex: 1 1 420px;
-  max-width: 520px;
+  max-width: 560px;
 }
 
 .search__icon{
@@ -68,12 +66,12 @@
 
 .search input{
   width:100%;
-  height: 46px;
-  padding: 0 42px 0 40px;
+  height: 48px;
+  padding: 0 44px 0 40px;
   border-radius: 12px;
   border: 1px solid #d9dde3;
-  outline: none;
-  background: #fff;
+  outline:none;
+  background:#fff;
   font-size: 15px;
 }
 
@@ -100,71 +98,43 @@
   display:flex;
   gap: 10px;
   flex-wrap:wrap;
-  align-items:end;
+  align-items:center;
   justify-content:center;
 }
 
-.select{
-  display:flex;
-  flex-direction:column;
-  gap: 6px;
-}
-
-.select__label{
-  font-size: 12px;
-  color:#666;
-}
-
-.select select{
-  height: 46px;
+.filters select{
+  height: 48px;
   padding: 0 12px;
   border-radius: 12px;
   border: 1px solid #e5e7eb;
   background:#fff;
-  min-width: 160px;
+  min-width: 190px;
   outline:none;
 }
 
-.select select:focus{
-  border-color: #7aa8ff;
-  box-shadow: 0 0 0 3px rgba(122,168,255,.22);
-}
-
-/* Buttons */
-.btn{
+.btn-ghost{
   display:inline-flex;
   align-items:center;
   justify-content:center;
-  height: 46px;
+  height: 48px;
   padding: 0 14px;
   border-radius: 12px;
-  border: 1px solid #111;
-  background:#111;
-  color:#fff;
-  text-decoration:none;
-  font-weight: 600;
-}
-
-.btn-ghost{
   border: 1px solid #e5e7eb;
   background:#f4f6f8;
   color:#222;
-  font-weight: 600;
+  text-decoration:none;
+  font-weight: 700;
 }
 
-/* List */
-.club-list-wrap{
-  margin-top: 6px;
-}
-
-.club-count{
-  display:flex;
-  align-items:center;
-  gap: 10px;
+/* Result head */
+.result-head{
+  margin: 8px 2px 14px;
   color:#111;
-  margin: 6px 2px 14px;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  align-items:center;
 }
-
 .hint{ color:#666; }
 
 /* Cards */
@@ -183,33 +153,24 @@
   border: 1px solid #eef1f4;
   background:#fff;
   box-shadow: 0 10px 24px rgba(0,0,0,.05);
+  text-decoration:none;
+  color:inherit;
 }
 
-.club-card__left{
-  display:flex;
-  align-items:flex-start;
-  justify-content:center;
-  padding-top: 6px;
-}
-
-.club-avatar{
-  width: 54px;
-  height: 54px;
+.club-card__avatar{
+  width: 56px;
+  height: 56px;
   border-radius: 14px;
   background: linear-gradient(135deg, #ffdfd7, #ffe9d6);
   display:grid;
   place-items:center;
-  font-weight: 800;
+  font-weight: 900;
   color:#7a3d35;
   font-size: 18px;
+  margin-top: 6px;
 }
 
-.club-badges{
-  display:flex;
-  gap: 8px;
-  flex-wrap:wrap;
-  margin-bottom: 8px;
-}
+.badges{ display:flex; gap: 8px; flex-wrap:wrap; margin-bottom: 8px; }
 
 .badge{
   display:inline-flex;
@@ -217,80 +178,29 @@
   padding: 6px 10px;
   border-radius: 999px;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 800;
 }
+.badge-green{ background:#dff5d7; color:#246b2f; }
+.badge-gray{ background:#f3f4f6; color:#374151; }
 
-.badge-green{
-  background:#dff5d7;
-  color:#246b2f;
-}
+.title{ margin: 0 0 8px; font-size: 22px; color:#111; }
+.meta{ color:#666; font-size: 13px; margin-bottom: 8px; }
+.desc{ margin: 0; color:#333; }
+.desc.muted{ color:#777; }
 
-.badge-gray{
-  background:#f3f4f6;
-  color:#374151;
-}
-
-.club-title{
-  margin: 0 0 8px;
-  font-size: 22px;
-  line-height: 1.2;
-  color:#111;
-}
-
-.club-desc{
-  margin: 0 0 10px;
-  color:#333;
-  opacity: .92;
-}
-
-.club-desc--muted{
-  color:#777;
-  opacity: 1;
-}
-
-.club-meta{
-  display:flex;
-  gap: 14px;
-  flex-wrap:wrap;
-  color:#666;
-  font-size: 13px;
-}
-
-.meta-item{ display:inline-flex; gap:6px; align-items:center; }
-
-.club-card__right{
-  display:flex;
-  align-items:center;
-  justify-content:flex-end;
-}
-
-.club-cover{
-  width: 100%;
-  max-width: 360px;
+.club-card__cover{
   height: 170px;
   border-radius: 14px;
-  object-fit: cover;
   border: 1px solid #eef1f4;
-}
-
-.club-cover--placeholder{
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  padding: 16px;
   background: linear-gradient(135deg, #ffd8bf, #ffb26b);
-  color:#5a2a00;
+  display:flex;
+  align-items:flex-end;
+  padding: 14px;
 }
-
-.ph-title{
+.cover-text{
   font-weight: 900;
-  font-size: 22px;
-  letter-spacing: .4px;
-}
-
-.ph-sub{
-  opacity: .85;
-  font-weight: 700;
+  color:#5a2a00;
+  opacity: .9;
 }
 
 /* Empty */
@@ -301,18 +211,9 @@
   border: 1px dashed #d1d5db;
   background:#fafafa;
 }
-
 .empty__icon{ font-size: 34px; margin-bottom: 8px; }
 
 @media (max-width: 980px){
-  .club-card{
-    grid-template-columns: 70px 1fr;
-  }
-  .club-card__right{
-    grid-column: 1 / -1;
-    justify-content:flex-start;
-  }
-  .club-cover{
-    max-width: 100%;
-  }
+  .club-card{ grid-template-columns: 70px 1fr; }
+  .club-card__cover{ grid-column: 1 / -1; height: 150px; }
 }
