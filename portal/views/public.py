@@ -3,34 +3,37 @@ from portal.models import Club
 
 
 def home(request):
+    # Trang chủ tối giản (để hết lỗi import)
     return render(request, "portal/home.html")
 
 
 def club_list(request):
-    """
-    US-B1.1: Xem danh sách CLB (alphabet, không cần login)
-    US-B1.2: Tìm kiếm CLB theo tên
-    """
+    q = (request.GET.get("q") or "").strip()
+    field = (request.GET.get("field") or "").strip()
+    status = (request.GET.get("status") or "").strip()
 
-    # 1. Lấy từ khoá tìm kiếm
-    keyword = request.GET.get("q", "").strip()
+    qs = Club.objects.all()
 
-    # 2. Lấy toàn bộ CLB
-    clubs = Club.objects.all()
+    if q:
+        qs = qs.filter(name__icontains=q)
 
-    # 3. Nếu có keyword → lọc theo tên
-    if keyword:
-        clubs = clubs.filter(name__icontains=keyword)
+    # US-B1.3: lọc theo lĩnh vực hoặc trạng thái
+    if field:
+        qs = qs.filter(field=field)
 
-    # 4. Sắp xếp theo alphabet (A → Z)
-    clubs = clubs.order_by("name")
+    if status:
+        qs = qs.filter(status=status)
+
+    qs = qs.order_by("name")
 
     return render(
         request,
         "portal/club_list.html",
         {
-            "clubs": clubs
-        }
+            "clubs": qs,
+            "FIELD_CHOICES": getattr(Club, "FIELD_CHOICES", ()),
+            "STATUS_CHOICES": Club._meta.get_field("status").choices,
+        },
     )
 
 
