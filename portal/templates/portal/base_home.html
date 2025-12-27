@@ -28,6 +28,7 @@
             {% if user.is_staff or user.is_superuser %}
               <li><a href="{% url 'portal:admin_panel:dashboard' %}">Vào quản trị</a></li>
             {% endif %}
+            <li><a href="{% url 'portal:admin_panel:change_password' %}">Đổi mật khẩu</a></li>
             <li><a href="{% url 'portal:auth:logout' %}">Đăng xuất</a></li>
           {% else %}
             <li><a href="{% url 'portal:auth:login' %}">Đăng nhập</a></li>

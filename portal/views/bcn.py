@@ -51,3 +51,45 @@ def bcn_create(request):
         form = BCNCreateForm()
 
     return render(request, "portal/bcn_create.html", {"form": form})
+
+
+# portal/views/bcn.py
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import update_session_auth_hash
+from django.shortcuts import render, redirect
+
+from portal.forms.bcn import ChangePasswordForm
+
+
+@login_required
+def change_password(request):
+    """
+    Dùng chung cho cả Admin và BCN (chỉ cần đăng nhập là đổi được).
+    Bắt buộc nhập đúng mật khẩu cũ.
+    """
+    if request.method == "POST":
+        form = ChangePasswordForm(request.POST)
+
+        if form.is_valid():
+            old_pw = form.cleaned_data["old_password"]
+            new_pw = form.cleaned_data["new_password"]
+
+            user = request.user
+
+            # check mật khẩu cũ
+            if not user.check_password(old_pw):
+                form.add_error("old_password", "Mật khẩu cũ không đúng.")
+            else:
+                user.set_password(new_pw)
+                user.save()
+
+                # giữ phiên đăng nhập (không bị đá ra sau khi đổi pass)
+                update_session_auth_hash(request, user)
+
+                messages.success(request, "✅ Đổi mật khẩu thành công.")
+                return redirect("portal:admin_panel:change_password")
+    else:
+        form = ChangePasswordForm()
+
+    return render(request, "portal/bcn_change_password.html", {"form": form})
