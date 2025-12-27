@@ -1,0 +1,43 @@
+{% extends "portal/base_home.html" %}
+
+{% block title %}Quản lý CLB{% endblock %}
+
+{% block content %}
+<h2>Quản lý CLB</h2>
+
+<table border="1" cellpadding="10" cellspacing="0" style="width:100%; background:#fff;">
+  <thead>
+    <tr>
+      <th>Tên</th>
+      <th>Lĩnh vực</th>
+      <th>Trạng thái</th>
+      <th>Hành động</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for club in clubs %}
+      <tr>
+        <td><strong>{{ club.name }}</strong></td>
+        <td>{% if club.field %}{{ club.get_field_display }}{% else %}—{% endif %}</td>
+        <td>{{ club.get_status_display }}</td>
+        <td style="white-space:nowrap;">
+          {% if club.status != "inactive" %}
+          <form method="post" action="{% url 'portal:admin_panel:club_deactivate' club.id %}" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit">Vô hiệu hoá</button>
+          </form>
+          {% else %}
+            <em>Đã tạm dừng</em>
+          {% endif %}
+
+          <a href="{% url 'portal:admin_panel:club_delete' club.id %}" style="margin-left:10px; color:#b00020;">
+            Xoá
+          </a>
+        </td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="4">Chưa có CLB nào.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
