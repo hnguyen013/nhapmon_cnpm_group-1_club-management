@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import render, redirect, get_object_or_404
 
 from portal.models import Club, BCNProfile
-from portal.forms.club import ClubCreateForm  # nếu form bạn tên khác thì đổi lại
+from portal.forms.club import ClubCreateForm  # giữ nguyên
 
 
 def is_admin(user):
@@ -48,26 +48,33 @@ def club_admin_create(request):
         form = ClubCreateForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, "Tạo CLB thành công.")
             return redirect("portal:admin_panel:club_list")
     else:
         form = ClubCreateForm()
-    return render(request, "portal/club_form_admin.html", {"form": form, "mode": "create"})
+
+    # ✅ đổi sang template club_admin_form.html để dùng form fields đầy đủ
+    return render(request, "portal/club_admin_form.html", {"form": form, "mode": "create"})
 
 
 @login_required
 @user_passes_test(is_admin)
 def club_admin_edit(request, club_id):
     club = get_object_or_404(Club, id=club_id)
+
     if request.method == "POST":
         form = ClubCreateForm(request.POST, instance=club)
         if form.is_valid():
             form.save()
+            messages.success(request, "Cập nhật CLB thành công.")
             return redirect("portal:admin_panel:club_list")
     else:
         form = ClubCreateForm(instance=club)
+
+    # ✅ đổi sang template club_admin_form.html để dùng form fields đầy đủ
     return render(
         request,
-        "portal/club_form_admin.html",
+        "portal/club_admin_form.html",
         {"form": form, "mode": "edit", "club": club},
     )
 
@@ -78,6 +85,7 @@ def club_admin_delete(request, club_id):
     club = get_object_or_404(Club, id=club_id)
     if request.method == "POST":
         club.delete()
+        messages.success(request, "Đã xóa CLB.")
         return redirect("portal:admin_panel:club_list")
     return render(request, "portal/club_confirm_delete.html", {"club": club})
 
@@ -94,7 +102,6 @@ def bcn_reset_password(request, user_id: int):
     """
     user = get_object_or_404(User, id=user_id)
 
-    # Kiểm tra user có phải BCN không (có BCNProfile)
     try:
         _ = user.bcn_profile
     except BCNProfile.DoesNotExist:

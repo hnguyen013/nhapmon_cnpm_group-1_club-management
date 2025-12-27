@@ -1,10 +1,185 @@
 {% extends "portal/base_home.html" %}
+{% load static %}
 
-{% block title %}Chi tiết CLB | Cổng CLB{% endblock %}
+{% block title %}{{ club.name }} | Chi tiết CLB{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'portal/css/club_detail.css' %}">
+{% endblock %}
 
 {% block content %}
-<h1>Chi tiết Câu lạc bộ</h1>
+<section class="club-detail">
 
-<p>ID CLB: {{ club_id }}</p>
-<p>Nội dung chi tiết của Câu lạc bộ sẽ hiển thị ở đây.</p>
+  <!-- AC2: Nút quay về danh sách -->
+  <div class="back-row">
+    <a class="back-btn" href="{% url 'portal:club_list' %}">← Quay về danh sách CLB</a>
+  </div>
+
+  <!-- HERO: Thông tin CLB + 1 ảnh (tham khảo ảnh mẫu 3) -->
+  <div class="hero-wrap">
+    <div>
+      <div class="hero-badges">
+        {% if club.field %}
+          <span class="pill pill-green">🏷️ {{ club.get_field_display }}</span>
+        {% endif %}
+        <span class="pill pill-gray">📌 {{ club.get_status_display }}</span>
+      </div>
+
+      <h1 class="hero-title">{{ club.name }}</h1>
+
+      <div class="hero-meta">
+        <div class="meta-item">
+          <div class="meta-k">Khoa/Đơn vị</div>
+          <div class="meta-v">{% if club.faculty %}{{ club.faculty }}{% else %}—{% endif %}</div>
+        </div>
+
+        <div class="meta-item">
+          <div class="meta-k">Lịch sinh hoạt</div>
+          <div class="meta-v">
+            {% if club.meeting_schedule %}{{ club.meeting_schedule }}{% else %}—{% endif %}
+          </div>
+        </div>
+
+        <div class="meta-item">
+          <div class="meta-k">Liên hệ</div>
+          <div class="meta-v">
+            {% if club.contact_email %}✉️ {{ club.contact_email }}<br>{% endif %}
+            {% if club.contact_phone %}📞 {{ club.contact_phone }}<br>{% endif %}
+            {% if club.contact_facebook %}🌐 <a href="{{ club.contact_facebook }}" target="_blank" rel="noopener">Facebook/Website</a>{% endif %}
+            {% if not club.contact_email and not club.contact_phone and not club.contact_facebook %}—{% endif %}
+          </div>
+        </div>
+      </div>
+
+      <p class="hero-desc">
+        {% if club.description %}
+          {{ club.description }}
+        {% else %}
+          Chưa có mô tả cho CLB này.
+        {% endif %}
+      </p>
+    </div>
+
+    <div class="hero-image">
+      {% if club.cover_image_url %}
+        <img src="{{ club.cover_image_url }}" alt="Ảnh CLB">
+      {% else %}
+        <img src="{% static 'portal/img/truong.jpg' %}" alt="Ảnh mặc định">
+      {% endif %}
+      <div class="img-label">University Clubs</div>
+    </div>
+  </div>
+
+  <!-- SỰ KIỆN ĐÃ TỔ CHỨC (tham khảo ảnh mẫu 4) -->
+  <div class="section" style="margin-top: 22px;">
+    <h2 class="section-title">Sự kiện đã tổ chức</h2>
+
+    {% if events %}
+      <div class="events-grid">
+        {% for e in events %}
+          <div class="event-card">
+            <div class="event-img">
+              {% if e.image_url %}
+                <img src="{{ e.image_url }}" alt="Ảnh sự kiện">
+              {% else %}
+                <img src="{% static 'portal/img/truong.jpg' %}" alt="Ảnh mặc định">
+              {% endif %}
+            </div>
+
+            <div class="event-body">
+              {% if e.category %}
+                <span class="event-cat">{{ e.category }}</span>
+              {% else %}
+                <span class="event-cat">Hoạt động CLB</span>
+              {% endif %}
+              <h3 class="event-title">{{ e.title }}</h3>
+              <p class="event-desc">
+                {% if e.description %}
+                  {{ e.description }}
+                {% else %}
+                  (Chưa có mô tả sự kiện.)
+                {% endif %}
+              </p>
+            </div>
+
+            <div class="event-side">
+              <div class="event-date">
+                {% if e.event_date %}
+                  {{ e.event_date|date:"d" }}
+                  <small>{{ e.event_date|date:"m/Y" }}</small>
+                {% else %}
+                  --
+                  <small>Chưa có ngày</small>
+                {% endif %}
+              </div>
+              <div style="color:#6b7280; font-weight:700;">
+                {{ club.name }}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p style="color:#6b7280; margin:0;">CLB chưa có sự kiện nào được cập nhật.</p>
+    {% endif %}
+  </div>
+
+  <!-- BAN CHỦ NHIỆM CLB (tham khảo ảnh mẫu 5) -->
+  <div class="section">
+    <h2 class="section-title">Ban chủ nhiệm Câu Lạc Bộ</h2>
+
+    {% if bcn_members %}
+      <div class="bcn-grid">
+        {% for m in bcn_members %}
+          <div class="bcn-card">
+            <div class="bcn-avatar">
+              {% if m.full_name %}{{ m.full_name|slice:":1"|upper }}{% else %}{{ m.user.username|slice:":1"|upper }}{% endif %}
+            </div>
+            <div>
+              <p class="bcn-name">
+                {% if m.full_name %}{{ m.full_name }}{% else %}{{ m.user.username }}{% endif %}
+              </p>
+              <p class="bcn-sub">
+                @{{ m.user.username }}
+                {% if m.user.email %} • {{ m.user.email }}{% endif %}
+              </p>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p style="color:#6b7280; margin:0;">CLB chưa có BCN được gán.</p>
+    {% endif %}
+  </div>
+
+  <!-- LIÊN HỆ (tham khảo ảnh mẫu cuối) -->
+  <div class="section" style="padding: 0; border: 0; box-shadow: none; background: transparent;">
+    <div class="contact-wrap">
+      <div class="contact-left">
+        <h3>Liên hệ tài trợ</h3>
+        <p style="margin: 0; opacity: .95;">
+          Vui lòng để lại thông tin, chúng tôi sẽ liên hệ với bạn sớm!
+        </p>
+
+        <div class="line">✉️ {% if club.contact_email %}{{ club.contact_email }}{% else %}(Chưa có email){% endif %}</div>
+        <div class="line">📞 {% if club.contact_phone %}{{ club.contact_phone }}{% else %}(Chưa có số điện thoại){% endif %}</div>
+        <div class="line">🌐 {% if club.contact_facebook %}<a href="{{ club.contact_facebook }}" target="_blank" rel="noopener">Facebook/Website</a>{% else %}(Chưa có link){% endif %}</div>
+      </div>
+
+      <!-- Form UI (chỉ giao diện, chưa submit để không ảnh hưởng tính năng cũ) -->
+      <div class="contact-form">
+        <h4>Chúng tôi sẽ liên hệ với bạn sớm!</h4>
+        <div class="row"><input type="text" placeholder="Tên cá nhân / tổ chức"></div>
+        <div class="row"><input type="text" placeholder="Số điện thoại"></div>
+        <div class="row"><input type="email" placeholder="Email"></div>
+        <div class="row"><textarea placeholder="Nội dung"></textarea></div>
+        <button type="button" class="send-btn">📨 Gửi</button>
+        <p style="margin:10px 0 0; color:#6b7280; font-size:12px;">
+          (Form này đang là giao diện. Nếu bạn muốn lưu vào DB/ gửi mail, mình sẽ làm thành US riêng để không đụng tính năng cũ.)
+        </p>
+      </div>
+    </div>
+  </div>
+
+</section>
 {% endblock %}
