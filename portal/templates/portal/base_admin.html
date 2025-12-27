@@ -2,90 +2,100 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="utf-8">
-    <title>{% block title %}Admin – Quản lý CLB{% endblock %}</title>
+  <meta charset="utf-8">
+  <title>{% block title %}Admin – Quản lý CLB{% endblock %}</title>
 
-    <link rel="stylesheet" href="{% static 'portal/css/base_admin.css' %}">
-    {% block extra_css %}{% endblock %}
+  <link rel="stylesheet" href="{% static 'portal/css/base_admin.css' %}">
+  {% block extra_css %}{% endblock %}
 </head>
 <body>
 
-<div class="admin-layout">
-
+  <div class="admin-layout">
+{% if request.user.is_staff or request.user.is_superuser %}
     <!-- Sidebar -->
     <aside class="admin-sidebar">
-        <div class="sidebar-logo">
-            <span class="logo-circle">CLB</span>
-            <span class="logo-text">Admin Panel</span>
-        </div>
+      <div class="sidebar-logo">
+        <span class="logo-circle">CLB</span>
+        <span class="logo-text">Admin Panel</span>
+      </div>
 
-        <nav class="sidebar-nav">
+      <nav class="sidebar-nav">
 
-            <!-- Dashboard -->
-            <a href="{% url 'portal:admin_panel:dashboard' %}"
-               class="nav-item {% block menu_dashboard_active %}{% endblock %}">
-                📊 Dashboard
-            </a>
+        <!-- Dashboard -->
+        <a href="{% url 'portal:admin_panel:dashboard' %}"
+           class="nav-item {% block menu_dashboard_active %}{% endblock %}">
+          📊 Dashboard
+        </a>
 
-            <!-- Quản lý CLB (US-B3.1) -->
-            <a href="{% url 'portal:admin_panel:club_list' %}"
-               class="nav-item {% block menu_club_active %}{% endblock %}">
-                🏫 Quản lý CLB
-            </a>
+        <!-- Quản lý CLB (US-B3.1) -->
+        <a href="{% url 'portal:admin_panel:club_list' %}"
+           class="nav-item {% block menu_club_active %}{% endblock %}">
+          🏫 Quản lý CLB
+        </a>
 
-            <!-- TÀI KHOẢN BCN – US-A3.1 -->
-            <a href="{% url 'portal:admin_panel:bcn_list' %}"
-               class="nav-item {% block menu_bcn_active %}{% endblock %}">
-                👥 Tài khoản BCN
-            </a>
+        <!-- TÀI KHOẢN BCN – US-A3.1 -->
+        <a href="{% url 'portal:admin_panel:bcn_list' %}"
+           class="nav-item {% block menu_bcn_active %}{% endblock %}">
+          👥 Tài khoản BCN
+        </a>
 
-        </nav>
+      </nav>
 
-        <div class="sidebar-footer">
-            <a href="{% url 'portal:home' %}" class="nav-item">
-                ← Về trang chủ
-            </a>
-            <a href="{% url 'portal:auth:logout' %}" class="nav-item logout">
-                🚪 Đăng xuất
-            </a>
-        </div>
+      <div class="sidebar-mid">
+        <a href="{% url 'portal:admin_panel:change_password' %}"
+           class="nav-item {% block menu_change_password_active %}{% endblock %}">
+          🔒 Đổi mật khẩu
+        </a>
+      </div>
+
+      <div class="sidebar-footer">
+        <a href="{% url 'portal:home' %}" class="nav-item">
+          ← Về trang chủ
+        </a>
+        <a href="{% url 'portal:auth:logout' %}" class="nav-item logout">
+          🚪 Đăng xuất
+        </a>
+      </div>
     </aside>
-
+{% endif %}
     <!-- Main content -->
     <main class="admin-main">
-        <header class="admin-header">
-            <div>
-                <h1>{% block header_title %}Admin Dashboard{% endblock %}</h1>
-                <p>{% block header_subtitle %}{% endblock %}</p>
-            </div>
-            <div class="admin-user">
-                <span class="avatar">{{ request.user.username|first|upper }}</span>
-                <span class="username">Quản trị viên</span>
-            </div>
-        </header>
+{% if request.user.is_staff or request.user.is_superuser %}
+      <header class="admin-header">
+        <div>
+          <h1>{% block header_title %}Admin Dashboard{% endblock %}</h1>
+          <p>{% block header_subtitle %}{% endblock %}</p>
+        </div>
 
-        <section class="admin-content">
+        <div class="admin-user">
+          <span class="avatar">{{ request.user.username|first|upper }}</span>
+          <span class="username">Quản trị viên</span>
+        </div>
+      </header>
+{% endif %}
+      <section class="admin-content">
 
-            {% if messages %}
-              <div class="messages" style="margin-bottom: 12px;">
-                {% for message in messages %}
-                  <div style="padding:10px; border-radius:10px; margin-bottom:8px;
-                              background:#ecfeff; border:1px solid #a5f3fc;">
-                    {{ message }}
-                  </div>
-                {% endfor %}
+        {% if messages %}
+          <div class="messages" style="margin-bottom: 12px;">
+            {% for message in messages %}
+              <div style="padding:10px; border-radius:10px; margin-bottom:8px;
+                          background:#ecfeff; border:1px solid #a5f3fc;">
+                {{ message }}
               </div>
-            {% endif %}
+            {% endfor %}
+          </div>
+        {% endif %}
 
-            {% block content %}{% endblock %}
-        </section>
+        {% block content %}{% endblock %}
+      </section>
 
-        <footer class="admin-footer">
-            © 2025 Cổng thông tin quản lý CLB – Admin
-        </footer>
+      <footer class="admin-footer">
+        © 2025 Cổng thông tin quản lý CLB – Admin
+      </footer>
+
     </main>
 
-</div>
+  </div>
 
 </body>
 </html>

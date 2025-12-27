@@ -219,3 +219,49 @@
     color: #9ca3af;
     text-align: right;
 }
+
+.content-card{
+  background:#fff;
+  border-radius:14px;
+  padding:22px;
+  box-shadow:0 2px 12px rgba(0,0,0,.06);
+}
+
+.form .form-row{
+  margin-bottom:14px;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+.form input{
+  padding:10px 12px;
+  border:1px solid #e5e7eb;
+  border-radius:10px;
+  outline:none;
+}
+
+.err{
+  color:#dc2626;
+  font-size:13px;
+}
+
+.msg-wrap{ margin: 10px 0 16px; }
+.msg{ padding:10px 12px; border-radius:10px; }
+.msg-success{ background:#ecfdf5; color:#065f46; }
+.msg-error{ background:#fef2f2; color:#991b1b; }
+
+/* Khi không render sidebar (BCN), main chiếm full chiều ngang */
+.admin-layout {
+  display: flex;
+}
+
+.admin-main {
+  width: 100%;
+}
+
+/* Form gọn ở giữa (tuỳ thích) */
+.content-card{
+  max-width: 720px;
+  margin: 0 auto;
+}

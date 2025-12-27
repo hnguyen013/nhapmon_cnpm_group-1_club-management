@@ -32,4 +32,6 @@ urlpatterns = [
         admin_views.bcn_reset_password,
         name="bcn_reset_password",
     ),
+    
+    path("change-password/", bcn_views.change_password, name="change_password"),
 ]
