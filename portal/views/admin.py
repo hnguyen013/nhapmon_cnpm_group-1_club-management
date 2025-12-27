@@ -37,9 +37,12 @@ def dashboard(request):
 @login_required
 @user_passes_test(is_admin)
 def club_admin_list(request):
-    clubs = Club.objects.all().order_by("-id")
-    return render(request, "portal/club_list_admin.html", {"clubs": clubs})
-
+    clubs = Club.objects.all().order_by("name")
+    return render(
+        request,
+        "portal/admin_panel/club_admin_list.html",
+        {"clubs": clubs},
+    )
 
 @login_required
 @user_passes_test(is_admin)
@@ -110,3 +113,23 @@ def bcn_reset_password(request, user_id: int):
         f"Reset mật khẩu thành công cho BCN '{user.username}'. Mật khẩu mới: {new_password}"
     )
     return redirect("portal:admin_panel:bcn_list")
+from django.contrib import messages
+from django.shortcuts import get_object_or_404, redirect
+from django.views.decorators.http import require_POST
+
+from portal.models import Club
+
+
+@require_POST
+def club_admin_deactivate(request, club_id):
+    club = get_object_or_404(Club, id=club_id)
+    club.status = "inactive"  # AC1: Tạm dừng hoạt động
+    club.save(update_fields=["status"])
+    messages.success(request, f'Đã vô hiệu hoá CLB "{club.name}".')
+    return redirect("portal:admin_panel:club_list")
+from django.shortcuts import get_object_or_404, render
+from portal.models import Club
+
+def club_admin_delete_confirm(request, club_id):
+    club = get_object_or_404(Club, id=club_id)
+    return render(request, "portal/admin_panel/club_confirm_delete.html", {"club": club})

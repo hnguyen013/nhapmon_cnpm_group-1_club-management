@@ -1,5 +1,4 @@
 {% extends "portal/base_home.html" %}
-
 {% block title %}Xác nhận xoá CLB{% endblock %}
 
 {% block content %}
@@ -8,11 +7,13 @@
 <p>Bạn có chắc muốn xoá CLB: <strong>{{ club.name }}</strong> không?</p>
 <p style="color:#b00020;">Hành động này không thể hoàn tác.</p>
 
-<form method="post">
+<form method="post" action="{% url 'portal:admin_panel:club_delete' club.id %}">
   {% csrf_token %}
-  <button type="submit" style="background:#b00020; color:#fff; padding:8px 12px; border:0; border-radius:6px;">
+  <button type="submit"
+          style="background:#b00020;color:#fff;padding:8px 12px;border:0;border-radius:6px;">
     Xác nhận xoá
   </button>
-  <a href="{% url 'portal:admin_panel:club_manage_list' %}" style="margin-left:10px;">Huỷ</a>
+  <a href="{% url 'portal:admin_panel:club_list' %}"
+     style="margin-left:10px;">Huỷ</a>
 </form>
 {% endblock %}
