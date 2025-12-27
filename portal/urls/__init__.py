@@ -12,4 +12,7 @@ urlpatterns = [
 
     # ADMIN PANEL (nếu có)
     path("admin/", include(("portal.urls.admin_panel", "admin_panel"), namespace="admin_panel")),
+    path("bcn/", include(("portal.urls.bcn_panel", "bcn_panel"), namespace="bcn_panel")),
+
 ]
+  

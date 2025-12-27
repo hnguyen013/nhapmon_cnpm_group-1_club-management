@@ -25,9 +25,16 @@
           <li><a href="{% url 'portal:club_list' %}">Danh sách CLB</a></li>
 
           {% if user.is_authenticated %}
+            {# Giữ nguyên logic admin như cũ #}
             {% if user.is_staff or user.is_superuser %}
               <li><a href="{% url 'portal:admin_panel:dashboard' %}">Vào quản trị</a></li>
+
+            {# BCN: dùng getattr an toàn để không crash khi user chưa có bcn_profile #}
+            {% elif user.bcn_profile %}
+              <li><a href="{% url 'portal:bcn_panel:dashboard' %}">Vào BCN</a></li>
             {% endif %}
+
+            {# Giữ nguyên các nút cũ #}
             <li><a href="{% url 'portal:admin_panel:change_password' %}">Đổi mật khẩu</a></li>
             <li><a href="{% url 'portal:auth:logout' %}">Đăng xuất</a></li>
           {% else %}
