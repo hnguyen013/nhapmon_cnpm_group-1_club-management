@@ -4,18 +4,51 @@
 {% block menu_club_active %}active{% endblock %}
 
 {% block content %}
-  <h2>Danh sách CLB</h2>
-  <p><a href="{% url 'portal:admin_panel:club_create' %}">+ Tạo CLB</a></p>
+  <div class="page-head">
+    <h1 class="page-title">Quản lý CLB</h1>
+    <p class="page-subtitle">Danh sách các câu lạc bộ trong hệ thống.</p>
+  </div>
 
-  <ul>
-    {% for c in clubs %}
-      <li>
-        {{ c.name|default:"(Chưa có tên)" }}
-        - <a href="{% url 'portal:admin_panel:club_edit' c.id %}">Sửa</a>
-        - <a href="{% url 'portal:admin_panel:club_delete' c.id %}">Xoá</a>
-      </li>
-    {% empty %}
-      <li>Chưa có CLB nào.</li>
-    {% endfor %}
-  </ul>
+  <div class="section-head">
+    <h2 class="section-title">Danh sách CLB</h2>
+    <a class="link-create" href="{% url 'portal:admin_panel:club_create' %}">+ Tạo CLB</a>
+  </div>
+
+  <div class="card">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th class="col-stt">#</th>
+          <th class="col-name">Tên CLB</th>
+          <th class="col-desc">Mô tả</th>
+          <th class="col-actions">Thao tác</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for c in clubs %}
+          <tr>
+            <td class="col-stt">{{ forloop.counter }}</td>
+            <td class="col-name">
+              <strong>{{ c.name|default:"(Chưa có tên)" }}</strong>
+            </td>
+            <td class="col-desc">{{ c.description|default:"—" }}</td>
+            <td class="col-actions">
+              <a href="{% url 'portal:admin_panel:club_edit' c.id %}">Sửa</a>
+
+              {% if c.status == "active" %}
+                <a href="{% url 'portal:admin_panel:club_deactivate' c.id %}">Vô hiệu</a>
+              {% endif %}
+
+              <a href="{% url 'portal:admin_panel:club_delete' c.id %}">Xoá</a>
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="4" class="empty-row">Chưa có CLB nào.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 {% endblock %}

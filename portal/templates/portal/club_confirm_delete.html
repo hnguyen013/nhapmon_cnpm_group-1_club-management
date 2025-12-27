@@ -1,13 +1,14 @@
 {% extends "portal/base_admin.html" %}
-{% block menu_club_active %}active{% endblock %}
+
+{% block title %}Xác nhận xoá CLB{% endblock %}
 
 {% block content %}
-<h1>Xoá CLB</h1>
-<p>Bạn chắc chắn muốn xoá CLB: <b>{{ club.name }}</b>?</p>
+  <h2>Xác nhận xoá CLB</h2>
+  <p>Bạn có chắc chắn muốn xoá <strong>{{ club.name }}</strong> không?</p>
 
-<form method="post">
-  {% csrf_token %}
-  <button class="btn btn-danger" type="submit">Xoá</button>
-  <a class="btn btn-ghost" href="{% url 'portal:admin_panel:club_list' %}">Huỷ</a>
-</form>
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit">Xác nhận xoá</button>
+    <a href="{% url 'portal:admin_panel:club_list' %}">Huỷ</a>
+  </form>
 {% endblock %}

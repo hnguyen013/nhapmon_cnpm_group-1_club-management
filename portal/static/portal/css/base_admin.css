@@ -219,3 +219,71 @@
     color: #9ca3af;
     text-align: right;
 }
+/* ===== Club admin list (table UI) ===== */
+.page-head {
+  margin-bottom: 18px;
+}
+
+.page-title {
+  font-size: 44px;
+  font-weight: 800;
+  margin: 0 0 10px 0;
+}
+
+.page-subtitle {
+  margin: 0;
+  font-size: 18px;
+  color: #555;
+}
+
+.section-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin: 24px 0 12px;
+}
+
+.section-title {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.link-create {
+  font-size: 18px;
+  text-decoration: underline;
+}
+
+.card {
+  background: transparent;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table thead th {
+  text-align: left;
+  font-size: 22px;
+  font-weight: 800;
+  padding: 14px 10px;
+  border-bottom: 1px solid #e6e6e6;
+}
+
+.data-table tbody td {
+  padding: 18px 10px;
+  border-bottom: 1px solid #efefef;
+  vertical-align: middle;
+  font-size: 18px;
+}
+
+.col-stt { width: 60px; }
+.col-actions { width: 160px; text-align: right; }
+.data-table thead th.col-actions { text-align: right; }
+
+.empty-row {
+  text-align: center;
+  padding: 22px 10px;
+  color: #777;
+}
