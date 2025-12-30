@@ -32,6 +32,16 @@ urlpatterns = [
         admin_views.bcn_reset_password,
         name="bcn_reset_password",
     ),
-    
+
     path("change-password/", bcn_views.change_password, name="change_password"),
+
+    # ======================
+    # US-A3.4 — Khoá/Mở khoá tài khoản BCN (ADD ONLY)
+    # ======================
+    path("bcn-lock/", admin_views.bcn_lock_list, name="bcn_lock_list"),
+    path(
+        "bcn-lock/<int:user_id>/toggle/",
+        admin_views.bcn_toggle_lock,
+        name="bcn_toggle_lock",
+    ),
 ]

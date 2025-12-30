@@ -45,7 +45,8 @@
             {% endif %}
           </td>
 
-          <td>
+          <td style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+            <!-- ✅ US-A3.2 (CŨ) - Reset mật khẩu: GIỮ NGUYÊN -->
             <a
               class="btn-secondary"
               href="{% url 'portal:admin_panel:bcn_reset_password' p.user.id %}"
@@ -53,6 +54,20 @@
               style="text-decoration:none;"
             >
               Reset mật khẩu
+            </a>
+
+            <!-- ✅ US-A3.4 (THÊM MỚI) - Khoá/Mở khoá -->
+            <a
+              class="{% if p.user.is_active %}btn-danger{% else %}btn-success{% endif %}"
+              href="{% url 'portal:admin_panel:bcn_toggle_lock' p.user.id %}"
+              onclick="return confirm('{% if p.user.is_active %}Bạn chắc chắn muốn KHOÁ tài khoản BCN: {{ p.user.username }} ?{% else %}Bạn chắc chắn muốn MỞ KHOÁ tài khoản BCN: {{ p.user.username }} ?{% endif %}');"
+              style="text-decoration:none;"
+            >
+              {% if p.user.is_active %}
+                Khoá
+              {% else %}
+                Mở khoá
+              {% endif %}
             </a>
           </td>
         </tr>

@@ -110,3 +110,55 @@ def bcn_reset_password(request, user_id: int):
         f"Reset mật khẩu thành công cho BCN '{user.username}'. Mật khẩu mới: {new_password}"
     )
     return redirect("portal:admin_panel:bcn_list")
+
+# =========================
+# US-A3.4 - Lock/Unlock BCN
+# =========================
+from django.contrib.auth.models import User
+from portal.models import BCNProfile
+
+
+@login_required
+@user_passes_test(is_admin)
+def bcn_lock_list(request):
+    """
+    Trang riêng cho US-A3.4 (không ảnh hưởng bcn_list cũ).
+    Hiển thị danh sách BCN và trạng thái khoá/mở khoá.
+    """
+    # BCN là user có BCNProfile
+    bcns = BCNProfile.objects.select_related("user").all().order_by("user__username")
+    return render(request, "portal/bcn_lock_list.html", {"bcns": bcns})
+
+
+@login_required
+@user_passes_test(is_admin)
+def bcn_toggle_lock(request, user_id: int):
+    """
+    Khoá/Mở khoá BCN:
+    - Khoá: user.is_active = False  => BCN không đăng nhập được (đúng auth.py hiện tại)
+    - Mở:  user.is_active = True
+    Đồng bộ BCNProfile.is_locked để hiển thị.
+    """
+    user = get_object_or_404(User, id=user_id)
+
+    # Nếu user không có BCNProfile thì không phải BCN
+    try:
+        profile = user.bcn_profile
+    except BCNProfile.DoesNotExist:
+        messages.error(request, "Tài khoản này không phải BCN hoặc chưa có hồ sơ BCN.")
+        return redirect("portal:admin_panel:bcn_lock_list")
+
+    # Toggle
+    new_active = not user.is_active
+    user.is_active = new_active
+    user.save()
+
+    profile.is_locked = (not new_active)
+    profile.save()
+
+    if user.is_active:
+        messages.success(request, f"✅ Đã MỞ KHOÁ tài khoản BCN: {user.username}")
+    else:
+        messages.success(request, f"⛔ Đã KHOÁ tài khoản BCN: {user.username}")
+
+    return redirect("portal:admin_panel:bcn_lock_list")
