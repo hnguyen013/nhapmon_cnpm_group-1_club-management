@@ -4,49 +4,26 @@
 {% block menu_club_active %}active{% endblock %}
 
 {% block content %}
-<div class="page-header">
-  <h1>Quản lý CLB</h1>
-  <p class="muted">Danh sách các câu lạc bộ trong hệ thống.</p>
-</div>
+  <h2>Danh sách CLB</h2>
 
-<div class="card">
-  <div class="card-header" style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
-    <h3 style="margin:0;">Danh sách CLB</h3>
-    <a class="btn btn-primary" href="{% url 'portal:admin_panel:club_create' %}">+ Tạo CLB</a>
-  </div>
+  {# Nút tạo: chỉ ADMIN #}
+  {% if request.user.is_staff or request.user.is_superuser %}
+    <p><a href="{% url 'portal:admin_panel:club_create' %}">+ Tạo CLB</a></p>
+  {% endif %}
 
-  <div class="card-body">
-    {% if clubs %}
-      <table class="table" style="width:100%;border-collapse:collapse;">
-        <thead>
-          <tr>
-            <th style="text-align:left;padding:10px;border-bottom:1px solid #eee;">#</th>
-            <th style="text-align:left;padding:10px;border-bottom:1px solid #eee;">Tên CLB</th>
-            <th style="text-align:left;padding:10px;border-bottom:1px solid #eee;">Mô tả</th>
-            <th style="text-align:right;padding:10px;border-bottom:1px solid #eee;">Thao tác</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for c in clubs %}
-            <tr>
-              <td style="padding:10px;border-bottom:1px solid #f2f2f2;">{{ forloop.counter }}</td>
-              <td style="padding:10px;border-bottom:1px solid #f2f2f2;">
-                <b>{{ c.name }}</b>
-              </td>
-              <td style="padding:10px;border-bottom:1px solid #f2f2f2;">
-                {{ c.description|default:"—" }}
-              </td>
-              <td style="padding:10px;border-bottom:1px solid #f2f2f2;text-align:right;">
-                <a class="btn btn-ghost" href="{% url 'portal:admin_panel:club_edit' c.id %}">Sửa</a>
-                <a class="btn btn-danger" href="{% url 'portal:admin_panel:club_delete' c.id %}">Xoá</a>
-              </td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    {% else %}
-      <p>Chưa có CLB nào. Bấm <b>“Tạo CLB”</b> để thêm mới.</p>
-    {% endif %}
-  </div>
-</div>
+  <ul>
+    {% for c in clubs %}
+      <li>
+        {{ c.name|default:"(Chưa có tên)" }}
+        - <a href="{% url 'portal:admin_panel:club_edit' c.id %}">Sửa</a>
+
+        {# Nút xóa: chỉ ADMIN #}
+        {% if request.user.is_staff or request.user.is_superuser %}
+          - <a href="{% url 'portal:admin_panel:club_delete' c.id %}">Xoá</a>
+        {% endif %}
+      </li>
+    {% empty %}
+      <li>Chưa có CLB nào.</li>
+    {% endfor %}
+  </ul>
 {% endblock %}

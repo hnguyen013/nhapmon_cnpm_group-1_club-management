@@ -37,6 +37,9 @@ def logout_view(request):
 
 
 def redirect_after_login(user):
-    if user.is_staff or user.is_superuser:
+    # ADMIN hoặc BCN thì vào admin panel
+    if user.is_staff or user.is_superuser or hasattr(user, "bcn_profile"):
         return redirect("portal:admin_panel:dashboard")
-    return redirect("/")
+
+    # User thường
+    return redirect("home")
