@@ -1,0 +1,24 @@
+{% extends "portal/base_home.html" %}
+{% load static %}
+
+{% block title %}Sửa CLB{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'portal/css/bcn_panel.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="bcn-wrap">
+  <h1>Sửa thông tin CLB</h1>
+  <p><b>{{ club.name }}</b></p>
+
+  <form method="post" class="bcn-form">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div class="bcn-actions">
+      <button class="bcn-btn" type="submit">Lưu thay đổi</button>
+      <a class="bcn-link" href="{% url 'portal:bcn_panel:dashboard' %}">Quay lại</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

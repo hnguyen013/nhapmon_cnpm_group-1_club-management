@@ -69,3 +69,26 @@ class BCNProfile(models.Model):
     def __str__(self):
         display_name = self.full_name or self.user.get_username()
         return f"{display_name} ({self.user.username})"
+class Event(models.Model):
+    club = models.ForeignKey(
+        Club,
+        on_delete=models.CASCADE,
+        related_name="events",
+    )
+    created_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="created_events",
+    )
+
+    title = models.CharField(max_length=200)
+    start_time = models.DateTimeField()
+    location = models.CharField(max_length=255, blank=True, default="")
+    description = models.TextField(blank=True, default="")
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.title} - {self.club.name}"

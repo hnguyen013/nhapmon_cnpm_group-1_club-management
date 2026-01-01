@@ -1,0 +1,27 @@
+{% extends "portal/base_home.html" %}
+{% load static %}
+
+{% block title %}BCN Panel{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'portal/css/bcn_panel.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="bcn-wrap">
+  <h1>BCN Panel</h1>
+  <p>CLB của bạn: <b>{{ club.name }}</b></p>
+
+  <div class="bcn-cards">
+    <a class="bcn-card" href="{% url 'portal:bcn_panel:club_edit' %}">
+      <h3>Chỉnh sửa thông tin CLB</h3>
+      <p>Cập nhật mô tả, khoa, lĩnh vực, trạng thái...</p>
+    </a>
+
+    <a class="bcn-card" href="{% url 'portal:bcn_panel:event_create' %}">
+      <h3>Tạo sự kiện</h3>
+      <p>Hiện có {{ total_events }} sự kiện</p>
+    </a>
+  </div>
+</div>
+{% endblock %}
