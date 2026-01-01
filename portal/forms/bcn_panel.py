@@ -1,5 +1,5 @@
 from django import forms
-from portal.models import Club, Event
+from portal.models import Club, ClubEvent
 
 
 class BCNClubEditForm(forms.ModelForm):
@@ -17,11 +17,8 @@ class BCNClubEditForm(forms.ModelForm):
 
 class BCNEventCreateForm(forms.ModelForm):
     class Meta:
-        model = Event
-        fields = ["title", "start_time", "location", "description"]
+        model = ClubEvent
+        fields = ["club", "title", "category", "description", "event_date", "image_url"]
         widgets = {
-            "title": forms.TextInput(attrs={"class": "form-control"}),
-            "start_time": forms.DateTimeInput(attrs={"class": "form-control", "type": "datetime-local"}),
-            "location": forms.TextInput(attrs={"class": "form-control"}),
-            "description": forms.Textarea(attrs={"class": "form-control", "rows": 5}),
+            "event_date": forms.DateInput(attrs={"type": "date"}),
         }

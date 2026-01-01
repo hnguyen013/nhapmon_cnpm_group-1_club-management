@@ -1,53 +1,116 @@
 {% extends "portal/base_admin.html" %}
 {% load static %}
 
-{% block title %}Admin – Tạo CLB{% endblock %}
+{% block title %}
+  {% if mode == "edit" %}Admin – Sửa CLB{% else %}Admin – Tạo CLB{% endif %}
+{% endblock %}
 {% block menu_club_active %}active{% endblock %}
 
-{% block header_title %}Tạo CLB mới{% endblock %}
-{% block header_subtitle %}Nhập thông tin để tạo câu lạc bộ{% endblock %}
+{% block header_title %}
+  {% if mode == "edit" %}Sửa CLB{% else %}Tạo CLB mới{% endif %}
+{% endblock %}
+{% block header_subtitle %}
+  {% if mode == "edit" %}Cập nhật thông tin câu lạc bộ{% else %}Nhập thông tin để tạo câu lạc bộ{% endif %}
+{% endblock %}
 
 {% block content %}
+<form method="post" style="max-width: 760px;">
+  {% csrf_token %}
 
-<form method="post" style="max-width: 600px;">
-    {% csrf_token %}
-
-    <div style="margin-bottom: 16px;">
-        <label for="name" style="font-weight:600;">Tên CLB <span style="color:red;">*</span></label>
-        <input
-            type="text"
-            id="name"
-            name="name"
-            placeholder="Ví dụ: CLB Văn nghệ"
-            required
-            style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;"
-        >
+  {% if form.non_field_errors %}
+    <div style="margin: 10px 0; padding: 10px 12px; border:1px solid #fecaca; background:#fff1f2; border-radius:10px;">
+      {{ form.non_field_errors }}
     </div>
+  {% endif %}
 
-    <div style="margin-bottom: 16px;">
-        <label for="description" style="font-weight:600;">Mô tả</label>
-        <textarea
-            id="description"
-            name="description"
-            rows="4"
-            placeholder="Mô tả ngắn về CLB (không bắt buộc)"
-            style="width:100%; padding:10px; border-radius:8px; border:1px solid #ccc;"
-        ></textarea>
+  <!-- Tên -->
+  <div style="margin-bottom: 16px;">
+    <label style="font-weight:600;">Tên CLB <span style="color:red;">*</span></label>
+    {{ form.name }}
+    {% if form.name.errors %}<div style="color:#dc2626; margin-top:6px;">{{ form.name.errors }}</div>{% endif %}
+  </div>
+
+  <!-- Lĩnh vực -->
+  <div style="margin-bottom: 16px;">
+    <label style="font-weight:600;">Lĩnh vực</label>
+    {{ form.field }}
+    {% if form.field.errors %}<div style="color:#dc2626; margin-top:6px;">{{ form.field.errors }}</div>{% endif %}
+  </div>
+
+  <!-- Khoa/Đơn vị -->
+  <div style="margin-bottom: 16px;">
+    <label style="font-weight:600;">Khoa/Đơn vị</label>
+    {{ form.faculty }}
+    {% if form.faculty.errors %}<div style="color:#dc2626; margin-top:6px;">{{ form.faculty.errors }}</div>{% endif %}
+  </div>
+
+  <!-- Lịch sinh hoạt -->
+  <div style="margin-bottom: 16px;">
+    <label style="font-weight:600;">Lịch sinh hoạt</label>
+    {{ form.meeting_schedule }}
+    {% if form.meeting_schedule.errors %}<div style="color:#dc2626; margin-top:6px;">{{ form.meeting_schedule.errors }}</div>{% endif %}
+  </div>
+
+  <!-- Liên hệ -->
+  <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+    <div>
+      <label style="font-weight:600;">Email liên hệ</label>
+      {{ form.contact_email }}
+      {% if form.contact_email.errors %}<div style="color:#dc2626; margin-top:6px;">{{ form.contact_email.errors }}</div>{% endif %}
     </div>
-
-    <div style="display:flex; gap:10px;">
-        <button type="submit"
-                style="padding:10px 18px; border-radius:8px; border:none;
-                       background:#2563eb; color:white; font-weight:600;">
-            💾 Lưu CLB
-        </button>
-
-        <a href="{% url 'portal:admin_panel:club_list' %}"
-           style="padding:10px 18px; border-radius:8px;
-                  border:1px solid #ccc; text-decoration:none;">
-            ↩ Quay lại
-        </a>
+    <div>
+      <label style="font-weight:600;">Số điện thoại</label>
+      {{ form.contact_phone }}
+      {% if form.contact_phone.errors %}<div style="color:#dc2626; margin-top:6px;">{{ form.contact_phone.errors }}</div>{% endif %}
     </div>
+  </div>
+
+  <div style="margin-bottom: 16px;">
+    <label style="font-weight:600;">Facebook/Website</label>
+    {{ form.contact_facebook }}
+    {% if form.contact_facebook.errors %}<div style="color:#dc2626; margin-top:6px;">{{ form.contact_facebook.errors }}</div>{% endif %}
+  </div>
+
+  <!-- Ảnh cover URL -->
+  <div style="margin-bottom: 16px;">
+    <label style="font-weight:600;">Ảnh cover (URL)</label>
+    {{ form.cover_image_url }}
+    {% if form.cover_image_url.errors %}<div style="color:#dc2626; margin-top:6px;">{{ form.cover_image_url.errors }}</div>{% endif %}
+    <div style="color:#6b7280; font-size:12px; margin-top:6px;">
+      Dán link ảnh (https://...). Nếu bỏ trống sẽ dùng ảnh mặc định.
+    </div>
+  </div>
+
+  <!-- Mô tả -->
+  <div style="margin-bottom: 16px;">
+    <label style="font-weight:600;">Mô tả</label>
+    {{ form.description }}
+    {% if form.description.errors %}<div style="color:#dc2626; margin-top:6px;">{{ form.description.errors }}</div>{% endif %}
+  </div>
+
+  <div style="display:flex; gap:10px;">
+    <button type="submit"
+            style="padding:10px 18px; border-radius:8px; border:none;
+                   background:#2563eb; color:white; font-weight:600;">
+      💾 {% if mode == "edit" %}Lưu thay đổi{% else %}Tạo CLB{% endif %}
+    </button>
+
+    <a href="{% url 'portal:admin_panel:club_list' %}"
+       style="padding:10px 18px; border-radius:8px;
+              border:1px solid #ccc; text-decoration:none;">
+      ↩ Quay lại
+    </a>
+  </div>
 </form>
 
+<style>
+  /* để input/textarea từ Django form nhìn ổn hơn */
+  input, select, textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    outline: none;
+  }
+</style>
 {% endblock %}
