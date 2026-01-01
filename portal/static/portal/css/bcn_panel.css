@@ -1,0 +1,8 @@
+.bcn-wrap { max-width: 900px; margin: 24px auto; }
+.bcn-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+.bcn-card { display: block; padding: 16px; border-radius: 14px; background: #fff; border: 1px solid #eee; text-decoration: none; color: inherit; }
+.bcn-card:hover { border-color: #cbd5e1; }
+.bcn-form { background: #fff; padding: 16px; border-radius: 14px; border: 1px solid #eee; }
+.bcn-actions { display: flex; gap: 12px; margin-top: 12px; align-items: center; }
+.bcn-btn { padding: 10px 14px; border: none; border-radius: 10px; cursor: pointer; }
+.bcn-link { text-decoration: none; }
