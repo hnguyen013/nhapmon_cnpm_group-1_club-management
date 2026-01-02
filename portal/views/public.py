@@ -1,3 +1,4 @@
+from datetime import date
 from django.shortcuts import render, get_object_or_404
 from portal.models import Club, BCNProfile, ClubEvent
 
@@ -69,3 +70,34 @@ def club_detail(request, club_id):
             "events": events,
         },
     )
+
+
+def event_list(request):
+    """
+    US-C1.1 – Xem danh sách sự kiện (public)
+    AC1: Hiển thị danh sách sự kiện với thông tin cơ bản:
+        - tên sự kiện
+        - CLB tổ chức
+        - thời gian
+        - trạng thái (sắp diễn ra / đã diễn ra / chưa cập nhật)
+    """
+    today = date.today()
+
+    qs = (
+        ClubEvent.objects
+        .select_related("club")
+        .all()
+        .order_by("-event_date", "-created_at")
+    )
+
+    # Gắn thêm "status_key" cho từng event để template dùng,
+    # không thay đổi DB và không ảnh hưởng code cũ.
+    events = []
+    for e in qs:
+        if e.event_date:
+            e.status_key = "upcoming" if e.event_date >= today else "past"
+        else:
+            e.status_key = "unknown"
+        events.append(e)
+
+    return render(request, "portal/events_list.html", {"events": events})
