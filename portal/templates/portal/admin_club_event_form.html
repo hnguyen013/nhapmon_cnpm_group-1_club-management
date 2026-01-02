@@ -1,0 +1,66 @@
+{% extends "portal/base_admin.html" %}
+{% block title %}{% if mode == "edit" %}Sửa sự kiện{% else %}Tạo sự kiện{% endif %}{% endblock %}
+{% block menu_club_active %}active{% endblock %}
+
+{% block content %}
+  <h1 style="margin:0;">
+    {% if mode == "edit" %}Sửa sự kiện{% else %}Tạo sự kiện{% endif %}
+    – {{ club.name }}
+  </h1>
+  <p style="color:#6b7280; margin:6px 0 14px;">
+    Nhập thông tin cơ bản: tiêu đề, loại, mô tả, ngày tổ chức, ảnh (URL).
+  </p>
+
+  <form method="post" style="max-width: 760px;">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+
+    <div style="margin-bottom: 14px;">
+      <label style="font-weight:700;">Tiêu đề</label>
+      {{ form.title }}
+      {% if form.title.errors %}<div style="color:#dc2626;">{{ form.title.errors }}</div>{% endif %}
+    </div>
+
+    <div style="margin-bottom: 14px;">
+      <label style="font-weight:700;">Loại sự kiện</label>
+      {{ form.category }}
+      {% if form.category.errors %}<div style="color:#dc2626;">{{ form.category.errors }}</div>{% endif %}
+    </div>
+
+    <div style="margin-bottom: 14px;">
+      <label style="font-weight:700;">Ngày tổ chức</label>
+      {{ form.event_date }}
+      {% if form.event_date.errors %}<div style="color:#dc2626;">{{ form.event_date.errors }}</div>{% endif %}
+    </div>
+
+    <div style="margin-bottom: 14px;">
+      <label style="font-weight:700;">Ảnh sự kiện (URL)</label>
+      {{ form.image_url }}
+      {% if form.image_url.errors %}<div style="color:#dc2626;">{{ form.image_url.errors }}</div>{% endif %}
+    </div>
+
+    <div style="margin-bottom: 14px;">
+      <label style="font-weight:700;">Mô tả</label>
+      {{ form.description }}
+      {% if form.description.errors %}<div style="color:#dc2626;">{{ form.description.errors }}</div>{% endif %}
+    </div>
+
+    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+      <button type="submit" class="btn btn-primary">
+        💾 {% if mode == "edit" %}Lưu thay đổi{% else %}Tạo sự kiện{% endif %}
+      </button>
+      <a class="btn btn-ghost" href="{% url 'portal:admin_panel:club_events_list' club.id %}">↩ Quay lại</a>
+    </div>
+  </form>
+
+  <style>
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #e5e7eb;
+      outline: none;
+    }
+    textarea { min-height: 140px; }
+  </style>
+{% endblock %}
