@@ -24,14 +24,19 @@
           <li><a href="{% url 'portal:home' %}">Trang chủ</a></li>
           <li><a href="{% url 'portal:club_list' %}">Danh sách CLB</a></li>
 
+          {# US-C1.1: Public events list #}
+          <li><a href="{% url 'portal:event_list' %}">Sự kiện</a></li>
+
           {% if user.is_authenticated %}
             {# Giữ nguyên logic admin như cũ #}
             {% if user.is_staff or user.is_superuser %}
               <li><a href="{% url 'portal:admin_panel:dashboard' %}">Vào quản trị</a></li>
 
-            {# BCN: dùng getattr an toàn để không crash khi user chưa có bcn_profile #}
-            {% elif user.bcn_profile %}
-              <li><a href="{% url 'portal:bcn_panel:dashboard' %}">Vào BCN</a></li>
+            {# BCN: kiểm tra an toàn để không crash nếu user không có bcn_profile #}
+            {% else %}
+              {% if user.bcn_profile_id %}
+                <li><a href="{% url 'portal:bcn_panel:dashboard' %}">Vào BCN</a></li>
+              {% endif %}
             {% endif %}
 
             {# Giữ nguyên các nút cũ #}
