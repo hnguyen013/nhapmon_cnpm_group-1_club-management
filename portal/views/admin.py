@@ -1,10 +1,9 @@
 # portal/views/admin.py
-
+from portal.decorators import admin_required
 import secrets
 import string
 
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect, get_object_or_404
 
@@ -24,8 +23,7 @@ def _generate_password(length: int = 10) -> str:
 # ======================
 # Dashboard
 # ======================
-@login_required
-@user_passes_test(is_admin)
+@admin_required
 def dashboard(request):
     total_clubs = Club.objects.count()
     return render(request, "portal/dashboard.html", {"total_clubs": total_clubs})
@@ -34,15 +32,13 @@ def dashboard(request):
 # ======================
 # CLUBS (US-B3.1)
 # ======================
-@login_required
-@user_passes_test(is_admin)
+@admin_required
 def club_admin_list(request):
     clubs = Club.objects.all().order_by("-id")
     return render(request, "portal/club_list_admin.html", {"clubs": clubs})
 
 
-@login_required
-@user_passes_test(is_admin)
+@admin_required
 def club_admin_create(request):
     if request.method == "POST":
         form = ClubCreateForm(request.POST)
@@ -57,8 +53,7 @@ def club_admin_create(request):
     return render(request, "portal/club_admin_form.html", {"form": form, "mode": "create"})
 
 
-@login_required
-@user_passes_test(is_admin)
+@admin_required
 def club_admin_edit(request, club_id):
     club = get_object_or_404(Club, id=club_id)
 
@@ -79,8 +74,7 @@ def club_admin_edit(request, club_id):
     )
 
 
-@login_required
-@user_passes_test(is_admin)
+@admin_required
 def club_admin_delete(request, club_id):
     club = get_object_or_404(Club, id=club_id)
     if request.method == "POST":
@@ -93,8 +87,7 @@ def club_admin_delete(request, club_id):
 # ======================
 # BCN (US-A3.2) — Reset password
 # ======================
-@login_required
-@user_passes_test(is_admin)
+@admin_required
 def bcn_reset_password(request, user_id: int):
     """
     Admin reset mật khẩu cho tài khoản BCN (User có BCNProfile).
@@ -125,8 +118,7 @@ from django.contrib.auth.models import User
 from portal.models import BCNProfile
 
 
-@login_required
-@user_passes_test(is_admin)
+@admin_required
 def bcn_lock_list(request):
     """
     Trang riêng cho US-A3.4 (không ảnh hưởng bcn_list cũ).
@@ -137,8 +129,7 @@ def bcn_lock_list(request):
     return render(request, "portal/bcn_lock_list.html", {"bcns": bcns})
 
 
-@login_required
-@user_passes_test(is_admin)
+@admin_required
 def bcn_toggle_lock(request, user_id: int):
     """
     Khoá/Mở khoá BCN:
