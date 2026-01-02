@@ -1,0 +1,65 @@
+{% extends "portal/base_home.html" %}
+{% load static %}
+
+{% block title %}Danh sách sự kiện{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'portal/css/events_list.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="events-page">
+  <div class="events-head">
+    <div>
+      <h1>Sự kiện</h1>
+      <p class="muted">Danh sách sự kiện của các CLB (đang/sắp diễn ra và đã diễn ra).</p>
+    </div>
+    <div class="muted"><b>{{ events|length }}</b> sự kiện</div>
+  </div>
+
+  {% if events %}
+  <table class="events-table">
+    <thead>
+      <tr>
+        <th>Tên sự kiện</th>
+        <th>CLB tổ chức</th>
+        <th>Thời gian</th>
+        <th>Trạng thái</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for e in events %}
+      <tr>
+        <td><b>{{ e.title }}</b></td>
+        <td>
+          <a class="club-link" href="{% url 'portal:club_detail' e.club.id %}">
+            {{ e.club.name }}
+          </a>
+        </td>
+        <td>
+          {% if e.event_date %}
+            {{ e.event_date|date:"d/m/Y" }}
+          {% else %}
+            —
+          {% endif %}
+        </td>
+        <td>
+          {% if e.status_key == "upcoming" %}
+            <span class="badge badge-upcoming">Sắp diễn ra</span>
+          {% elif e.status_key == "past" %}
+            <span class="badge badge-past">Đã diễn ra</span>
+          {% else %}
+            <span class="badge badge-unknown">Chưa cập nhật</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+    <div style="background:#fff; border:1px dashed #d1d5db; padding:18px; border-radius:14px;">
+      Chưa có sự kiện nào.
+    </div>
+  {% endif %}
+</section>
+{% endblock %}
