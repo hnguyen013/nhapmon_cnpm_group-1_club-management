@@ -1,3 +1,4 @@
+from portal.decorators import admin_required
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
@@ -7,7 +8,7 @@ from portal.forms.bcn import BCNCreateForm
 from portal.models import BCNProfile
 
 
-@login_required
+@admin_required
 def bcn_list(request):
     q = (request.GET.get("q") or "").strip()
 
@@ -24,7 +25,7 @@ def bcn_list(request):
     return render(request, "portal/bcn_list.html", {"profiles": profiles, "q": q})
 
 
-@login_required
+@admin_required
 def bcn_create(request):
     if request.method == "POST":
         form = BCNCreateForm(request.POST)
@@ -62,7 +63,7 @@ from django.shortcuts import render, redirect
 from portal.forms.bcn import ChangePasswordForm
 
 
-@login_required
+@admin_required
 def change_password(request):
     """
     Dùng chung cho cả Admin và BCN (chỉ cần đăng nhập là đổi được).
