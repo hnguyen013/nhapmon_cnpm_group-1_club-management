@@ -1,0 +1,62 @@
+/* portal/static/portal/css/events_list.css */
+
+.events-page { padding: 18px 0 40px; }
+
+.events-head{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-bottom: 14px;
+}
+.events-head h1{
+  margin:0;
+  font-size: 34px;
+}
+.events-head .muted{ margin: 6px 0 0; color:#6b7280; }
+
+.events-table{
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border: 1px solid #eef1f4;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 10px 24px rgba(0,0,0,.05);
+}
+
+.events-table th, .events-table td{
+  padding: 12px 12px;
+  border-bottom: 1px solid #f1f5f9;
+  text-align: left;
+  font-size: 14px;
+}
+.events-table th{
+  background: #f9fafb;
+  font-weight: 800;
+  color:#111827;
+}
+
+.badge{
+  display:inline-flex;
+  align-items:center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 800;
+}
+.badge-upcoming{ background:#e0f2fe; color:#075985; }
+.badge-past{ background:#f3f4f6; color:#374151; }
+.badge-unknown{ background:#fff7ed; color:#9a3412; }
+
+.club-link{
+  color:#2563eb;
+  text-decoration:none;
+  font-weight: 700;
+}
+.club-link:hover{ text-decoration: underline; }
+
+@media (max-width: 760px){
+  .events-table{ display:block; overflow-x:auto; white-space:nowrap; }
+}
