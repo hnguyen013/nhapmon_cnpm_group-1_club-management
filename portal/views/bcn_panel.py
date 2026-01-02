@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from django.core.exceptions import PermissionDenied
+from django.utils import timezone
 
 from portal.models import Club, BCNProfile, Event
 from portal.forms.bcn_panel import BCNClubEditForm, BCNEventCreateForm
@@ -22,19 +23,15 @@ def _get_bcn_club_or_403(user):
     profile = getattr(user, "bcn_profile", None)
     if not profile or not profile.club:
         raise PermissionDenied
-
     if profile.is_locked:
         raise PermissionDenied
-
     return profile.club
 
 
 @login_required(login_url="portal:auth:login")
 def dashboard(request):
     club = _get_bcn_club_or_403(request.user)
-
     total_events = Event.objects.filter(club=club).count()
-
     return render(
         request,
         "portal/bcn_panel/dashboard.html",
@@ -61,6 +58,51 @@ def club_edit(request):
     return render(request, "portal/bcn_panel/club_edit.html", {"form": form, "club": club})
 
 
+# =========================
+# ✅ US-C1.1 — BCN xem danh sách sự kiện của CLB
+# =========================
+@login_required(login_url="portal:auth:login")
+def event_list(request):
+    club = _get_bcn_club_or_403(request.user)
+
+    today = timezone.localdate()
+
+    events = (
+        Event.objects
+        .select_related("club")
+        .filter(club=club)
+        .order_by("-event_date", "-created_at")
+    )
+
+    # Tạo danh sách “view model” để có status mà không cần sửa DB
+    items = []
+    for e in events:
+        if e.event_date is None:
+            status = "Chưa có ngày"
+        elif e.event_date >= today:
+            status = "Sắp diễn ra"
+        else:
+            status = "Đã diễn ra"
+
+        items.append({
+            "id": e.id,
+            "title": e.title,
+            "club_name": e.club.name if e.club_id else "",
+            "event_date": e.event_date,
+            "status": status,
+        })
+
+    return render(
+        request,
+        "portal/bcn_panel/event_list.html",
+        {
+            "club": club,
+            "events": items,
+            "total_events": len(items),
+        },
+    )
+
+
 @login_required(login_url="portal:auth:login")
 def event_create(request):
     club = _get_bcn_club_or_403(request.user)
@@ -73,7 +115,8 @@ def event_create(request):
             ev.created_by = request.user
             ev.save()
             messages.success(request, "Tạo sự kiện thành công.")
-            return redirect("portal:bcn_panel:dashboard")
+            # ✅ sau khi tạo xong, quay về danh sách sự kiện (US-C1.1)
+            return redirect("portal:bcn_panel:event_list")
     else:
         form = BCNEventCreateForm()
 
