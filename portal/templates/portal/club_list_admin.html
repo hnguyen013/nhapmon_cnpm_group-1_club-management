@@ -37,7 +37,14 @@
                 {{ c.description|default:"—" }}
               </td>
               <td style="padding:10px;border-bottom:1px solid #f2f2f2;text-align:right;">
+                {# GIỮ NGUYÊN CÁC NÚT CŨ #}
                 <a class="btn btn-ghost" href="{% url 'portal:admin_panel:club_edit' c.id %}">Sửa</a>
+
+                {# ✅ BỔ SUNG: Quản lý sự kiện của CLB #}
+                <a class="btn btn-ghost" href="{% url 'portal:admin_panel:club_events_list' c.id %}">
+                  Sự kiện
+                </a>
+
                 <a class="btn btn-danger" href="{% url 'portal:admin_panel:club_delete' c.id %}">Xoá</a>
               </td>
             </tr>
