@@ -1,15 +1,14 @@
 # portal/views/admin.py
-
 import secrets
 import string
-
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect, get_object_or_404
 
-from portal.models import Club, BCNProfile
+from portal.models import Club, BCNProfile, ClubEvent
 from portal.forms.club import ClubCreateForm  # giữ nguyên
+from portal.forms.event_admin import AdminClubEventForm
 
 
 def is_admin(user):
@@ -52,8 +51,6 @@ def club_admin_create(request):
             return redirect("portal:admin_panel:club_list")
     else:
         form = ClubCreateForm()
-
-    # ✅ đổi sang template club_admin_form.html để dùng form fields đầy đủ
     return render(request, "portal/club_admin_form.html", {"form": form, "mode": "create"})
 
 
@@ -61,7 +58,6 @@ def club_admin_create(request):
 @user_passes_test(is_admin)
 def club_admin_edit(request, club_id):
     club = get_object_or_404(Club, id=club_id)
-
     if request.method == "POST":
         form = ClubCreateForm(request.POST, instance=club)
         if form.is_valid():
@@ -71,7 +67,6 @@ def club_admin_edit(request, club_id):
     else:
         form = ClubCreateForm(instance=club)
 
-    # ✅ đổi sang template club_admin_form.html để dùng form fields đầy đủ
     return render(
         request,
         "portal/club_admin_form.html",
@@ -101,7 +96,6 @@ def bcn_reset_password(request, user_id: int):
     Sau khi reset: hiện mật khẩu mới bằng messages để admin copy cấp lại cho BCN.
     """
     user = get_object_or_404(User, id=user_id)
-
     try:
         _ = user.bcn_profile
     except BCNProfile.DoesNotExist:
@@ -114,25 +108,17 @@ def bcn_reset_password(request, user_id: int):
 
     messages.success(
         request,
-        f"Reset mật khẩu thành công cho BCN '{user.username}'. Mật khẩu mới: {new_password}"
+        f"Reset mật khẩu thành công cho BCN '{user.username}'. Mật khẩu mới: {new_password}",
     )
     return redirect("portal:admin_panel:bcn_list")
+
 
 # =========================
 # US-A3.4 - Lock/Unlock BCN
 # =========================
-from django.contrib.auth.models import User
-from portal.models import BCNProfile
-
-
 @login_required
 @user_passes_test(is_admin)
 def bcn_lock_list(request):
-    """
-    Trang riêng cho US-A3.4 (không ảnh hưởng bcn_list cũ).
-    Hiển thị danh sách BCN và trạng thái khoá/mở khoá.
-    """
-    # BCN là user có BCNProfile
     bcns = BCNProfile.objects.select_related("user").all().order_by("user__username")
     return render(request, "portal/bcn_lock_list.html", {"bcns": bcns})
 
@@ -140,22 +126,13 @@ def bcn_lock_list(request):
 @login_required
 @user_passes_test(is_admin)
 def bcn_toggle_lock(request, user_id: int):
-    """
-    Khoá/Mở khoá BCN:
-    - Khoá: user.is_active = False  => BCN không đăng nhập được (đúng auth.py hiện tại)
-    - Mở:  user.is_active = True
-    Đồng bộ BCNProfile.is_locked để hiển thị.
-    """
     user = get_object_or_404(User, id=user_id)
-
-    # Nếu user không có BCNProfile thì không phải BCN
     try:
         profile = user.bcn_profile
     except BCNProfile.DoesNotExist:
         messages.error(request, "Tài khoản này không phải BCN hoặc chưa có hồ sơ BCN.")
         return redirect("portal:admin_panel:bcn_lock_list")
 
-    # Toggle
     new_active = not user.is_active
     user.is_active = new_active
     user.save()
@@ -169,3 +146,72 @@ def bcn_toggle_lock(request, user_id: int):
         messages.success(request, f"⛔ Đã KHOÁ tài khoản BCN: {user.username}")
 
     return redirect("portal:admin_panel:bcn_lock_list")
+
+
+# ==========================================================
+# ADD ONLY: ADMIN quản lý sự kiện theo CLB (không ảnh hưởng cũ)
+# ==========================================================
+@login_required
+@user_passes_test(is_admin)
+def club_events_list(request, club_id: int):
+    club = get_object_or_404(Club, id=club_id)
+    events = ClubEvent.objects.filter(club=club).order_by("-event_date", "-created_at")
+    return render(request, "portal/admin_club_events_list.html", {"club": club, "events": events})
+
+
+@login_required
+@user_passes_test(is_admin)
+def club_event_create(request, club_id: int):
+    club = get_object_or_404(Club, id=club_id)
+    if request.method == "POST":
+        form = AdminClubEventForm(request.POST)
+        if form.is_valid():
+            ev = form.save(commit=False)
+            ev.club = club
+            ev.save()
+            messages.success(request, "✅ Tạo sự kiện thành công.")
+            return redirect("portal:admin_panel:club_events_list", club_id=club.id)
+    else:
+        form = AdminClubEventForm()
+
+    return render(
+        request,
+        "portal/admin_club_event_form.html",
+        {"club": club, "form": form, "mode": "create"},
+    )
+
+
+@login_required
+@user_passes_test(is_admin)
+def club_event_edit(request, club_id: int, event_id: int):
+    club = get_object_or_404(Club, id=club_id)
+    ev = get_object_or_404(ClubEvent, id=event_id, club=club)
+
+    if request.method == "POST":
+        form = AdminClubEventForm(request.POST, instance=ev)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "✅ Cập nhật sự kiện thành công.")
+            return redirect("portal:admin_panel:club_events_list", club_id=club.id)
+    else:
+        form = AdminClubEventForm(instance=ev)
+
+    return render(
+        request,
+        "portal/admin_club_event_form.html",
+        {"club": club, "form": form, "mode": "edit", "event": ev},
+    )
+
+
+@login_required
+@user_passes_test(is_admin)
+def club_event_delete(request, club_id: int, event_id: int):
+    club = get_object_or_404(Club, id=club_id)
+    ev = get_object_or_404(ClubEvent, id=event_id, club=club)
+
+    if request.method == "POST":
+        ev.delete()
+        messages.success(request, "🗑️ Đã xoá sự kiện.")
+        return redirect("portal:admin_panel:club_events_list", club_id=club.id)
+
+    return render(request, "portal/admin_club_event_confirm_delete.html", {"club": club, "event": ev})
