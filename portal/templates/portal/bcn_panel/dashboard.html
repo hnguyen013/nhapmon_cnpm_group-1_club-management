@@ -8,6 +8,7 @@
 {% endblock %}
 
 {% block content %}
+
 <div class="bcn-wrap">
   <h1>BCN Panel</h1>
   <p>CLB của bạn: <b>{{ club.name }}</b></p>
@@ -18,7 +19,8 @@
       <p>Cập nhật mô tả, khoa, lĩnh vực, trạng thái...</p>
     </a>
 
-    <a class="bcn-card" href="{% url 'portal:bcn_panel:event_create' %}">
+    {# ✅ US-C1.1: Bấm card này sẽ vào trang danh sách sự kiện #}
+    <a class="bcn-card" href="{% url 'portal:bcn_panel:event_list' %}">
       <h3>Tạo sự kiện</h3>
       <p>Hiện có {{ total_events }} sự kiện</p>
     </a>
