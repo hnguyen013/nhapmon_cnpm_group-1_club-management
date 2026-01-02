@@ -25,6 +25,12 @@ urlpatterns = [
     # ======================
     path("bcn/", bcn_views.bcn_list, name="bcn_list"),
     path("bcn/create/", bcn_views.bcn_create, name="bcn_create"),
+    
+        # ✅ US-A2.1 — Edit/Delete BCN (ADD ONLY)
+    path("bcn/<int:profile_id>/edit/", bcn_views.bcn_edit, name="bcn_edit"),
+    path("bcn/<int:profile_id>/delete/", bcn_views.bcn_delete, name="bcn_delete"),
+
+
 
     # 🔐 US-A3.2 — Reset mật khẩu BCN
     path(
