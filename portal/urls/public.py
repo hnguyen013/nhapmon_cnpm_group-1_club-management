@@ -7,4 +7,5 @@ urlpatterns = [
     path("clubs/", public_views.club_list, name="club_list"),
     path("clubs/<int:club_id>/", public_views.club_detail, name="club_detail"),
     path("events/", public_views.event_list, name="event_list"),
+    path("events/<int:event_id>/", public_views.event_detail, name="event_detail"),
 ]
