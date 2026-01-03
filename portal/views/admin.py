@@ -160,3 +160,34 @@ def bcn_toggle_lock(request, user_id: int):
         messages.success(request, f"⛔ Đã KHOÁ tài khoản BCN: {user.username}")
 
     return redirect("portal:admin_panel:bcn_lock_list")
+ # =========================
+# US-B3.3 - Toggle Club status (active/inactive) (ADD ONLY)
+# =========================
+from django.views.decorators.http import require_POST
+
+
+@admin_required
+@require_POST
+def club_toggle_status(request, club_id: int):
+    """
+    Vô hiệu hoá / Kích hoạt CLB:
+    - active -> inactive
+    - inactive -> active
+
+    Lưu ý:
+    - KHÔNG xoá DB
+    - Chỉ đổi field status của Club
+    - Không ảnh hưởng tính năng xoá CLB cũ (club_admin_delete)
+    """
+    club = get_object_or_404(Club, id=club_id)
+
+    if club.status == "active":
+        club.status = "inactive"
+        club.save(update_fields=["status"])
+        messages.success(request, f"✅ Đã vô hiệu hoá CLB: {club.name}")
+    else:
+        club.status = "active"
+        club.save(update_fields=["status"])
+        messages.success(request, f"✅ Đã kích hoạt lại CLB: {club.name}")
+
+    return redirect("portal:admin_panel:club_list")
