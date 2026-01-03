@@ -35,8 +35,14 @@
               <li><a href="{% url 'portal:bcn_panel:dashboard' %}">Vào BCN</a></li>
             {% endif %}
 
-            {# Giữ nguyên các nút cũ #}
-            <li><a href="{% url 'portal:admin_panel:change_password' %}">Đổi mật khẩu</a></li>
+            {# ✅ GIỮ NGUYÊN TÍNH NĂNG CŨ: Admin vẫn đổi mật khẩu trong admin_panel #}
+            {# ✅ THÊM MỚI: BCN/user thường đổi mật khẩu qua auth route để không bị chặn quyền #}
+            {% if user.is_staff or user.is_superuser %}
+              <li><a href="{% url 'portal:admin_panel:change_password' %}">Đổi mật khẩu</a></li>
+            {% else %}
+              <li><a href="{% url 'portal:auth:change_password' %}">Đổi mật khẩu</a></li>
+            {% endif %}
+
             <li><a href="{% url 'portal:auth:logout' %}">Đăng xuất</a></li>
           {% else %}
             <li><a href="{% url 'portal:auth:login' %}">Đăng nhập</a></li>

@@ -1,0 +1,33 @@
+{% extends "portal/base_admin.html" %}
+{% load static %}
+
+{% block title %}Xoá tài khoản BCN{% endblock %}
+{% block menu_bcn_active %}active{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'portal/css/bcn.css' %}">
+
+<div class="panel-box">
+  <h2>Xoá (xoá mềm) tài khoản BCN</h2>
+
+  <p>
+    Bạn có chắc muốn <b>vô hiệu hoá</b> tài khoản này không?
+    (Tài khoản sẽ bị khoá đăng nhập, dữ liệu không bị xoá khỏi DB)
+  </p>
+
+  <ul>
+    <li><b>Username:</b> {{ bcn_user.username }}</li>
+    <li><b>Họ tên:</b> {{ profile.full_name }}</li>
+    <li><b>Email:</b> {{ bcn_user.email }}</li>
+    <li><b>CLB:</b> {% if profile.club %}{{ profile.club.name }}{% else %}-{% endif %}</li>
+  </ul>
+
+  <form method="post" style="margin-top:16px;">
+    {% csrf_token %}
+    <button type="submit" class="btn-danger">✅ Xác nhận vô hiệu hoá</button>
+    <a href="{% url 'portal:admin_panel:bcn_list' %}" class="btn-secondary" style="margin-left:10px;">
+      ⬅ Huỷ
+    </a>
+  </form>
+</div>
+{% endblock %}

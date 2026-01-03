@@ -69,6 +69,25 @@
                 Mở khoá
               {% endif %}
             </a>
+
+            <!-- ✅ US-A2.1 (THÊM MỚI) - Sửa BCN -->
+            <a
+              class="btn-secondary"
+              href="{% url 'portal:admin_panel:bcn_edit' p.id %}"
+              style="text-decoration:none;"
+            >
+              Sửa
+            </a>
+
+            <!-- ✅ US-A2.1 (THÊM MỚI) - Xoá mềm BCN (vô hiệu hoá) -->
+            <a
+              class="btn-danger"
+              href="{% url 'portal:admin_panel:bcn_delete' p.id %}"
+              onclick="return confirm('Bạn chắc chắn muốn VÔ HIỆU HOÁ (xoá mềm) tài khoản BCN: {{ p.user.username }} ?');"
+              style="text-decoration:none;"
+            >
+              Xoá
+            </a>
           </td>
         </tr>
       {% empty %}
