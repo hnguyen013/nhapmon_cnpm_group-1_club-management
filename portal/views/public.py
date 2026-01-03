@@ -69,3 +69,20 @@ def club_detail(request, club_id):
             "events": events,
         },
     )
+def event_list(request):
+    """
+    US-C1.1: Xem danh sách sự kiện (public)
+    """
+    events = (
+        ClubEvent.objects
+        .select_related("club")
+        .order_by("-event_date", "-created_at")
+    )
+
+    return render(
+        request,
+        "portal/events/event_list.html",
+        {
+            "events": events,
+        },
+    )
