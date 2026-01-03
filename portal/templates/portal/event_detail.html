@@ -14,3 +14,9 @@
   </p>
 </div>
 {% endblock %}
+<hr>
+{% if event.description %}
+  <div>{{ event.description|linebreaks }}</div>
+{% else %}
+  <p class="text-muted fst-italic">Chưa có mô tả chi tiết cho sự kiện này.</p>
+{% endif %}
