@@ -20,3 +20,8 @@
 {% else %}
   <p class="text-muted fst-italic">Chưa có mô tả chi tiết cho sự kiện này.</p>
 {% endif %}
+{% if event.image_url %}
+  <div class="my-3">
+    <img src="{{ event.image_url }}" class="img-fluid rounded shadow-sm" alt="{{ event.title }}">
+  </div>
+{% endif %}
