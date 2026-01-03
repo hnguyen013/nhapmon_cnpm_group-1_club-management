@@ -81,7 +81,7 @@ def event_list(request):
 
     return render(
         request,
-        "portal/events/event_list.html",
+        "portal/event_list.html",
         {
             "events": events,
         },

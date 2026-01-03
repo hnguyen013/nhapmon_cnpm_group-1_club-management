@@ -29,7 +29,7 @@ Danh sách sự kiện
 
                             <p class="text-muted mb-1">
                                 <strong>Thời gian:</strong>
-                                {{ event.event_date|date:"d/m/Y H:i" }}
+                                {{ event.event_date|date:"d/m/Y" }}
                             </p>
 
                             {% if event.location %}
@@ -45,7 +45,7 @@ Danh sách sự kiện
                             {% endif %}
 
                             <div class="mt-auto">
-                                <a href="{% url 'club_detail' event.club.id %}"
+                                <a href="{% url 'portal:club_detail' event.club.id %}"
                                    class="btn btn-outline-primary btn-sm">
                                     Xem CLB
                                 </a>
