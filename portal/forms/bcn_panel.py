@@ -16,9 +16,20 @@ class BCNClubEditForm(forms.ModelForm):
 
 
 class BCNEventCreateForm(forms.ModelForm):
+    """
+    BCN tạo sự kiện cho CLB của chính họ.
+    CLUB sẽ được set trong view (ev.club = club), vì vậy không đưa 'club' vào form để tránh:
+    - người dùng chọn sai CLB
+    - thiếu field club gây form invalid
+    """
     class Meta:
         model = ClubEvent
-        fields = ["club", "title", "category", "description", "event_date", "image_url"]
+        # ✅ BỎ "club" khỏi form (club được gán trong view)
+        fields = ["title", "category", "description", "event_date", "image_url"]
         widgets = {
-            "event_date": forms.DateInput(attrs={"type": "date"}),
+            "title": forms.TextInput(attrs={"class": "form-control"}),
+            "category": forms.TextInput(attrs={"class": "form-control"}),
+            "description": forms.Textarea(attrs={"class": "form-control", "rows": 5}),
+            "event_date": forms.DateInput(attrs={"type": "date", "class": "form-control"}),
+            "image_url": forms.URLInput(attrs={"class": "form-control"}),
         }

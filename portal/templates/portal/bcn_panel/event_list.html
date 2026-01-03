@@ -1,0 +1,67 @@
+{% extends "portal/base_home.html" %}
+{% load static %}
+
+{% block title %}Danh sách sự kiện | BCN{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'portal/css/bcn_panel.css' %}">
+<link rel="stylesheet" href="{% static 'portal/css/bcn.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="bcn-wrap">
+  <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+    <div>
+      <h1 style="margin:0 0 6px;">Danh sách sự kiện</h1>
+      <div style="color:#6b7280;">
+        CLB: <b>{{ club.name }}</b> • Tổng: <b>{{ total_events }}</b>
+      </div>
+    </div>
+
+    <div style="display:flex; gap:10px; align-items:center;">
+      {# ✅ giữ tính năng cũ: tạo sự kiện #}
+      <a class="btn-primary" href="{% url 'portal:bcn_panel:event_create' %}">+ Tạo sự kiện</a>
+      <a class="btn-secondary" href="{% url 'portal:bcn_panel:dashboard' %}">Quay lại</a>
+    </div>
+  </div>
+
+  <div style="margin-top:14px;">
+    {% if events %}
+      <table class="bcn-table" style="width:100%;">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Tên sự kiện</th>
+            <th>CLB tổ chức</th>
+            <th>Thời gian</th>
+            <th>Trạng thái</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for e in events %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td><b>{{ e.title }}</b></td>
+              <td>{{ e.club_name }}</td>
+              <td>
+                {% if e.event_date %}
+                  {{ e.event_date|date:"d/m/Y" }}
+                {% else %}
+                  —
+                {% endif %}
+              </td>
+              <td>{{ e.status }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <div class="empty" style="margin-top:14px;">
+        <div class="empty__icon">📅</div>
+        <h3>Chưa có sự kiện nào</h3>
+        <p>Hãy bấm <b>“+ Tạo sự kiện”</b> để thêm mới.</p>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
