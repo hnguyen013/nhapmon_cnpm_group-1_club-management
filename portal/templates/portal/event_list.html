@@ -1,64 +1,125 @@
 {% extends "portal/base_home.html" %}
 {% load static %}
 
-{% block title %}
-Danh sách sự kiện
-{% endblock %}
+{% block title %}Sự kiện{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'portal/css/event_list.css' %}">
 {% endblock %}
 
 {% block content %}
-<div class="container py-4">
-    <h2 class="mb-4">📅 Danh sách sự kiện</h2>
+<div class="lb-page">
 
+  <!-- 1) Category row -->
+  <div class="lb-categories">
+    <a class="lb-cat" href="#">
+      <div class="lb-cat__icon">📘</div>
+      <div class="lb-cat__text">Workshop,<br>Học tập</div>
+    </a>
+    <a class="lb-cat" href="#">
+      <div class="lb-cat__icon">🎵</div>
+      <div class="lb-cat__text">Âm nhạc,<br>Tiệc tùng</div>
+    </a>
+    <a class="lb-cat" href="#">
+      <div class="lb-cat__icon">🍽️</div>
+      <div class="lb-cat__text">Ẩm thực,<br>Trải nghiệm</div>
+    </a>
+    <a class="lb-cat" href="#">
+      <div class="lb-cat__icon">🏃</div>
+      <div class="lb-cat__text">Thể thao,<br>Sức khỏe</div>
+    </a>
+    <a class="lb-cat" href="#">
+      <div class="lb-cat__icon">♣️</div>
+      <div class="lb-cat__text">Sở thích,<br>Giải trí</div>
+    </a>
+    <a class="lb-cat" href="#">
+      <div class="lb-cat__icon">🤝</div>
+      <div class="lb-cat__text">Hoạt động,<br>Cộng đồng</div>
+    </a>
+    <a class="lb-cat" href="#">
+      <div class="lb-cat__icon">📅</div>
+      <div class="lb-cat__text">Văn hóa,<br>Lễ hội</div>
+    </a>
+    <a class="lb-cat" href="#">
+      <div class="lb-cat__icon">🧾</div>
+      <div class="lb-cat__text">Nghề nghiệp,<br>Định hướng</div>
+    </a>
+  </div>
+
+  <!-- 2) Filter bar -->
+  <form method="get" class="lb-filters">
+    <div class="lb-search">
+      <span class="lb-search__icon">🔎</span>
+      <input
+        type="text"
+        name="q"
+        value="{{ filters.q|default:'' }}"
+        placeholder="Tìm kiếm Sự kiện"
+      />
+    </div>
+
+    <select name="club" class="lb-select">
+      <option value="">Loại sự kiện</option>
+      {% for c in clubs %}
+        <option value="{{ c.id }}" {% if filters.club == c.id|stringformat:"s" %}selected{% endif %}>
+          {{ c.name }}
+        </option>
+      {% endfor %}
+    </select>
+
+    <select name="status" class="lb-select">
+      <option value="all" {% if filters.status|default:'all' == "all" %}selected{% endif %}>Khu vực</option>
+      <option value="upcoming" {% if filters.status == "upcoming" %}selected{% endif %}>Sắp diễn ra</option>
+      <option value="ended" {% if filters.status == "ended" %}selected{% endif %}>Đã kết thúc</option>
+    </select>
+
+    <select name="sort" class="lb-select" disabled>
+      <option>Sắp xếp theo</option>
+    </select>
+
+    <a class="lb-reset" href="{% url 'portal:event_list' %}">Bỏ lọc</a>
+  </form>
+
+  <!-- 3) Event list -->
+  <div class="lb-events">
     {% if events %}
-        <div class="row g-3">
-            {% for event in events %}
-                <div class="col-md-6 col-lg-4">
-                    <div class="card h-100 shadow-sm">
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">
-                                {{ event.title }}
-                            </h5>
+      {% for event in events %}
+        <div class="lb-event">
+          <div class="lb-event__media">
+            {# Nếu bạn có ảnh: event.image.url thì thay vào #}
+            <div class="lb-event__thumb">
+              <span>Ảnh</span>
+            </div>
+          </div>
 
-                            <p class="text-muted mb-1">
-                                <strong>CLB:</strong> {{ event.club.name }}
-                            </p>
+          <div class="lb-event__body">
+            <div class="lb-event__tag">Hoạt động, Cộng đồng</div>
+            <div class="lb-event__title">{{ event.title }}</div>
 
-                            <p class="text-muted mb-1">
-                                <strong>Thời gian:</strong>
-                                {{ event.event_date|date:"d/m/Y" }}
-                            </p>
+            <div class="lb-event__meta">
+              <div class="lb-meta-line">👤 {{ event.club.name }}</div>
+              {% if event.location %}
+                <div class="lb-meta-line">📍 {{ event.location }}</div>
+              {% endif %}
+            </div>
 
-                            {% if event.location %}
-                                <p class="text-muted mb-2">
-                                    <strong>Địa điểm:</strong> {{ event.location }}
-                                </p>
-                            {% endif %}
+            <div class="lb-event__actions">
+              <a class="lb-btn" href="{% url 'portal:club_detail' event.club.id %}">Xem CLB</a>
+            </div>
+          </div>
 
-                            {% if event.description %}
-                                <p class="card-text text-truncate">
-                                    {{ event.description }}
-                                </p>
-                            {% endif %}
-
-                            <div class="mt-auto">
-                                <a href="{% url 'portal:club_detail' event.club.id %}"
-                                   class="btn btn-outline-primary btn-sm">
-                                    Xem CLB
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
+          <div class="lb-event__date">
+            <div class="lb-datebox">
+              <div class="lb-datebox__day">{{ event.event_date|date:"d" }}</div>
+              <div class="lb-datebox__month">Tháng {{ event.event_date|date:"m" }}</div>
+            </div>
+          </div>
         </div>
+      {% endfor %}
     {% else %}
-        <div class="alert alert-info">
-            Hiện chưa có sự kiện nào.
-        </div>
+      <div class="lb-empty">Không có sự kiện phù hợp.</div>
     {% endif %}
+  </div>
+
 </div>
 {% endblock %}
