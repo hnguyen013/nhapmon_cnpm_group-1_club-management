@@ -35,3 +35,6 @@
 mb-3">
   {{ status }}
 </span>
+{% if event.category %}
+<p><strong>🏷️ Loại sự kiện:</strong> {{ event.category }}</p>
+{% endif %}
