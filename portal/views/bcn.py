@@ -59,7 +59,9 @@ def bcn_create(request):
     return render(request, "portal/bcn_create.html", {"form": form})
 
 
-@admin_required
+from django.contrib.auth.decorators import login_required
+
+@login_required
 def change_password(request):
     """
     Dùng chung cho cả Admin và BCN (chỉ cần đăng nhập là đổi được).
