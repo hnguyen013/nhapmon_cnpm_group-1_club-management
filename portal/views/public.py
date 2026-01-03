@@ -86,3 +86,23 @@ def event_list(request):
             "events": events,
         },
     )
+def event_detail(request, event_id):
+    event = get_object_or_404(ClubEvent.objects.select_related("club"), id=event_id)
+    return render(request, "portal/event_detail.html", {"event": event})
+    from django.utils import timezone
+
+def event_detail(request, event_id):
+    event = get_object_or_404(ClubEvent.objects.select_related("club"), id=event_id)
+    today = timezone.localdate()
+
+    if event.event_date:
+        if event.event_date > today:
+            status = "Sắp diễn ra"
+        elif event.event_date < today:
+            status = "Đã kết thúc"
+        else:
+            status = "Đang diễn ra"
+    else:
+        status = "Không xác định"
+
+    return render(request, "portal/event_detail.html", {"event": event, "status": status})

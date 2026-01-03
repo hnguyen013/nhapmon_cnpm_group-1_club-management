@@ -1,0 +1,40 @@
+<a href="{% url 'portal:event_list' %}" class="btn btn-outline-secondary mb-3">
+  ← Quay lại danh sách sự kiện
+</a>
+{% extends "portal/base_home.html" %}
+{% block title %}{{ event.title }}{% endblock %}
+
+{% block content %}
+<div class="container py-4" style="max-width: 900px;">
+  <h2 class="mb-3">{{ event.title }}</h2>
+
+  <p><strong>📅 Thời gian:</strong>
+    {% if event.event_date %}{{ event.event_date|date:"d/m/Y" }}{% else %}Chưa cập nhật{% endif %}
+  </p>
+
+  <p><strong>🏫 CLB tổ chức:</strong>
+    <a href="{% url 'portal:club_detail' event.club.id %}">{{ event.club.name }}</a>
+  </p>
+</div>
+{% endblock %}
+<hr>
+{% if event.description %}
+  <div>{{ event.description|linebreaks }}</div>
+{% else %}
+  <p class="text-muted fst-italic">Chưa có mô tả chi tiết cho sự kiện này.</p>
+{% endif %}
+{% if event.image_url %}
+  <div class="my-3">
+    <img src="{{ event.image_url }}" class="img-fluid rounded shadow-sm" alt="{{ event.title }}">
+  </div>
+{% endif %}
+<span class="badge
+{% if status == 'Sắp diễn ra' %}bg-primary
+{% elif status == 'Đang diễn ra' %}bg-success
+{% else %}bg-secondary{% endif %}
+mb-3">
+  {{ status }}
+</span>
+{% if event.category %}
+<p><strong>🏷️ Loại sự kiện:</strong> {{ event.category }}</p>
+{% endif %}
