@@ -1,14 +1,17 @@
 # portal/views/admin.py
-from portal.decorators import admin_required
 import secrets
 import string
+from datetime import timedelta
 
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect, get_object_or_404
+from django.utils import timezone
+from django.views.decorators.http import require_POST
 
-from portal.models import Club, BCNProfile
-from portal.forms.club import ClubCreateForm  # giữ nguyên
+from portal.decorators import admin_required
+from portal.forms.club import ClubCreateForm
+from portal.models import Club, BCNProfile, Event 
 
 
 def is_admin(user):
@@ -25,9 +28,32 @@ def _generate_password(length: int = 10) -> str:
 # ======================
 @admin_required
 def dashboard(request):
-    total_clubs = Club.objects.count()
-    return render(request, "portal/dashboard.html", {"total_clubs": total_clubs})
+    # 1) Chỉ tính CLB đang hoạt động
+    total_clubs = Club.objects.filter(status="active").count()
 
+    # 2) BCN: số tài khoản BCN (user có BCNProfile)
+    bcn_count = BCNProfile.objects.select_related("user").count()
+
+    # 3) Sự kiện trong 7 ngày tới (tính từ hôm nay)
+    today = timezone.localdate()
+    week_end = today + timedelta(days=7)
+
+    upcoming_events_count = Event.objects.filter(
+    club__status="active",
+    event_date__isnull=False,
+    event_date__gte=today,
+    event_date__lte=week_end,
+).count()
+    recent_events = Event.objects.filter(
+        club__status="active"
+    ).select_related("club").order_by("event_date", "-id")[:5]
+    context = {
+        "total_clubs": total_clubs,
+        "bcn_count": bcn_count,
+        "upcoming_events_count": upcoming_events_count,
+        "recent_events": recent_events,
+    }
+    return render(request, "portal/dashboard.html", context)
 
 # ======================
 # CLUBS (US-B3.1)
