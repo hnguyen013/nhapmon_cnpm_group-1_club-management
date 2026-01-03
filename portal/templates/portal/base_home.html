@@ -23,6 +23,7 @@
         <ul>
           <li><a href="{% url 'portal:home' %}">Trang chủ</a></li>
           <li><a href="{% url 'portal:club_list' %}">Danh sách CLB</a></li>
+          <li><a href="{% url 'portal:event_list' %}">Sự kiện</a></li>
 
           {% if user.is_authenticated %}
             {# Giữ nguyên logic admin như cũ #}
