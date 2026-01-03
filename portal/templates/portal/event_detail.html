@@ -1,7 +1,16 @@
 {% extends "portal/base_home.html" %}
-{% block title %}Chi tiết sự kiện{% endblock %}
+{% block title %}{{ event.title }}{% endblock %}
+
 {% block content %}
-<div class="container py-4">
-  <h2>Chi tiết sự kiện</h2>
+<div class="container py-4" style="max-width: 900px;">
+  <h2 class="mb-3">{{ event.title }}</h2>
+
+  <p><strong>📅 Thời gian:</strong>
+    {% if event.event_date %}{{ event.event_date|date:"d/m/Y" }}{% else %}Chưa cập nhật{% endif %}
+  </p>
+
+  <p><strong>🏫 CLB tổ chức:</strong>
+    <a href="{% url 'portal:club_detail' event.club.id %}">{{ event.club.name }}</a>
+  </p>
 </div>
 {% endblock %}
