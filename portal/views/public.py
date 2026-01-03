@@ -86,3 +86,6 @@ def event_list(request):
             "events": events,
         },
     )
+def event_detail(request, event_id):
+    return render(request, "portal/event_detail.html", {})
+    
