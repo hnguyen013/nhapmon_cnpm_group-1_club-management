@@ -25,3 +25,10 @@
     <img src="{{ event.image_url }}" class="img-fluid rounded shadow-sm" alt="{{ event.title }}">
   </div>
 {% endif %}
+<span class="badge
+{% if status == 'Sắp diễn ra' %}bg-primary
+{% elif status == 'Đang diễn ra' %}bg-success
+{% else %}bg-secondary{% endif %}
+mb-3">
+  {{ status }}
+</span>
