@@ -87,5 +87,5 @@ def event_list(request):
         },
     )
 def event_detail(request, event_id):
-    return render(request, "portal/event_detail.html", {})
-    
+    event = get_object_or_404(ClubEvent.objects.select_related("club"), id=event_id)
+    return render(request, "portal/event_detail.html", {"event": event})
