@@ -44,11 +44,14 @@ def dashboard(request):
     event_date__gte=today,
     event_date__lte=week_end,
 ).count()
-
+    recent_events = Event.objects.filter(
+        club__status="active"
+    ).select_related("club").order_by("event_date", "-id")[:5]
     context = {
         "total_clubs": total_clubs,
         "bcn_count": bcn_count,
         "upcoming_events_count": upcoming_events_count,
+        "recent_events": recent_events,
     }
     return render(request, "portal/dashboard.html", context)
 
