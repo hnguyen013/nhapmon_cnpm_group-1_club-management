@@ -12,35 +12,35 @@
 
   <!-- 1) Category row -->
   <div class="lb-categories">
-    <a class="lb-cat" href="#">
+    <a class="lb-cat" href="?category=workshop-hoc-tap">
       <div class="lb-cat__icon">📘</div>
       <div class="lb-cat__text">Workshop,<br>Học tập</div>
     </a>
-    <a class="lb-cat" href="#">
+    <a class="lb-cat" href="?category=am-nhac-tiec-tung">
       <div class="lb-cat__icon">🎵</div>
       <div class="lb-cat__text">Âm nhạc,<br>Tiệc tùng</div>
     </a>
-    <a class="lb-cat" href="#">
+    <a class="lb-cat" href="?category=am-thuc-trai-nghiem">
       <div class="lb-cat__icon">🍽️</div>
       <div class="lb-cat__text">Ẩm thực,<br>Trải nghiệm</div>
     </a>
-    <a class="lb-cat" href="#">
+    <a class="lb-cat" href="?category=the-thao-suc-khoe">
       <div class="lb-cat__icon">🏃</div>
       <div class="lb-cat__text">Thể thao,<br>Sức khỏe</div>
     </a>
-    <a class="lb-cat" href="#">
+    <a class="lb-cat" href="?category=so-thich-giai-tri">
       <div class="lb-cat__icon">♣️</div>
       <div class="lb-cat__text">Sở thích,<br>Giải trí</div>
     </a>
-    <a class="lb-cat" href="#">
+    <a class="lb-cat" href="?category=hoat-dong-cong-dong">
       <div class="lb-cat__icon">🤝</div>
       <div class="lb-cat__text">Hoạt động,<br>Cộng đồng</div>
     </a>
-    <a class="lb-cat" href="#">
+    <a class="lb-cat" href="?category=van-hoa-le-hoi">
       <div class="lb-cat__icon">📅</div>
       <div class="lb-cat__text">Văn hóa,<br>Lễ hội</div>
     </a>
-    <a class="lb-cat" href="#">
+    <a class="lb-cat" href="?category=nghe-nghiep-dinh-huong">
       <div class="lb-cat__icon">🧾</div>
       <div class="lb-cat__text">Nghề nghiệp,<br>Định hướng</div>
     </a>
@@ -58,8 +58,24 @@
       />
     </div>
 
+    <!-- ✅ Loại sự kiện = category -->
+    <select name="category" class="lb-select">
+      {% for val, label in CATEGORY_CHOICES %}
+        <option value="{{ val }}" {% if filters.category == val %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+
+    <!-- ✅ Khu vực = area -->
+    <select name="area" class="lb-select">
+      <option value="">Khu vực</option>
+      {% for a in areas %}
+        <option value="{{ a }}" {% if filters.area == a %}selected{% endif %}>{{ a }}</option>
+      {% endfor %}
+    </select>
+
+    <!-- ✅ Câu lạc bộ = club -->
     <select name="club" class="lb-select">
-      <option value="">Loại sự kiện</option>
+      <option value="">Câu lạc bộ</option>
       {% for c in clubs %}
         <option value="{{ c.id }}" {% if filters.club == c.id|stringformat:"s" %}selected{% endif %}>
           {{ c.name }}
@@ -67,14 +83,18 @@
       {% endfor %}
     </select>
 
+    <!-- ✅ Trạng thái = status -->
     <select name="status" class="lb-select">
-      <option value="all" {% if filters.status|default:'all' == "all" %}selected{% endif %}>Khu vực</option>
+      <option value="all" {% if filters.status|default:'all' == "all" %}selected{% endif %}>Trạng thái</option>
       <option value="upcoming" {% if filters.status == "upcoming" %}selected{% endif %}>Sắp diễn ra</option>
       <option value="ended" {% if filters.status == "ended" %}selected{% endif %}>Đã kết thúc</option>
     </select>
 
-    <select name="sort" class="lb-select" disabled>
-      <option>Sắp xếp theo</option>
+    <!-- ✅ Sort chạy thật -->
+    <select name="sort" class="lb-select">
+      {% for val, label in SORT_CHOICES %}
+        <option value="{{ val }}" {% if filters.sort == val %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
     </select>
 
     <a class="lb-reset" href="{% url 'portal:event_list' %}">Bỏ lọc</a>
@@ -86,14 +106,15 @@
       {% for event in events %}
         <div class="lb-event">
           <div class="lb-event__media">
-            {# Nếu bạn có ảnh: event.image.url thì thay vào #}
             <div class="lb-event__thumb">
               <span>Ảnh</span>
             </div>
           </div>
 
           <div class="lb-event__body">
-            <div class="lb-event__tag">Hoạt động, Cộng đồng</div>
+            <!-- ✅ Tag theo category -->
+            <div class="lb-event__tag">{{ event.get_category_display|default:event.category }}</div>
+
             <div class="lb-event__title">{{ event.title }}</div>
 
             <div class="lb-event__meta">
@@ -110,8 +131,13 @@
 
           <div class="lb-event__date">
             <div class="lb-datebox">
-              <div class="lb-datebox__day">{{ event.event_date|date:"d" }}</div>
-              <div class="lb-datebox__month">Tháng {{ event.event_date|date:"m" }}</div>
+              {% if event.event_date %}
+                <div class="lb-datebox__day">{{ event.event_date|date:"d" }}</div>
+                <div class="lb-datebox__month">Tháng {{ event.event_date|date:"m" }}</div>
+              {% else %}
+                <div class="lb-datebox__day">--</div>
+                <div class="lb-datebox__month">Chưa có ngày</div>
+              {% endif %}
             </div>
           </div>
         </div>

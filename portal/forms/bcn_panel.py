@@ -38,9 +38,9 @@ class BCNEventCreateForm(forms.ModelForm):
 
     # ✅ Override field category để không cho tự gõ (dù model đang CharField thường)
     category = forms.ChoiceField(
-        choices=CATEGORY_CHOICES,
+        choices=(("", "-- Chọn loại sự kiện --"),) + CATEGORY_CHOICES,
         widget=forms.Select(attrs={"class": "form-control"}),
-        label="Lĩnh vực",
+        label="Loại sự kiện",
     )
 
     class Meta:

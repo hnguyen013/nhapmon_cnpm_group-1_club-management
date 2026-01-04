@@ -57,10 +57,8 @@ def club_detail(request, club_id):
 
 
 def event_list(request):
-    from django.utils import timezone
-
     q = request.GET.get("q", "").strip()
-    event_type = request.GET.get("type", "").strip().lower()
+    category = request.GET.get("category", "").strip()  # ✅ đổi từ type -> category
     area = request.GET.get("area", "").strip()          # KHU VỰC = club.faculty
     sort = request.GET.get("sort", "").strip()
     club_id = request.GET.get("club", "").strip()
@@ -72,11 +70,9 @@ def event_list(request):
     if q:
         events = events.filter(title__icontains=q)
 
-    # Loại sự kiện
-    if event_type == "online":
-        events = events.filter(category__iexact="online")
-    elif event_type == "offline":
-        events = events.filter(category__iexact="offline")
+    # ✅ Lọc theo lĩnh vực/category (8 loại như bạn set trong form)
+    if category:
+        events = events.filter(category=category)
 
     # Khu vực (map từ club.faculty)
     if area:
@@ -114,15 +110,21 @@ def event_list(request):
         sort = "date_desc"
         events = events.order_by("-event_date")
 
-    EVENT_TYPE_CHOICES = [
+    # ✅ Choices cho dropdown “Loại sự kiện”
+    CATEGORY_CHOICES = [
         ("", "Loại sự kiện"),
-        ("online", "Sự kiện Online"),
-        ("offline", "Sự kiện Offline"),
+        ("workshop-hoc-tap", "Workshop, Học tập"),
+        ("am-nhac-tiec-tung", "Âm nhạc, Tiệc tùng"),
+        ("am-thuc-trai-nghiem", "Ẩm thực, Trải nghiệm"),
+        ("the-thao-suc-khoe", "Thể thao, Sức khỏe"),
+        ("so-thich-giai-tri", "Sở thích, Giải trí"),
+        ("hoat-dong-cong-dong", "Hoạt động, Cộng đồng"),
+        ("van-hoa-le-hoi", "Văn hóa, Lễ hội"),
+        ("nghe-nghiep-dinh-huong", "Nghề nghiệp, Định hướng"),
     ]
 
     clubs = Club.objects.all().order_by("name")
 
-    # Khu vực = danh sách khoa/đơn vị
     areas = (
         Club.objects.exclude(faculty__isnull=True)
         .exclude(faculty__exact="")
@@ -138,11 +140,11 @@ def event_list(request):
             "events": events,
             "clubs": clubs,
             "areas": areas,
-            "EVENT_TYPE_CHOICES": EVENT_TYPE_CHOICES,
+            "CATEGORY_CHOICES": CATEGORY_CHOICES,  # ✅ đổi tên choices đưa ra template
             "SORT_CHOICES": SORT_CHOICES,
             "filters": {
                 "q": q,
-                "type": event_type,
+                "category": category,  # ✅ đổi key
                 "area": area,
                 "sort": sort,
                 "club": club_id,
