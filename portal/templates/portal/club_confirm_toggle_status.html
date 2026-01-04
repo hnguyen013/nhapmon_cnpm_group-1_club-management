@@ -1,0 +1,22 @@
+{% extends "portal/base_admin.html" %}
+{% block menu_club_active %}active{% endblock %}
+
+{% block content %}
+  {% if club.status == "active" %}
+    <h1>Vô hiệu hoá CLB</h1>
+    <p>Bạn chắc chắn muốn <b>vô hiệu hoá</b> CLB: <b>{{ club.name }}</b>?</p>
+    <p>Trạng thái sẽ chuyển thành <b>Tạm ngừng hoạt động</b>.</p>
+  {% else %}
+    <h1>Kích hoạt lại CLB</h1>
+    <p>Bạn chắc chắn muốn <b>kích hoạt lại</b> CLB: <b>{{ club.name }}</b>?</p>
+    <p>Trạng thái sẽ chuyển thành <b>Đang hoạt động</b>.</p>
+  {% endif %}
+
+  <form method="post">
+    {% csrf_token %}
+    <button class="btn btn-primary" type="submit">
+      {% if club.status == "active" %}Vô hiệu{% else %}Kích hoạt{% endif %}
+    </button>
+    <a class="btn btn-ghost" href="{% url 'portal:admin_panel:club_list' %}">Huỷ</a>
+  </form>
+{% endblock %}

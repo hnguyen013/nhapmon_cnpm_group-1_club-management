@@ -23,22 +23,61 @@
             <th style="text-align:left;padding:10px;border-bottom:1px solid #eee;">#</th>
             <th style="text-align:left;padding:10px;border-bottom:1px solid #eee;">Tên CLB</th>
             <th style="text-align:left;padding:10px;border-bottom:1px solid #eee;">Mô tả</th>
+
+            <!-- ✅ NEW (US-B3.3) -->
+            <th style="text-align:left;padding:10px;border-bottom:1px solid #eee;">Trạng thái</th>
+
             <th style="text-align:right;padding:10px;border-bottom:1px solid #eee;">Thao tác</th>
           </tr>
         </thead>
+
         <tbody>
           {% for c in clubs %}
             <tr>
               <td style="padding:10px;border-bottom:1px solid #f2f2f2;">{{ forloop.counter }}</td>
+
               <td style="padding:10px;border-bottom:1px solid #f2f2f2;">
                 <b>{{ c.name }}</b>
               </td>
+
               <td style="padding:10px;border-bottom:1px solid #f2f2f2;">
                 {{ c.description|default:"—" }}
               </td>
-              <td style="padding:10px;border-bottom:1px solid #f2f2f2;text-align:right;">
+
+              <!-- ✅ NEW (US-B3.3): Hiển thị trạng thái -->
+              <td style="padding:10px;border-bottom:1px solid #f2f2f2;">
+                {% if c.status == "inactive" %}
+                  <span class="badge badge-danger">Tạm dừng</span>
+                {% else %}
+                  <span class="badge badge-success">Hoạt động</span>
+                {% endif %}
+              </td>
+
+              <td style="padding:10px;border-bottom:1px solid #f2f2f2;text-align:right; white-space:nowrap;">
+                <!-- ✅ GIỮ NGUYÊN (cũ) -->
                 <a class="btn btn-ghost" href="{% url 'portal:admin_panel:club_edit' c.id %}">Sửa</a>
                 <a class="btn btn-danger" href="{% url 'portal:admin_panel:club_delete' c.id %}">Xoá</a>
+
+                <!-- ✅ NEW (US-B3.3): Vô hiệu hoá / Kích hoạt (FIX 405: dùng POST) -->
+                <form
+                  method="post"
+                  action="{% url 'portal:admin_panel:club_toggle_status' c.id %}"
+                  style="display:inline;"
+                  onsubmit="return confirm('{% if c.status == 'inactive' %}Bạn chắc chắn muốn KÍCH HOẠT CLB: {{ c.name }} ?{% else %}Bạn chắc chắn muốn VÔ HIỆU HOÁ CLB: {{ c.name }} ?{% endif %}');"
+                >
+                  {% csrf_token %}
+                  <button
+                    type="submit"
+                    class="{% if c.status == 'inactive' %}btn btn-primary{% else %}btn btn-ghost{% endif %}"
+                    style="margin-left:8px;"
+                  >
+                    {% if c.status == "inactive" %}
+                      Kích hoạt
+                    {% else %}
+                      Vô hiệu hoá
+                    {% endif %}
+                  </button>
+                </form>
               </td>
             </tr>
           {% endfor %}

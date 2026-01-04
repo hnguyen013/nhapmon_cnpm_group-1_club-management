@@ -1,14 +1,17 @@
 # portal/views/admin.py
-from portal.decorators import admin_required
 import secrets
 import string
+from datetime import timedelta
 
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect, get_object_or_404
+from django.utils import timezone
+from django.views.decorators.http import require_POST
 
-from portal.models import Club, BCNProfile
-from portal.forms.club import ClubCreateForm  # giữ nguyên
+from portal.decorators import admin_required
+from portal.forms.club import ClubCreateForm
+from portal.models import Club, BCNProfile, Event 
 
 
 def is_admin(user):
@@ -25,9 +28,32 @@ def _generate_password(length: int = 10) -> str:
 # ======================
 @admin_required
 def dashboard(request):
-    total_clubs = Club.objects.count()
-    return render(request, "portal/dashboard.html", {"total_clubs": total_clubs})
+    # 1) Chỉ tính CLB đang hoạt động
+    total_clubs = Club.objects.filter(status="active").count()
 
+    # 2) BCN: số tài khoản BCN (user có BCNProfile)
+    bcn_count = BCNProfile.objects.select_related("user").count()
+
+    # 3) Sự kiện trong 7 ngày tới (tính từ hôm nay)
+    today = timezone.localdate()
+    week_end = today + timedelta(days=7)
+
+    upcoming_events_count = Event.objects.filter(
+    club__status="active",
+    event_date__isnull=False,
+    event_date__gte=today,
+    event_date__lte=week_end,
+).count()
+    recent_events = Event.objects.filter(
+        club__status="active"
+    ).select_related("club").order_by("event_date", "-id")[:5]
+    context = {
+        "total_clubs": total_clubs,
+        "bcn_count": bcn_count,
+        "upcoming_events_count": upcoming_events_count,
+        "recent_events": recent_events,
+    }
+    return render(request, "portal/dashboard.html", context)
 
 # ======================
 # CLUBS (US-B3.1)
@@ -160,3 +186,34 @@ def bcn_toggle_lock(request, user_id: int):
         messages.success(request, f"⛔ Đã KHOÁ tài khoản BCN: {user.username}")
 
     return redirect("portal:admin_panel:bcn_lock_list")
+ # =========================
+# US-B3.3 - Toggle Club status (active/inactive) (ADD ONLY)
+# =========================
+from django.views.decorators.http import require_POST
+
+
+@admin_required
+@require_POST
+def club_toggle_status(request, club_id: int):
+    """
+    Vô hiệu hoá / Kích hoạt CLB:
+    - active -> inactive
+    - inactive -> active
+
+    Lưu ý:
+    - KHÔNG xoá DB
+    - Chỉ đổi field status của Club
+    - Không ảnh hưởng tính năng xoá CLB cũ (club_admin_delete)
+    """
+    club = get_object_or_404(Club, id=club_id)
+
+    if club.status == "active":
+        club.status = "inactive"
+        club.save(update_fields=["status"])
+        messages.success(request, f"✅ Đã vô hiệu hoá CLB: {club.name}")
+    else:
+        club.status = "active"
+        club.save(update_fields=["status"])
+        messages.success(request, f"✅ Đã kích hoạt lại CLB: {club.name}")
+
+    return redirect("portal:admin_panel:club_list")

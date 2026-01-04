@@ -19,6 +19,11 @@ urlpatterns = [
     path("clubs/create/", admin_views.club_admin_create, name="club_create"),
     path("clubs/<int:club_id>/edit/", admin_views.club_admin_edit, name="club_edit"),
     path("clubs/<int:club_id>/delete/", admin_views.club_admin_delete, name="club_delete"),
+    # ======================
+    # US-B3.3 — Vô hiệu hoá / kích hoạt CLB (ADD ONLY)
+    # ======================
+    path("clubs/<int:club_id>/toggle-status/", admin_views.club_toggle_status, name="club_toggle_status"),
+
 
     # ======================
     # BCN (US-A3.1 + US-A3.2)
