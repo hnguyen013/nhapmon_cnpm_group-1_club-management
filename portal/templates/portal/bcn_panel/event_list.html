@@ -35,6 +35,7 @@
             <th>CLB tổ chức</th>
             <th>Thời gian</th>
             <th>Trạng thái</th>
+            <th>Thao tác</th>
           </tr>
         </thead>
         <tbody>
@@ -51,6 +52,12 @@
                 {% endif %}
               </td>
               <td>{{ e.status }}</td>
+              <td>
+                <a class="btn-secondary"
+                  href="{% url 'portal:bcn_panel:event_edit' e.id %}">
+                  Sửa
+                </a>
+              </td>
             </tr>
           {% endfor %}
         </tbody>

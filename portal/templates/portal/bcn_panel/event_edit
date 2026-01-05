@@ -23,33 +23,45 @@
           <div class="bcn-alert">{{ form.non_field_errors }}</div>
         {% endif %}
 
+        <!-- Tên sự kiện -->
         <div class="bcn-field">
-          <label class="bcn-label" for="{{ form.title.id_for_label }}">Tên sự kiện <span class="bcn-required">*</span></label>
+          <label class="bcn-label" for="{{ form.title.id_for_label }}">
+            Tên sự kiện <span class="bcn-required">*</span>
+          </label>
           {{ form.title }}
+          {% if form.title.help_text %}<div class="bcn-hint">{{ form.title.help_text }}</div>{% endif %}
           {% if form.title.errors %}<div class="bcn-error">{{ form.title.errors }}</div>{% endif %}
         </div>
 
+        <!-- Loại sự kiện -->
         <div class="bcn-field">
           <label class="bcn-label" for="{{ form.category.id_for_label }}">Loại sự kiện</label>
           {{ form.category }}
+          {% if form.category.help_text %}<div class="bcn-hint">{{ form.category.help_text }}</div>{% endif %}
           {% if form.category.errors %}<div class="bcn-error">{{ form.category.errors }}</div>{% endif %}
         </div>
 
+        <!-- Thời gian -->
         <div class="bcn-field">
           <label class="bcn-label" for="{{ form.event_date.id_for_label }}">Thời gian</label>
           {{ form.event_date }}
+          {% if form.event_date.help_text %}<div class="bcn-hint">{{ form.event_date.help_text }}</div>{% endif %}
           {% if form.event_date.errors %}<div class="bcn-error">{{ form.event_date.errors }}</div>{% endif %}
         </div>
 
+        <!-- Ảnh sự kiện -->
         <div class="bcn-field">
           <label class="bcn-label" for="{{ form.image_url.id_for_label }}">Ảnh sự kiện (URL)</label>
           {{ form.image_url }}
+          <div class="bcn-hint">Dán link ảnh (https://...). Có thể bỏ trống.</div>
           {% if form.image_url.errors %}<div class="bcn-error">{{ form.image_url.errors }}</div>{% endif %}
         </div>
 
+        <!-- Mô tả -->
         <div class="bcn-field">
           <label class="bcn-label" for="{{ form.description.id_for_label }}">Mô tả</label>
           {{ form.description }}
+          {% if form.description.help_text %}<div class="bcn-hint">{{ form.description.help_text }}</div>{% endif %}
           {% if form.description.errors %}<div class="bcn-error">{{ form.description.errors }}</div>{% endif %}
         </div>
 
