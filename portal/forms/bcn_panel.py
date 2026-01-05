@@ -6,13 +6,28 @@ from portal.models import Club, ClubEvent
 class BCNClubEditForm(forms.ModelForm):
     class Meta:
         model = Club
-        fields = ["name", "field", "faculty", "status", "description"]
+        fields = [
+            "name",
+            "field",
+            "faculty",
+            "meeting_schedule",
+            "contact_email",
+            "contact_phone",
+            "contact_facebook",
+            "cover_image_url",
+            "description",
+            # Nếu muốn cho BCN sửa trạng thái thì giữ, không thì bỏ:
+            # "status",
+        ]
         widgets = {
-            "name": forms.TextInput(attrs={"class": "form-control"}),
-            "field": forms.Select(attrs={"class": "form-control"}),
-            "faculty": forms.TextInput(attrs={"class": "form-control"}),
-            "status": forms.Select(attrs={"class": "form-control"}),
-            "description": forms.Textarea(attrs={"class": "form-control", "rows": 5}),
+            "name": forms.TextInput(attrs={"placeholder": "Tên CLB"}),
+            "faculty": forms.TextInput(attrs={"placeholder": "VD: Khoa Toán / Khoa CNTT / Đoàn - Hội..."}),
+            "meeting_schedule": forms.Textarea(attrs={"placeholder": "VD: Thứ 7 hàng tuần 18:00 - 20:00 tại Phòng A1-203"}),
+            "contact_email": forms.EmailInput(attrs={"placeholder": "VD: clb@hueuni.edu.vn"}),
+            "contact_phone": forms.TextInput(attrs={"placeholder": "VD: 0345xxxxxx"}),
+            "contact_facebook": forms.URLInput(attrs={"placeholder": "VD: https://facebook.com/tenclb"}),
+            "cover_image_url": forms.URLInput(attrs={"placeholder": "Dán link ảnh cover (https://...)"}),
+            "description": forms.Textarea(attrs={"placeholder": "Mô tả ngắn (không bắt buộc)"}),
         }
 
 

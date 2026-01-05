@@ -6,3 +6,78 @@
 .bcn-actions { display: flex; gap: 12px; margin-top: 12px; align-items: center; }
 .bcn-btn { padding: 10px 14px; border: none; border-radius: 10px; cursor: pointer; }
 .bcn-link { text-decoration: none; }
+
+/* ===== BCN Edit Club – Modern Form ===== */
+.bcn-form.modern {
+  padding: 22px;
+  border-radius: 16px;
+}
+
+/* label */
+.bcn-form.modern label {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: #0f172a;
+}
+
+/* input / select / textarea */
+.bcn-form.modern input[type="text"],
+.bcn-form.modern input[type="email"],
+.bcn-form.modern input[type="url"],
+.bcn-form.modern input[type="tel"],
+.bcn-form.modern select,
+.bcn-form.modern textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  background: #f8fafc;
+  transition: 0.15s ease;
+  font-size: 15px;
+}
+
+.bcn-form.modern textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+.bcn-form.modern input:focus,
+.bcn-form.modern select:focus,
+.bcn-form.modern textarea:focus {
+  outline: none;
+  background: #fff;
+  border-color: #93c5fd;
+  box-shadow: 0 0 0 4px rgba(59,130,246,.15);
+}
+
+/* grid 2 cột */
+.bcn-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+@media (max-width: 768px) {
+  .bcn-grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* actions */
+.bcn-form.modern .bcn-actions {
+  margin-top: 18px;
+}
+
+.bcn-form.modern .bcn-btn {
+  font-weight: 700;
+}
+
+.bcn-btn.primary {
+  background: #2563eb;
+  color: #fff;
+}
+
+.bcn-btn.primary:hover {
+  filter: brightness(0.95);
+}
