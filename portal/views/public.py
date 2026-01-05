@@ -43,7 +43,12 @@ def club_detail(request, club_id):
         .order_by("full_name", "user__username")
     )
 
-    events = ClubEvent.objects.filter(club=club).order_by("-event_date", "-created_at")[:12]
+    # ✅ AC2: Sinh viên không thấy sự kiện đã huỷ
+    events = (
+        ClubEvent.objects
+        .filter(club=club, is_cancelled=False)
+        .order_by("-event_date", "-created_at")[:12]
+    )
 
     return render(
         request,
@@ -58,31 +63,27 @@ def club_detail(request, club_id):
 
 def event_list(request):
     q = request.GET.get("q", "").strip()
-    category = request.GET.get("category", "").strip()  # ✅ đổi từ type -> category
-    area = request.GET.get("area", "").strip()          # KHU VỰC = club.faculty
+    category = request.GET.get("category", "").strip()
+    area = request.GET.get("area", "").strip()
     sort = request.GET.get("sort", "").strip()
     club_id = request.GET.get("club", "").strip()
     status = request.GET.get("status", "all").strip().lower()
 
-    events = ClubEvent.objects.select_related("club").all()
+    # ✅ AC2: Public không hiển thị event đã huỷ
+    events = ClubEvent.objects.select_related("club").filter(is_cancelled=False)
 
-    # Search
     if q:
         events = events.filter(title__icontains=q)
 
-    # ✅ Lọc theo lĩnh vực/category (8 loại như bạn set trong form)
     if category:
         events = events.filter(category=category)
 
-    # Khu vực (map từ club.faculty)
     if area:
         events = events.filter(club__faculty=area)
 
-    # Câu lạc bộ
     if club_id:
         events = events.filter(club_id=club_id)
 
-    # Trạng thái
     today = timezone.localdate()
     if status == "upcoming":
         events = events.filter(event_date__gte=today)
@@ -91,7 +92,6 @@ def event_list(request):
     else:
         status = "all"
 
-    # Sắp xếp
     SORT_CHOICES = [
         ("", "Sắp xếp theo"),
         ("date_desc", "Ngày gần nhất"),
@@ -110,7 +110,6 @@ def event_list(request):
         sort = "date_desc"
         events = events.order_by("-event_date")
 
-    # ✅ Choices cho dropdown “Loại sự kiện”
     CATEGORY_CHOICES = [
         ("", "Loại sự kiện"),
         ("workshop-hoc-tap", "Workshop, Học tập"),
@@ -140,11 +139,11 @@ def event_list(request):
             "events": events,
             "clubs": clubs,
             "areas": areas,
-            "CATEGORY_CHOICES": CATEGORY_CHOICES,  # ✅ đổi tên choices đưa ra template
+            "CATEGORY_CHOICES": CATEGORY_CHOICES,
             "SORT_CHOICES": SORT_CHOICES,
             "filters": {
                 "q": q,
-                "category": category,  # ✅ đổi key
+                "category": category,
                 "area": area,
                 "sort": sort,
                 "club": club_id,
