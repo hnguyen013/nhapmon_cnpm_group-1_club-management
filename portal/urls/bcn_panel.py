@@ -7,9 +7,10 @@ urlpatterns = [
     path("", views.dashboard, name="dashboard"),
     path("club/edit/", views.club_edit, name="club_edit"),
 
-    # ✅ US-C1.1: Danh sách sự kiện (BCN)
     path("events/", views.event_list, name="event_list"),
-
-    # ✅ Giữ nguyên tính năng cũ: tạo sự kiện
     path("events/create/", views.event_create, name="event_create"),
+
+    # ✅ US-C3.3: Huỷ sự kiện (confirm + POST)
+    path("events/<int:event_id>/cancel/", views.event_cancel_confirm, name="event_cancel_confirm"),
+    path("events/<int:event_id>/cancel/confirm/", views.event_cancel, name="event_cancel"),
 ]

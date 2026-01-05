@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.core.exceptions import PermissionDenied
 from django.utils import timezone
 
@@ -9,14 +9,8 @@ from portal.forms.bcn_panel import BCNClubEditForm, BCNEventCreateForm
 
 
 def _get_bcn_club_or_403(user):
-    """
-    BCN chỉ được thao tác trên CLB được gán trong BCNProfile.
-    Không đụng logic admin cũ.
-    """
     if not user.is_authenticated:
         raise PermissionDenied
-
-    # Admin/staff không dùng BCN panel (tránh lẫn role)
     if user.is_staff or user.is_superuser:
         raise PermissionDenied
 
@@ -35,10 +29,7 @@ def dashboard(request):
     return render(
         request,
         "portal/bcn_panel/dashboard.html",
-        {
-            "club": club,
-            "total_events": total_events,
-        },
+        {"club": club, "total_events": total_events},
     )
 
 
@@ -58,13 +49,9 @@ def club_edit(request):
     return render(request, "portal/bcn_panel/club_edit.html", {"form": form, "club": club})
 
 
-# =========================
-# ✅ US-C1.1 — BCN xem danh sách sự kiện của CLB
-# =========================
 @login_required(login_url="portal:auth:login")
 def event_list(request):
     club = _get_bcn_club_or_403(request.user)
-
     today = timezone.localdate()
 
     events = (
@@ -74,15 +61,18 @@ def event_list(request):
         .order_by("-event_date", "-created_at")
     )
 
-    # Tạo danh sách “view model” để có status mà không cần sửa DB
     items = []
     for e in events:
-        if e.event_date is None:
-            status = "Chưa có ngày"
-        elif e.event_date >= today:
-            status = "Sắp diễn ra"
+        # ✅ US-C3.3: nếu đã huỷ -> trạng thái ưu tiên “Đã huỷ”
+        if getattr(e, "is_cancelled", False):
+            status = "Đã huỷ"
         else:
-            status = "Đã diễn ra"
+            if e.event_date is None:
+                status = "Chưa có ngày"
+            elif e.event_date >= today:
+                status = "Sắp diễn ra"
+            else:
+                status = "Đã diễn ra"
 
         items.append({
             "id": e.id,
@@ -90,16 +80,13 @@ def event_list(request):
             "club_name": e.club.name if e.club_id else "",
             "event_date": e.event_date,
             "status": status,
+            "is_cancelled": getattr(e, "is_cancelled", False),
         })
 
     return render(
         request,
         "portal/bcn_panel/event_list.html",
-        {
-            "club": club,
-            "events": items,
-            "total_events": len(items),
-        },
+        {"club": club, "events": items, "total_events": len(items)},
     )
 
 
@@ -112,12 +99,55 @@ def event_create(request):
         if form.is_valid():
             ev = form.save(commit=False)
             ev.club = club
+            # giữ nguyên dòng cũ (không ảnh hưởng nếu model không có field)
             ev.created_by = request.user
             ev.save()
             messages.success(request, "Tạo sự kiện thành công.")
-            # ✅ sau khi tạo xong, quay về danh sách sự kiện (US-C1.1)
             return redirect("portal:bcn_panel:event_list")
     else:
         form = BCNEventCreateForm()
 
     return render(request, "portal/bcn_panel/event_form.html", {"form": form, "club": club})
+
+
+# =========================
+# ✅ US-C3.3 — Huỷ sự kiện (soft cancel) + xác nhận trước
+# =========================
+@login_required(login_url="portal:auth:login")
+def event_cancel_confirm(request, event_id: int):
+    club = _get_bcn_club_or_403(request.user)
+    event = get_object_or_404(Event, id=event_id, club=club)
+
+    # Nếu đã huỷ rồi thì quay lại danh sách, tránh thao tác lặp
+    if getattr(event, "is_cancelled", False):
+        messages.info(request, "Sự kiện này đã được huỷ trước đó.")
+        return redirect("portal:bcn_panel:event_list")
+
+    return render(
+        request,
+        "portal/bcn_panel/event_cancel_confirm.html",
+        {"club": club, "event": event},
+    )
+
+
+@login_required(login_url="portal:auth:login")
+def event_cancel(request, event_id: int):
+    """
+    Chỉ nhận POST để đảm bảo có xác nhận (AC1).
+    Huỷ mềm: set is_cancelled=True (AC3).
+    """
+    club = _get_bcn_club_or_403(request.user)
+    event = get_object_or_404(Event, id=event_id, club=club)
+
+    if request.method != "POST":
+        return redirect("portal:bcn_panel:event_cancel_confirm", event_id=event.id)
+
+    if getattr(event, "is_cancelled", False):
+        messages.info(request, "Sự kiện này đã được huỷ trước đó.")
+        return redirect("portal:bcn_panel:event_list")
+
+    event.is_cancelled = True
+    event.save(update_fields=["is_cancelled"])
+
+    messages.success(request, "✅ Đã huỷ sự kiện (không xoá dữ liệu).")
+    return redirect("portal:bcn_panel:event_list")
