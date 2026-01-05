@@ -6,3 +6,148 @@
 .bcn-actions { display: flex; gap: 12px; margin-top: 12px; align-items: center; }
 .bcn-btn { padding: 10px 14px; border: none; border-radius: 10px; cursor: pointer; }
 .bcn-link { text-decoration: none; }
+/* ===== Layout tổng ===== */
+.bcn-page{
+  display:flex;
+  min-height: calc(100vh - 120px);
+  background:#f6f7fb;
+}
+
+.bcn-sidebar{
+  width: 260px;
+  background:#121826;
+}
+
+.bcn-main{
+  flex:1;
+  padding: 28px 32px;
+}
+
+.bcn-title{
+  margin:0 0 6px 0;
+  font-size: 40px;
+  font-weight: 800;
+  color:#0f172a;
+}
+
+.bcn-subtitle{
+  margin:0 0 18px 0;
+  color:#64748b;
+}
+
+/* ===== Card ===== */
+.bcn-card{
+  background:#fff;
+  border:1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 22px;
+  max-width: 920px;
+}
+
+/* ===== Form field ===== */
+.bcn-field{ margin-bottom: 16px; }
+
+.bcn-label{
+  display:block;
+  font-weight: 700;
+  color:#0f172a;
+  margin-bottom: 8px;
+}
+
+.bcn-required{ color:#ef4444; }
+
+.bcn-hint{
+  margin-top: 6px;
+  color:#64748b;
+  font-size: 13px;
+}
+
+.bcn-error{
+  margin-top: 6px;
+  color:#dc2626;
+  font-size: 13px;
+}
+
+/* ===== Input / Select / Textarea style ===== */
+.bcn-card input[type="text"],
+.bcn-card input[type="email"],
+.bcn-card input[type="url"],
+.bcn-card input[type="tel"],
+.bcn-card select,
+.bcn-card textarea{
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  background:#f8fafc;
+  outline: none;
+  transition: .15s ease;
+  font-size: 15px;
+}
+
+.bcn-card textarea{ min-height: 110px; resize: vertical; }
+
+.bcn-card input:focus,
+.bcn-card select:focus,
+.bcn-card textarea:focus{
+  border-color:#93c5fd;
+  box-shadow: 0 0 0 4px rgba(59,130,246,.15);
+  background:#fff;
+}
+
+/* ===== Grid 2 cột ===== */
+.bcn-grid-2{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+@media (max-width: 900px){
+  .bcn-sidebar{ display:none; }
+  .bcn-main{ padding: 18px; }
+  .bcn-grid-2{ grid-template-columns: 1fr; }
+}
+
+/* ===== Buttons ===== */
+.bcn-actions{
+  display:flex;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.bcn-btn{
+  display:inline-flex;
+  align-items:center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-weight: 700;
+  text-decoration:none;
+  border:1px solid transparent;
+  cursor:pointer;
+}
+
+.bcn-btn-primary{
+  background:#2563eb;
+  color:#fff;
+}
+
+.bcn-btn-primary:hover{ filter: brightness(0.95); }
+
+.bcn-btn-outline{
+  background:#fff;
+  border-color:#e5e7eb;
+  color:#0f172a;
+}
+
+.bcn-btn-outline:hover{ background:#f8fafc; }
+
+/* Alert */
+.bcn-alert{
+  background:#fef2f2;
+  border:1px solid #fecaca;
+  color:#991b1b;
+  padding: 10px 12px;
+  border-radius: 10px;
+  margin-bottom: 14px;
+}
