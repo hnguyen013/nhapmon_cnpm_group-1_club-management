@@ -8,17 +8,100 @@
 {% endblock %}
 
 {% block content %}
-<div class="bcn-wrap">
-  <h1>Sửa thông tin CLB</h1>
-  <p><b>{{ club.name }}</b></p>
+<div class="bcn-page">
+  <div class="bcn-sidebar"></div>
 
-  <form method="post" class="bcn-form">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <div class="bcn-actions">
-      <button class="bcn-btn" type="submit">Lưu thay đổi</button>
-      <a class="bcn-link" href="{% url 'portal:bcn_panel:dashboard' %}">Quay lại</a>
+  <div class="bcn-main">
+    <h1 class="bcn-title">Sửa CLB</h1>
+    <p class="bcn-subtitle">Cập nhật thông tin câu lạc bộ</p>
+
+    <div class="bcn-card">
+      <form method="post" novalidate>
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+          <div class="bcn-alert">
+            {{ form.non_field_errors }}
+          </div>
+        {% endif %}
+
+        <!-- Tên CLB -->
+        <div class="bcn-field">
+          <label class="bcn-label" for="{{ form.name.id_for_label }}">
+            Tên CLB <span class="bcn-required">*</span>
+          </label>
+          {{ form.name }}
+          {% if form.name.errors %}<div class="bcn-error">{{ form.name.errors }}</div>{% endif %}
+        </div>
+
+        <!-- Lĩnh vực -->
+        <div class="bcn-field">
+          <label class="bcn-label" for="{{ form.category.id_for_label }}">Lĩnh vực</label>
+          {{ form.category }}
+          {% if form.category.errors %}<div class="bcn-error">{{ form.category.errors }}</div>{% endif %}
+        </div>
+
+        <!-- Khoa/Đơn vị -->
+        <div class="bcn-field">
+          <label class="bcn-label" for="{{ form.faculty.id_for_label }}">Khoa/Đơn vị</label>
+          {{ form.faculty }}
+          {% if form.faculty.errors %}<div class="bcn-error">{{ form.faculty.errors }}</div>{% endif %}
+        </div>
+
+        <!-- Lịch sinh hoạt -->
+        <div class="bcn-field">
+          <label class="bcn-label" for="{{ form.schedule.id_for_label }}">Lịch sinh hoạt</label>
+          {{ form.schedule }}
+          {% if form.schedule.errors %}<div class="bcn-error">{{ form.schedule.errors }}</div>{% endif %}
+        </div>
+
+        <!-- Email + SĐT (2 cột) -->
+        <div class="bcn-grid-2">
+          <div class="bcn-field">
+            <label class="bcn-label" for="{{ form.contact_email.id_for_label }}">Email liên hệ</label>
+            {{ form.contact_email }}
+            {% if form.contact_email.errors %}<div class="bcn-error">{{ form.contact_email.errors }}</div>{% endif %}
+          </div>
+
+          <div class="bcn-field">
+            <label class="bcn-label" for="{{ form.contact_phone.id_for_label }}">Số điện thoại</label>
+            {{ form.contact_phone }}
+            {% if form.contact_phone.errors %}<div class="bcn-error">{{ form.contact_phone.errors }}</div>{% endif %}
+          </div>
+        </div>
+
+        <!-- Facebook/Website -->
+        <div class="bcn-field">
+          <label class="bcn-label" for="{{ form.facebook_url.id_for_label }}">Facebook/Website</label>
+          {{ form.facebook_url }}
+          {% if form.facebook_url.errors %}<div class="bcn-error">{{ form.facebook_url.errors }}</div>{% endif %}
+        </div>
+
+        <!-- Ảnh cover (URL) -->
+        <div class="bcn-field">
+          <label class="bcn-label" for="{{ form.cover_url.id_for_label }}">Ảnh cover (URL)</label>
+          {{ form.cover_url }}
+          <div class="bcn-hint">Dán link ảnh (https://...). Nếu bỏ trống sẽ dùng ảnh mặc định.</div>
+          {% if form.cover_url.errors %}<div class="bcn-error">{{ form.cover_url.errors }}</div>{% endif %}
+        </div>
+
+        <!-- Mô tả -->
+        <div class="bcn-field">
+          <label class="bcn-label" for="{{ form.description.id_for_label }}">Mô tả</label>
+          {{ form.description }}
+          {% if form.description.errors %}<div class="bcn-error">{{ form.description.errors }}</div>{% endif %}
+        </div>
+
+        <div class="bcn-actions">
+          <button type="submit" class="bcn-btn bcn-btn-primary">
+            💾 Lưu thay đổi
+          </button>
+          <a href="{% url 'portal:bcn_panel:dashboard' %}" class="bcn-btn bcn-btn-outline">
+            ↩ Quay lại
+          </a>
+        </div>
+      </form>
     </div>
-  </form>
+  </div>
 </div>
 {% endblock %}
