@@ -1,7 +1,7 @@
 # portal/forms.py
 from django import forms
 from portal.models import Club, ClubEvent
-
+from portal.models import Event  # Event = ClubEvent
 
 class BCNClubEditForm(forms.ModelForm):
     class Meta:
@@ -67,4 +67,16 @@ class BCNEventCreateForm(forms.ModelForm):
             "description": forms.Textarea(attrs={"class": "form-control", "rows": 5}),
             "event_date": forms.DateInput(attrs={"type": "date", "class": "form-control"}),
             "image_url": forms.URLInput(attrs={"class": "form-control"}),
+        }
+
+class BCNEventEditForm(forms.ModelForm):
+    class Meta:
+        model = Event
+        fields = ["title", "category", "description", "event_date", "image_url"]
+        widgets = {
+            "title": forms.TextInput(attrs={"placeholder": "VD: Cùng Code - Cùng Vui"}),
+            "category": forms.TextInput(attrs={"placeholder": "VD: Workshop / Tuyển thành viên / Giải đấu..."}),
+            "event_date": forms.DateInput(attrs={"type": "date"}),
+            "image_url": forms.URLInput(attrs={"placeholder": "Dán link ảnh sự kiện (https://...)"}),
+            "description": forms.Textarea(attrs={"placeholder": "Mô tả ngắn về sự kiện (không bắt buộc)"}),
         }

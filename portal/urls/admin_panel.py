@@ -3,6 +3,7 @@
 from django.urls import path
 from portal.views import admin as admin_views
 from portal.views import bcn as bcn_views
+from portal.views import admin as views
 
 app_name = "admin_panel"
 
@@ -55,4 +56,5 @@ urlpatterns = [
         admin_views.bcn_toggle_lock,
         name="bcn_toggle_lock",
     ),
+    path("events/<int:event_id>/edit/", views.admin_event_edit, name="event_edit"),
 ]

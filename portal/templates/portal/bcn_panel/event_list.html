@@ -51,10 +51,16 @@
                 {% endif %}
               </td>
               <td>{{ e.status }}</td>
-              <td style="text-align:right;">
+
+              <td style="text-align:right; white-space:nowrap;">
                 {% if e.is_cancelled %}
                   <span style="color:#6b7280; font-weight:700;">Đã huỷ</span>
                 {% else %}
+                  <a class="btn-secondary"
+                     href="{% url 'portal:bcn_panel:event_edit' e.id %}">
+                    Sửa
+                  </a>
+
                   <a class="btn-secondary"
                      href="{% url 'portal:bcn_panel:event_cancel_confirm' e.id %}">
                     Huỷ

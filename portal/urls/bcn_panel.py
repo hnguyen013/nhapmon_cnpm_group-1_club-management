@@ -10,6 +10,9 @@ urlpatterns = [
     path("events/", views.event_list, name="event_list"),
     path("events/create/", views.event_create, name="event_create"),
 
+    # ✅ Sửa sự kiện
+    path("events/<int:event_id>/edit/", views.event_edit, name="event_edit"),
+
     # ✅ US-C3.3: Huỷ sự kiện (confirm + POST)
     path("events/<int:event_id>/cancel/", views.event_cancel_confirm, name="event_cancel_confirm"),
     path("events/<int:event_id>/cancel/confirm/", views.event_cancel, name="event_cancel"),
