@@ -16,7 +16,7 @@
     <p class="bcn-subtitle">Cập nhật thông tin câu lạc bộ</p>
 
     <div class="bcn-card">
-      <form method="post" novalidate>
+      <form method="post" class="bcn-form modern" novalidate>
         {% csrf_token %}
 
         {% if form.non_field_errors %}
@@ -36,9 +36,9 @@
 
         <!-- Lĩnh vực -->
         <div class="bcn-field">
-          <label class="bcn-label" for="{{ form.category.id_for_label }}">Lĩnh vực</label>
-          {{ form.category }}
-          {% if form.category.errors %}<div class="bcn-error">{{ form.category.errors }}</div>{% endif %}
+          <label class="bcn-label" for="{{ form.field.id_for_label }}">Lĩnh vực</label>
+          {{ form.field }}
+          {% if form.field.errors %}<div class="bcn-error">{{ form.field.errors }}</div>{% endif %}
         </div>
 
         <!-- Khoa/Đơn vị -->
@@ -50,9 +50,9 @@
 
         <!-- Lịch sinh hoạt -->
         <div class="bcn-field">
-          <label class="bcn-label" for="{{ form.schedule.id_for_label }}">Lịch sinh hoạt</label>
-          {{ form.schedule }}
-          {% if form.schedule.errors %}<div class="bcn-error">{{ form.schedule.errors }}</div>{% endif %}
+          <label class="bcn-label" for="{{ form.meeting_schedule.id_for_label }}">Lịch sinh hoạt</label>
+          {{ form.meeting_schedule }}
+          {% if form.meeting_schedule.errors %}<div class="bcn-error">{{ form.meeting_schedule.errors }}</div>{% endif %}
         </div>
 
         <!-- Email + SĐT (2 cột) -->
@@ -72,17 +72,17 @@
 
         <!-- Facebook/Website -->
         <div class="bcn-field">
-          <label class="bcn-label" for="{{ form.facebook_url.id_for_label }}">Facebook/Website</label>
-          {{ form.facebook_url }}
-          {% if form.facebook_url.errors %}<div class="bcn-error">{{ form.facebook_url.errors }}</div>{% endif %}
+          <label class="bcn-label" for="{{ form.contact_facebook.id_for_label }}">Facebook/Website</label>
+          {{ form.contact_facebook }}
+          {% if form.contact_facebook.errors %}<div class="bcn-error">{{ form.contact_facebook.errors }}</div>{% endif %}
         </div>
 
         <!-- Ảnh cover (URL) -->
         <div class="bcn-field">
-          <label class="bcn-label" for="{{ form.cover_url.id_for_label }}">Ảnh cover (URL)</label>
-          {{ form.cover_url }}
+          <label class="bcn-label" for="{{ form.cover_image_url.id_for_label }}">Ảnh cover (URL)</label>
+          {{ form.cover_image_url }}
           <div class="bcn-hint">Dán link ảnh (https://...). Nếu bỏ trống sẽ dùng ảnh mặc định.</div>
-          {% if form.cover_url.errors %}<div class="bcn-error">{{ form.cover_url.errors }}</div>{% endif %}
+          {% if form.cover_image_url.errors %}<div class="bcn-error">{{ form.cover_image_url.errors }}</div>{% endif %}
         </div>
 
         <!-- Mô tả -->
