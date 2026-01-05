@@ -151,3 +151,29 @@ def event_list(request):
             },
         },
     )
+from django.shortcuts import render, get_object_or_404
+from django.utils import timezone
+from portal.models import Event
+
+def event_detail(request, event_id: int):
+    event = get_object_or_404(Event.objects.select_related("club"), id=event_id)
+    today = timezone.localdate()
+
+    # trạng thái
+    if getattr(event, "is_cancelled", False):
+        status = "Đã huỷ"
+    else:
+        if event.event_date is None:
+            status = "Chưa có ngày"
+        elif event.event_date > today:
+            status = "Sắp diễn ra"
+        elif event.event_date == today:
+            status = "Đang diễn ra"
+        else:
+            status = "Đã kết thúc"
+
+    return render(request, "portal/events/event_detail.html", {
+        "event": event,
+        "status": status,
+    })
+
