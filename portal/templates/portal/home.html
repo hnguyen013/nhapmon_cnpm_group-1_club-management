@@ -8,54 +8,37 @@
   <link rel="stylesheet" href="{% static 'portal/css/home.css' %}">
 {% endblock %}
 
-{# Home tự render header nằm trên ảnh hero #}
+{# ✅ Header dùng của base_home #}
 {% block header %}
-<section class="hero" style="background-image:url('{% static 'portal/img/truong.jpg' %}');">
-  <div class="hero-overlay"></div>
-
-  <header class="hero-header">
-    <div class="container header-inner">
-      <nav class="nav-left">
-        <a class="nav-item active" href="{% url 'portal:home' %}">Trang chủ</a>
-        <a class="nav-item" href="{% url 'portal:club_list' %}">Câu lạc bộ</a>
-      </nav>
-
-      <div class="nav-right">
-        {# ĐÃ BỎ DẤU NGOẶC TRÒN, DÙNG IF LỒNG NHAU #}
-        {% if user.is_authenticated %}
-          {% if user.is_staff or user.is_superuser %}
-            <a class="btn btn-primary" href="{% url 'portal:admin_panel:dashboard' %}">Vào quản trị</a>
-          {% endif %}
-          <a class="btn btn-ghost" href="{% url 'portal:auth:logout' %}">Đăng xuất</a>
-        {% else %}
-          <a class="btn btn-primary" href="{% url 'portal:auth:login' %}">Đăng nhập</a>
-        {% endif %}
-      </div>
-    </div>
-  </header>
-
-  <div class="container hero-content">
-    <div class="hero-text">
-      <h1>Khám phá &amp; kết nối</h1>
-      <p>
-        Tìm hiểu các câu lạc bộ, hoạt động nổi bật và thông tin liên hệ.
-        Dành cho sinh viên và Ban Chủ nhiệm CLB.
-      </p>
-
-      <div class="hero-actions">
-        <a class="btn btn-accent" href="{% url 'portal:club_list' %}">Xem danh sách CLB</a>
-        <a class="btn btn-ghost" href="#about">Giới thiệu</a>
-      </div>
-    </div>
-  </div>
-</section>
+  {{ block.super }}
 {% endblock %}
 
-{# Cho home full-width thay vì container của base #}
+{# ✅ Giữ ảnh hero nhưng chuyển xuống main #}
 {% block main %}
 <main class="content">
+
+  <section class="hero" style="background-image:url('{% static 'portal/img/truong.jpg' %}');">
+    <div class="hero-overlay"></div>
+
+    <div class="container hero-content">
+      <div class="hero-text">
+        <h1>Khám phá &amp; kết nối</h1>
+        <p>
+          Tìm hiểu các câu lạc bộ, hoạt động nổi bật và thông tin liên hệ.
+          Dành cho sinh viên và Ban Chủ nhiệm CLB.
+        </p>
+
+        <div class="hero-actions">
+          <a class="btn btn-accent" href="{% url 'portal:club_list' %}">Xem danh sách CLB</a>
+          <a class="btn btn-ghost" href="#about">Giới thiệu</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <div class="container">
     <section id="about" class="about-card">
+      <div style="height:16px"></div>
       <h2>Giới thiệu về CLB Portal</h2>
       <p>
         CLB Portal là hệ thống hỗ trợ quản lý và công khai thông tin câu lạc bộ tại
@@ -84,5 +67,6 @@
       </div>
     </section>
   </div>
+
 </main>
 {% endblock %}
