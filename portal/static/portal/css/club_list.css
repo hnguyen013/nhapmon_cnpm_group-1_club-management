@@ -1,11 +1,15 @@
+/* portal/css/club_list.css */
+body { outline: 8px solid red !important; }
+
 .club-page{ padding: 18px 0 40px; }
 
 /* Categories row */
 .cats{
-  display:flex;
-  flex-wrap:wrap;
-  gap:26px;
-  justify-content:center;
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: 26px;
+  justify-items: center;
+  align-items: start;
   padding: 6px 0 22px;
 }
 
@@ -28,6 +32,7 @@
   border: 3px solid #c06b5c;
   color:#c06b5c;
   font-size: 34px;
+  line-height: 1;
 }
 
 .cat__label{
@@ -213,7 +218,19 @@
 }
 .empty__icon{ font-size: 34px; margin-bottom: 8px; }
 
+/* Responsive cats: màn vừa -> 4 cột */
+@media (max-width: 1200px){
+  .cats{ grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+/* Responsive cats: mobile -> 2 cột */
+@media (max-width: 640px){
+  .cats{ grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+}
+
+/* Existing responsive cards */
 @media (max-width: 980px){
   .club-card{ grid-template-columns: 70px 1fr; }
   .club-card__cover{ grid-column: 1 / -1; height: 150px; }
 }
+body { outline: 8px solid red !important; }
