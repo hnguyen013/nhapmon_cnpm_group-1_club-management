@@ -12,4 +12,6 @@ urlpatterns = [
 
     # ✅ Giữ nguyên tính năng cũ: tạo sự kiện
     path("events/create/", views.event_create, name="event_create"),
+
+    path("events/<int:event_id>/edit/", views.event_edit, name="event_edit"),
 ]

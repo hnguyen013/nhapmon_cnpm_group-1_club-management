@@ -1,12 +1,11 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.core.exceptions import PermissionDenied
 from django.utils import timezone
 
 from portal.models import Club, BCNProfile, Event
-from portal.forms.bcn_panel import BCNClubEditForm, BCNEventCreateForm
-
+from portal.forms.bcn_panel import BCNClubEditForm, BCNEventCreateForm, BCNEventEditForm
 
 def _get_bcn_club_or_403(user):
     """
@@ -121,3 +120,21 @@ def event_create(request):
         form = BCNEventCreateForm()
 
     return render(request, "portal/bcn_panel/event_form.html", {"form": form, "club": club})
+
+@login_required(login_url="portal:auth:login")
+def event_edit(request, event_id: int):
+    club = _get_bcn_club_or_403(request.user)
+
+    # AC2: BCN chỉ sửa event thuộc CLB của mình
+    event = get_object_or_404(Event, id=event_id, club=club)
+
+    if request.method == "POST":
+        form = BCNEventEditForm(request.POST, instance=event)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Cập nhật sự kiện thành công.")
+            return redirect("portal:bcn_panel:event_list")
+    else:
+        form = BCNEventEditForm(instance=event)
+
+    return render(request, "portal/bcn_panel/event_edit.html", {"form": form, "event": event, "club": club})
