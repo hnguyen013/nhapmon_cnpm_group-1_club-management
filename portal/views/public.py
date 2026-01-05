@@ -172,7 +172,7 @@ def event_detail(request, event_id: int):
         else:
             status = "Đã kết thúc"
 
-    return render(request, "portal/events/event_detail.html", {
+    return render(request, "portal/event_detail.html", {
         "event": event,
         "status": status,
     })
