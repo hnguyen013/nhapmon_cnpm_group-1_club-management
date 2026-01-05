@@ -19,7 +19,6 @@
     </div>
 
     <div style="display:flex; gap:10px; align-items:center;">
-      {# ✅ giữ tính năng cũ: tạo sự kiện #}
       <a class="btn-primary" href="{% url 'portal:bcn_panel:event_create' %}">+ Tạo sự kiện</a>
       <a class="btn-secondary" href="{% url 'portal:bcn_panel:dashboard' %}">Quay lại</a>
     </div>
@@ -35,12 +34,12 @@
             <th>CLB tổ chức</th>
             <th>Thời gian</th>
             <th>Trạng thái</th>
-            <th>Thao tác</th>
+            <th style="text-align:right;">Thao tác</th>
           </tr>
         </thead>
         <tbody>
           {% for e in events %}
-            <tr>
+            <tr style="{% if e.is_cancelled %}opacity:.65;{% endif %}">
               <td>{{ forloop.counter }}</td>
               <td><b>{{ e.title }}</b></td>
               <td>{{ e.club_name }}</td>
@@ -52,11 +51,21 @@
                 {% endif %}
               </td>
               <td>{{ e.status }}</td>
-              <td>
-                <a class="btn-secondary"
-                  href="{% url 'portal:bcn_panel:event_edit' e.id %}">
-                  Sửa
-                </a>
+
+              <td style="text-align:right; white-space:nowrap;">
+                {% if e.is_cancelled %}
+                  <span style="color:#6b7280; font-weight:700;">Đã huỷ</span>
+                {% else %}
+                  <a class="btn-secondary"
+                     href="{% url 'portal:bcn_panel:event_edit' e.id %}">
+                    Sửa
+                  </a>
+
+                  <a class="btn-secondary"
+                     href="{% url 'portal:bcn_panel:event_cancel_confirm' e.id %}">
+                    Huỷ
+                  </a>
+                {% endif %}
               </td>
             </tr>
           {% endfor %}
