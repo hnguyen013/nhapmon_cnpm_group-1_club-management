@@ -8,11 +8,14 @@ from django.contrib.auth.models import User
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from django.views.decorators.http import require_POST
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
+
 
 from portal.decorators import admin_required
 from portal.forms.club import ClubCreateForm
 from portal.models import Club, BCNProfile, Event 
-
+from portal.forms.bcn_panel import BCNEventEditForm  # dùng lại form
 
 def is_admin(user):
     return user.is_authenticated and (user.is_staff or user.is_superuser)
@@ -217,3 +220,22 @@ def club_toggle_status(request, club_id: int):
         messages.success(request, f"✅ Đã kích hoạt lại CLB: {club.name}")
 
     return redirect("portal:admin_panel:club_list")
+
+@login_required(login_url="portal:auth:login")
+def admin_event_edit(request, event_id: int):
+    # AC1: Admin edit mọi event
+    if not (request.user.is_staff or request.user.is_superuser):
+        raise PermissionDenied
+
+    event = get_object_or_404(Event, id=event_id)
+
+    if request.method == "POST":
+        form = BCNEventEditForm(request.POST, instance=event)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Cập nhật sự kiện thành công.")
+            return redirect("portal:admin_panel:event_list")  # đổi theo tên list admin của bạn
+    else:
+        form = BCNEventEditForm(instance=event)
+
+    return render(request, "portal/admin_panel/event_edit.html", {"form": form, "event": event})
