@@ -44,7 +44,6 @@ class Club(models.Model):
     description = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
-    # ===== NEW (US-B2.1) =====
     cover_image_url = models.URLField(
         "Ảnh đại diện (URL)",
         blank=True,
@@ -90,7 +89,6 @@ class BCNProfile(models.Model):
         return f"{display_name} ({self.user.username})"
 
 
-# ===== NEW (US-B2.1) =====
 class ClubEvent(models.Model):
     club = models.ForeignKey(
         Club,
@@ -104,6 +102,9 @@ class ClubEvent(models.Model):
     event_date = models.DateField("Ngày tổ chức", blank=True, null=True)
     image_url = models.URLField("Ảnh sự kiện (URL)", blank=True, null=True)
 
+    # ✅ US-C3.3: Huỷ mềm sự kiện (không xoá record)
+    is_cancelled = models.BooleanField("Đã huỷ", default=False)
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -111,4 +112,6 @@ class ClubEvent(models.Model):
 
     def __str__(self):
         return f"{self.title} - {self.club.name}"
+
+
 Event = ClubEvent
