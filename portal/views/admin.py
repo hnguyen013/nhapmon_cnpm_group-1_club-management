@@ -239,3 +239,56 @@ def admin_event_edit(request, event_id: int):
         form = BCNEventEditForm(instance=event)
 
     return render(request, "portal/admin_panel/event_edit.html", {"form": form, "event": event})
+# =========================
+# US-C3.4 - Admin xem danh sách tất cả sự kiện (ADD ONLY)
+# =========================
+from django.db.models import F, Value
+from django.db.models.functions import Coalesce
+
+@admin_required
+def admin_event_list(request):
+    """
+    Admin xem danh sách tất cả sự kiện trong hệ thống.
+    AC:
+    - /admin/events/ hiển thị sự kiện của mọi CLB
+    - Mỗi dòng: tên sự kiện, CLB, ngày/giờ, trạng thái
+    - Có action "Sửa" -> trang chỉnh sửa
+    """
+    today = timezone.localdate()
+
+    qs = (
+        Event.objects.select_related("club")
+        .all()
+        .order_by("-event_date", "-id")
+    )
+
+    events = []
+    for e in qs:
+        # Trạng thái (đủ cho AC2):
+        # - Đã huỷ nếu is_cancelled
+        # - Nếu có ngày: đã kết thúc / sắp diễn ra
+        # - Nếu không có ngày: chưa đặt lịch
+        if getattr(e, "is_cancelled", False):
+            status = "Đã huỷ"
+        else:
+            if e.event_date:
+                status = "Đã kết thúc" if e.event_date < today else "Sắp diễn ra"
+            else:
+                status = "Chưa đặt lịch"
+
+        events.append(
+            {
+                "id": e.id,
+                "title": e.title,
+                "club_name": e.club.name if e.club else "—",
+                "event_date": e.event_date,
+                "is_cancelled": getattr(e, "is_cancelled", False),
+                "status": status,
+            }
+        )
+
+    context = {
+        "events": events,
+        "total_events": len(events),
+    }
+    return render(request, "portal/admin_panel/event_list.html", context)

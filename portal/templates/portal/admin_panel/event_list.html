@@ -1,0 +1,61 @@
+{% extends "portal/base_admin.html" %}
+{% load static %}
+
+{% block title %}Quản lý sự kiện | Admin{% endblock %}
+{% block header_title %}Quản lý sự kiện{% endblock %}
+{% block header_subtitle %}Danh sách tất cả sự kiện trong hệ thống{% endblock %}
+
+{% block menu_event_active %}active{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div class="card-header" style="display:flex;align-items:center;justify-content:space-between;gap:12px;">
+    <div>
+      <h3 style="margin:0;">Danh sách sự kiện</h3>
+      <p style="margin:6px 0 0;color:#6b7280;">Tổng: <b>{{ total_events }}</b> sự kiện</p>
+    </div>
+  </div>
+
+  <div class="card-body">
+    {% if events %}
+      <table class="table" style="width:100%;border-collapse:collapse;">
+        <thead>
+          <tr>
+            <th style="text-align:left;padding:10px;border-bottom:1px solid #eee;">#</th>
+            <th style="text-align:left;padding:10px;border-bottom:1px solid #eee;">Tên sự kiện</th>
+            <th style="text-align:left;padding:10px;border-bottom:1px solid #eee;">CLB</th>
+            <th style="text-align:left;padding:10px;border-bottom:1px solid #eee;">Ngày/Giờ</th>
+            <th style="text-align:left;padding:10px;border-bottom:1px solid #eee;">Trạng thái</th>
+            <th style="text-align:right;padding:10px;border-bottom:1px solid #eee;">Thao tác</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for e in events %}
+          <tr style="{% if e.is_cancelled %}opacity:.65;{% endif %}">
+            <td style="padding:10px;border-bottom:1px solid #f3f4f6;">{{ forloop.counter }}</td>
+            <td style="padding:10px;border-bottom:1px solid #f3f4f6;"><b>{{ e.title }}</b></td>
+            <td style="padding:10px;border-bottom:1px solid #f3f4f6;">{{ e.club_name }}</td>
+            <td style="padding:10px;border-bottom:1px solid #f3f4f6;">
+              {% if e.event_date %}
+                {{ e.event_date|date:"d/m/Y" }}
+              {% else %}
+                —
+              {% endif %}
+            </td>
+            <td style="padding:10px;border-bottom:1px solid #f3f4f6;">{{ e.status }}</td>
+            <td style="padding:10px;border-bottom:1px solid #f3f4f6;text-align:right;white-space:nowrap;">
+              <a class="btn btn-secondary" href="{% url 'portal:admin_panel:event_edit' e.id %}">Sửa</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <div style="padding:14px;border:1px dashed #e5e7eb;border-radius:12px;color:#6b7280;">
+        Chưa có sự kiện nào trong hệ thống.
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

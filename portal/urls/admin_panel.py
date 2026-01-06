@@ -3,7 +3,6 @@
 from django.urls import path
 from portal.views import admin as admin_views
 from portal.views import bcn as bcn_views
-from portal.views import admin as views
 
 app_name = "admin_panel"
 
@@ -20,23 +19,21 @@ urlpatterns = [
     path("clubs/create/", admin_views.club_admin_create, name="club_create"),
     path("clubs/<int:club_id>/edit/", admin_views.club_admin_edit, name="club_edit"),
     path("clubs/<int:club_id>/delete/", admin_views.club_admin_delete, name="club_delete"),
+
     # ======================
     # US-B3.3 — Vô hiệu hoá / kích hoạt CLB (ADD ONLY)
     # ======================
     path("clubs/<int:club_id>/toggle-status/", admin_views.club_toggle_status, name="club_toggle_status"),
-
 
     # ======================
     # BCN (US-A3.1 + US-A3.2)
     # ======================
     path("bcn/", bcn_views.bcn_list, name="bcn_list"),
     path("bcn/create/", bcn_views.bcn_create, name="bcn_create"),
-    
-        # ✅ US-A2.1 — Edit/Delete BCN (ADD ONLY)
+
+    # ✅ US-A2.1 — Edit/Delete BCN (ADD ONLY)
     path("bcn/<int:profile_id>/edit/", bcn_views.bcn_edit, name="bcn_edit"),
     path("bcn/<int:profile_id>/delete/", bcn_views.bcn_delete, name="bcn_delete"),
-
-
 
     # 🔐 US-A3.2 — Reset mật khẩu BCN
     path(
@@ -56,5 +53,12 @@ urlpatterns = [
         admin_views.bcn_toggle_lock,
         name="bcn_toggle_lock",
     ),
-    path("events/<int:event_id>/edit/", views.admin_event_edit, name="event_edit"),
+
+    # ======================
+    # US-C3.4 — Admin xem danh sách tất cả sự kiện (ADD ONLY)
+    # ======================
+    path("events/", admin_views.admin_event_list, name="event_list"),
+
+    # Edit event (đã có)
+    path("events/<int:event_id>/edit/", admin_views.admin_event_edit, name="event_edit"),
 ]
