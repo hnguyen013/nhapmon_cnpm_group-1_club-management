@@ -1,0 +1,135 @@
+{% extends "portal/base_admin.html" %}
+{% load static %}
+
+{% block title %}Sửa sự kiện | Admin{% endblock %}
+{% block header_title %}Sửa sự kiện{% endblock %}
+{% block header_subtitle %}Chỉnh sửa thông tin sự kiện trong hệ thống{% endblock %}
+{% block menu_event_active %}active{% endblock %}
+
+{% block content %}
+<style>
+  .ae-card{background:#fff;border:1px solid #e5e7eb;border-radius:16px;overflow:hidden}
+  .ae-head{padding:16px 18px;border-bottom:1px solid #eef2f7;display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+  .ae-title{margin:0;font-size:18px;font-weight:800}
+  .ae-sub{margin:6px 0 0;color:#6b7280;font-size:13px}
+  .ae-body{padding:18px}
+  .ae-grid{display:grid;grid-template-columns:1fr;gap:14px}
+  @media(min-width:900px){.ae-grid{grid-template-columns:1fr 1fr}}
+  .ae-field{display:flex;flex-direction:column;gap:6px}
+  .ae-label{font-weight:700;font-size:13px;color:#111827}
+  .ae-help{font-size:12px;color:#6b7280}
+  .ae-error{margin-top:4px;color:#dc2626;font-size:12px}
+  .ae-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:16px}
+  .ae-btn{display:inline-flex;align-items:center;gap:8px;border-radius:10px;padding:10px 12px;font-weight:700;text-decoration:none;border:1px solid transparent}
+  .ae-primary{background:#2563eb;color:#fff}
+  .ae-secondary{background:#f3f4f6;color:#111827;border-color:#e5e7eb}
+  .ae-danger{background:#dc2626;color:#fff}
+  .ae-pill{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;background:#f3f4f6;color:#111827;font-size:12px;font-weight:700}
+  .ae-preview{border:1px dashed #e5e7eb;border-radius:14px;padding:12px;background:#fafafa}
+  .ae-preview img{max-width:100%;border-radius:12px;display:block}
+  /* ép các widget form về style đẹp nếu form-control chưa có */
+  input[type="text"], input[type="url"], input[type="date"], select, textarea{
+    border:1px solid #e5e7eb;border-radius:10px;padding:10px 12px;
+    outline:none; width:100%;
+  }
+  textarea{min-height:120px;resize:vertical}
+  input:focus, select:focus, textarea:focus{border-color:#93c5fd;box-shadow:0 0 0 3px rgba(59,130,246,.15)}
+</style>
+
+<div class="ae-card">
+  <div class="ae-head">
+    <div>
+      <h3 class="ae-title">Sửa sự kiện</h3>
+      <p class="ae-sub">
+        <span class="ae-pill">ID: {{ event.id }}</span>
+        <span class="ae-pill">{{ event.club.name }}</span>
+      </p>
+      <p class="ae-sub" style="margin-top:8px;">
+        <b>{{ event.title }}</b>
+      </p>
+    </div>
+
+    <a class="ae-btn ae-secondary" href="{% url 'portal:admin_panel:event_list' %}">← Quay lại</a>
+  </div>
+
+  <div class="ae-body">
+    {% if form.non_field_errors %}
+      <div style="padding:12px;border:1px solid #fecaca;background:#fff1f2;color:#991b1b;border-radius:12px;margin-bottom:14px;">
+        {{ form.non_field_errors }}
+      </div>
+    {% endif %}
+
+    <form method="post" novalidate>
+      {% csrf_token %}
+
+      <div class="ae-grid">
+        <div class="ae-field">
+          <div class="ae-label">CLB</div>
+          {{ form.club }}
+          {% if form.club.errors %}<div class="ae-error">{{ form.club.errors }}</div>{% endif %}
+          <div class="ae-help">Chọn câu lạc bộ tổ chức sự kiện.</div>
+        </div>
+
+        <div class="ae-field">
+          <div class="ae-label">Ngày tổ chức</div>
+          {{ form.event_date }}
+          {% if form.event_date.errors %}<div class="ae-error">{{ form.event_date.errors }}</div>{% endif %}
+          <div class="ae-help">Chọn ngày diễn ra sự kiện.</div>
+        </div>
+
+        <div class="ae-field" style="grid-column:1/-1;">
+          <div class="ae-label">Tên sự kiện</div>
+          {{ form.title }}
+          {% if form.title.errors %}<div class="ae-error">{{ form.title.errors }}</div>{% endif %}
+        </div>
+
+        <div class="ae-field">
+          <div class="ae-label">Loại sự kiện</div>
+          {{ form.category }}
+          {% if form.category.errors %}<div class="ae-error">{{ form.category.errors }}</div>{% endif %}
+          <div class="ae-help">VD: Workshop / Văn hoá / Thể thao / Cộng đồng…</div>
+        </div>
+
+        <div class="ae-field">
+          <div class="ae-label">Ảnh sự kiện (URL)</div>
+          {{ form.image_url }}
+          {% if form.image_url.errors %}<div class="ae-error">{{ form.image_url.errors }}</div>{% endif %}
+          <div class="ae-help">Dán link ảnh https://... để hiển thị trên trang sự kiện.</div>
+        </div>
+
+        <div class="ae-field" style="grid-column:1/-1;">
+          <div class="ae-label">Mô tả</div>
+          {{ form.description }}
+          {% if form.description.errors %}<div class="ae-error">{{ form.description.errors }}</div>{% endif %}
+        </div>
+
+        <div class="ae-field" style="grid-column:1/-1;">
+          <label class="ae-label" style="display:flex;align-items:center;gap:10px;">
+            {{ form.is_cancelled }}
+            Đánh dấu “Đã huỷ”
+          </label>
+          {% if form.is_cancelled.errors %}<div class="ae-error">{{ form.is_cancelled.errors }}</div>{% endif %}
+          <div class="ae-help">
+            Nếu đánh dấu “Đã huỷ”, sự kiện sẽ không hiển thị cho sinh viên (public) nhưng dữ liệu vẫn được giữ lại.
+          </div>
+        </div>
+
+        <div class="ae-preview" style="grid-column:1/-1;">
+          <div class="ae-label" style="margin-bottom:8px;">Xem trước ảnh (nếu có URL)</div>
+          {% if event.image_url %}
+            <img src="{{ event.image_url }}" alt="Event image preview" onerror="this.style.display='none'">
+            <div class="ae-help" style="margin-top:8px;">Nếu ảnh không hiện, hãy kiểm tra lại URL.</div>
+          {% else %}
+            <div class="ae-help">Chưa có ảnh sự kiện.</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="ae-actions">
+        <button type="submit" class="ae-btn ae-primary">💾 Lưu thay đổi</button>
+        <a class="ae-btn ae-secondary" href="{% url 'portal:admin_panel:event_list' %}">Huỷ</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

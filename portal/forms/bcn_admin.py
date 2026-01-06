@@ -2,7 +2,7 @@
 
 from django import forms
 from django.contrib.auth.models import User
-from portal.models import BCNProfile, Club
+from portal.models import BCNProfile, Club, ClubEvent
 
 
 class BCNAdminEditForm(forms.ModelForm):
@@ -45,19 +45,15 @@ class BCNAdminEditForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
         if self.user:
-            # Set email ban đầu
             self.fields["email"].initial = self.user.email
-            # Set trạng thái khoá ban đầu
             self.fields["is_locked"].initial = not self.user.is_active
 
     def save(self, commit=True):
         profile = super().save(commit=False)
 
         if self.user:
-            # Cập nhật email user
             self.user.email = self.cleaned_data.get("email", "")
 
-            # Đồng bộ khoá / mở khoá
             is_locked = self.cleaned_data.get("is_locked", False)
             self.user.is_active = not is_locked
             profile.is_locked = is_locked
@@ -67,3 +63,40 @@ class BCNAdminEditForm(forms.ModelForm):
                 profile.save()
 
         return profile
+
+
+# =========================
+# ✅ US-C3.5 — Admin chỉnh sửa sự kiện bất kỳ (ADD ONLY)
+# =========================
+class AdminEventEditForm(forms.ModelForm):
+    """
+    Form dành cho ADMIN chỉnh sửa mọi sự kiện trong hệ thống.
+    - Cho sửa: club, title, category, description, event_date, image_url, is_cancelled
+    - Không xoá tính năng cũ, chỉ bổ sung để Admin quản trị đúng AC1-AC2
+    """
+
+    class Meta:
+        model = ClubEvent
+        fields = [
+            "club",
+            "title",
+            "category",
+            "description",
+            "event_date",
+            "image_url",
+            "is_cancelled",
+        ]
+        widgets = {
+            "club": forms.Select(attrs={"class": "form-control"}),
+            "title": forms.TextInput(attrs={"class": "form-control"}),
+            "category": forms.TextInput(attrs={"class": "form-control"}),
+            "description": forms.Textarea(attrs={"class": "form-control", "rows": 6}),
+            "event_date": forms.DateInput(attrs={"type": "date", "class": "form-control"}),
+            "image_url": forms.URLInput(attrs={"class": "form-control"}),
+        }
+
+    def clean_title(self):
+        title = (self.cleaned_data.get("title") or "").strip()
+        if not title:
+            raise forms.ValidationError("Vui lòng nhập tên sự kiện.")
+        return title
