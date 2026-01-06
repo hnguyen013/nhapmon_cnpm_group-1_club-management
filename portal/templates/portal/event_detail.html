@@ -1,70 +1,113 @@
 {% extends "portal/base_home.html" %}
 {% load static %}
 
-{% block title %}Chi tiết sự kiện | {{ event.title }}{% endblock %}
+{% block title %}
+  {{ event.title|default:"Chi tiết sự kiện" }}
+{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'portal/css/events.css' %}">
+  <link rel="stylesheet" href="{% static 'portal/css/event_detail.css' %}">
 {% endblock %}
 
 {% block content %}
-<div class="container" style="max-width:900px; margin:0 auto; padding:24px;">
+<div class="ed-container">
+  <div class="ed-topbar">
+    <a class="ed-back" href="{% url 'portal:event_list' %}">← Quay lại danh sách</a>
+  </div>
 
-  <a class="btn-secondary" href="{% url 'portal:event_list' %}">
-    ← Quay lại danh sách
-  </a>
+  <div class="ed-grid">
+    <!-- LEFT -->
+    <section class="ed-main">
+      <div class="ed-badge">Hoạt động, Cộng đồng</div>
 
-  <div style="margin-top:16px; background:white; border-radius:16px; padding:22px; box-shadow:0 6px 18px rgba(0,0,0,.06);">
+      <h1 class="ed-title">{{ event.title|default:"(Chưa có tiêu đề)" }}</h1>
 
-    <div style="display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap;">
-      <div>
-        <h1 style="margin:0 0 10px; font-size:30px;">{{ event.title }}</h1>
-        <p style="margin:0; color:#6b7280;">
-          CLB tổ chức: <b>{{ event.club.name }}</b>
-        </p>
-      </div>
-
-      <div style="text-align:right;">
-        <span style="
-          display:inline-block;
-          padding:6px 12px;
-          border-radius:999px;
-          font-weight:700;
-          background:#f3f4f6;
-        ">
-          {{ status }}
-        </span>
-      </div>
-    </div>
-
-    <hr style="margin:18px 0; border:none; border-top:1px solid #e5e7eb;">
-
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
-      <div>
-        <div style="color:#6b7280; font-size:14px;">📅 Thời gian</div>
-        <div style="font-weight:700;">
-          {% if event.event_date %}
-            {{ event.event_date|date:"d/m/Y" }}
+      <div class="ed-org">
+        <div class="ed-org-avatar">
+          {% if event.club and event.club.logo %}
+            <img src="{{ event.club.logo.url }}" alt="logo">
           {% else %}
-            —
+            <span>
+              {% if event.club %}{{ event.club.name|slice:":1" }}{% else %}C{% endif %}
+            </span>
           {% endif %}
         </div>
+
+        <div class="ed-org-meta">
+          <div class="ed-org-name">
+            {% if event.club %}{{ event.club.name }}{% else %}Đơn vị tổ chức{% endif %}
+          </div>
+          <div class="ed-org-role">Đơn vị tổ chức</div>
+        </div>
+
+        <a class="ed-contact" href="#">Liên hệ</a>
       </div>
 
-      <div>
-        <div style="color:#6b7280; font-size:14px;">📍 Địa điểm</div>
-        <div style="font-weight:700;">
-          {{ event.location|default:"—" }}
+      <div class="ed-section">
+        <h2 class="ed-section-title">Nội dung chi tiết</h2>
+
+        {% if event.description %}
+          <div class="ed-desc">{{ event.description|linebreaksbr }}</div>
+        {% else %}
+          <div class="ed-desc muted">Chưa có mô tả.</div>
+        {% endif %}
+      </div>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="ed-side">
+      <div class="ed-card">
+        <div class="ed-cover">
+          {% if event.image %}
+            <img src="{{ event.image.url }}" alt="event cover">
+          {% else %}
+            <div class="ed-cover-fallback">
+              <div class="ed-cover-fallback-title">{{ event.title|default:"Sự kiện" }}</div>
+              <div class="ed-cover-fallback-sub">Sự kiện</div>
+            </div>
+          {% endif %}
+        </div>
+
+        <div class="ed-info">
+          <div class="ed-info-row">
+            <div class="ed-ico">🕒</div>
+            <div class="ed-info-col">
+              <div class="ed-info-label">Thời gian</div>
+              <div class="ed-info-value">
+                {% if event.event_date %}{{ event.event_date|date:"d/m/Y" }}
+                {% elif event.date %}{{ event.date|date:"d/m/Y" }}
+                {% elif event.start_time %}{{ event.start_time|date:"d/m/Y" }}
+                {% else %}—{% endif %}
+              </div>
+            </div>
+          </div>
+
+          <div class="ed-info-row">
+            <div class="ed-ico">📍</div>
+            <div class="ed-info-col">
+              <div class="ed-info-label">Địa điểm</div>
+              <div class="ed-info-value">
+                {% if event.location %}{{ event.location }}{% else %}—{% endif %}
+              </div>
+            </div>
+          </div>
+
+          <div class="ed-info-row">
+            <div class="ed-ico">👥</div>
+            <div class="ed-info-col">
+              <div class="ed-info-label">Người tham gia</div>
+              <div class="ed-info-value">
+                {{ participants_count|default:0 }} người sẽ tham gia sự kiện này
+              </div>
+            </div>
+          </div>
+
+          <div class="ed-actions">
+            <button class="ed-btn" type="button">Đăng ký</button>
+          </div>
         </div>
       </div>
-    </div>
-
-    <div style="margin-top:18px;">
-      <div style="color:#6b7280; font-size:14px;">📝 Mô tả</div>
-      <div style="margin-top:6px; line-height:1.6;">
-        {{ event.description|default:"Chưa có mô tả."|linebreaks }}
-      </div>
-    </div>
+    </aside>
 
   </div>
 </div>
