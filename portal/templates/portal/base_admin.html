@@ -38,6 +38,12 @@
            class="nav-item {% block menu_bcn_active %}{% endblock %}">
           👥 Tài khoản BCN
         </a>
+                <!-- Quản lý sự kiện (US-C3.4) -->
+        <a href="{% url 'portal:admin_panel:event_list' %}"
+           class="nav-item {% block menu_event_active %}{% endblock %}">
+          📅 Quản lý sự kiện
+        </a>
+
 
       </nav>
 
