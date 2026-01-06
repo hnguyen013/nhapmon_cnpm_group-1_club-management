@@ -11,11 +11,13 @@ from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 
-
 from portal.decorators import admin_required
 from portal.forms.club import ClubCreateForm
-from portal.models import Club, BCNProfile, Event 
-from portal.forms.bcn_panel import BCNEventEditForm  # dùng lại form
+from portal.models import Club, BCNProfile, Event
+
+# ✅ US-C3.5: dùng form Admin edit event (ADD ONLY)
+from portal.forms.bcn_admin import AdminEventEditForm
+
 
 def is_admin(user):
     return user.is_authenticated and (user.is_staff or user.is_superuser)
@@ -31,25 +33,25 @@ def _generate_password(length: int = 10) -> str:
 # ======================
 @admin_required
 def dashboard(request):
-    # 1) Chỉ tính CLB đang hoạt động
     total_clubs = Club.objects.filter(status="active").count()
-
-    # 2) BCN: số tài khoản BCN (user có BCNProfile)
     bcn_count = BCNProfile.objects.select_related("user").count()
 
-    # 3) Sự kiện trong 7 ngày tới (tính từ hôm nay)
     today = timezone.localdate()
     week_end = today + timedelta(days=7)
 
     upcoming_events_count = Event.objects.filter(
-    club__status="active",
-    event_date__isnull=False,
-    event_date__gte=today,
-    event_date__lte=week_end,
-).count()
-    recent_events = Event.objects.filter(
-        club__status="active"
-    ).select_related("club").order_by("event_date", "-id")[:5]
+        club__status="active",
+        event_date__isnull=False,
+        event_date__gte=today,
+        event_date__lte=week_end,
+    ).count()
+
+    recent_events = (
+        Event.objects.filter(club__status="active")
+        .select_related("club")
+        .order_by("event_date", "-id")[:5]
+    )
+
     context = {
         "total_clubs": total_clubs,
         "bcn_count": bcn_count,
@@ -57,6 +59,7 @@ def dashboard(request):
         "recent_events": recent_events,
     }
     return render(request, "portal/dashboard.html", context)
+
 
 # ======================
 # CLUBS (US-B3.1)
@@ -78,7 +81,6 @@ def club_admin_create(request):
     else:
         form = ClubCreateForm()
 
-    # ✅ đổi sang template club_admin_form.html để dùng form fields đầy đủ
     return render(request, "portal/club_admin_form.html", {"form": form, "mode": "create"})
 
 
@@ -95,7 +97,6 @@ def club_admin_edit(request, club_id):
     else:
         form = ClubCreateForm(instance=club)
 
-    # ✅ đổi sang template club_admin_form.html để dùng form fields đầy đủ
     return render(
         request,
         "portal/club_admin_form.html",
@@ -118,10 +119,6 @@ def club_admin_delete(request, club_id):
 # ======================
 @admin_required
 def bcn_reset_password(request, user_id: int):
-    """
-    Admin reset mật khẩu cho tài khoản BCN (User có BCNProfile).
-    Sau khi reset: hiện mật khẩu mới bằng messages để admin copy cấp lại cho BCN.
-    """
     user = get_object_or_404(User, id=user_id)
 
     try:
@@ -140,42 +137,26 @@ def bcn_reset_password(request, user_id: int):
     )
     return redirect("portal:admin_panel:bcn_list")
 
+
 # =========================
 # US-A3.4 - Lock/Unlock BCN
 # =========================
-from django.contrib.auth.models import User
-from portal.models import BCNProfile
-
-
 @admin_required
 def bcn_lock_list(request):
-    """
-    Trang riêng cho US-A3.4 (không ảnh hưởng bcn_list cũ).
-    Hiển thị danh sách BCN và trạng thái khoá/mở khoá.
-    """
-    # BCN là user có BCNProfile
     bcns = BCNProfile.objects.select_related("user").all().order_by("user__username")
     return render(request, "portal/bcn_lock_list.html", {"bcns": bcns})
 
 
 @admin_required
 def bcn_toggle_lock(request, user_id: int):
-    """
-    Khoá/Mở khoá BCN:
-    - Khoá: user.is_active = False  => BCN không đăng nhập được (đúng auth.py hiện tại)
-    - Mở:  user.is_active = True
-    Đồng bộ BCNProfile.is_locked để hiển thị.
-    """
     user = get_object_or_404(User, id=user_id)
 
-    # Nếu user không có BCNProfile thì không phải BCN
     try:
         profile = user.bcn_profile
     except BCNProfile.DoesNotExist:
         messages.error(request, "Tài khoản này không phải BCN hoặc chưa có hồ sơ BCN.")
         return redirect("portal:admin_panel:bcn_lock_list")
 
-    # Toggle
     new_active = not user.is_active
     user.is_active = new_active
     user.save()
@@ -189,25 +170,14 @@ def bcn_toggle_lock(request, user_id: int):
         messages.success(request, f"⛔ Đã KHOÁ tài khoản BCN: {user.username}")
 
     return redirect("portal:admin_panel:bcn_lock_list")
- # =========================
+
+
+# =========================
 # US-B3.3 - Toggle Club status (active/inactive) (ADD ONLY)
 # =========================
-from django.views.decorators.http import require_POST
-
-
 @admin_required
 @require_POST
 def club_toggle_status(request, club_id: int):
-    """
-    Vô hiệu hoá / Kích hoạt CLB:
-    - active -> inactive
-    - inactive -> active
-
-    Lưu ý:
-    - KHÔNG xoá DB
-    - Chỉ đổi field status của Club
-    - Không ảnh hưởng tính năng xoá CLB cũ (club_admin_delete)
-    """
     club = get_object_or_404(Club, id=club_id)
 
     if club.status == "active":
@@ -221,39 +191,39 @@ def club_toggle_status(request, club_id: int):
 
     return redirect("portal:admin_panel:club_list")
 
-@login_required(login_url="portal:auth:login")
-def admin_event_edit(request, event_id: int):
-    # AC1: Admin edit mọi event
-    if not (request.user.is_staff or request.user.is_superuser):
-        raise PermissionDenied
 
+# =========================
+# ✅ US-C3.5 — Admin chỉnh sửa sự kiện bất kỳ (ADD ONLY)
+# =========================
+@admin_required
+def admin_event_edit(request, event_id: int):
+    """
+    AC1: Admin mở được form edit của mọi sự kiện
+    AC2: Lưu thay đổi thành công và quay về danh sách kèm thông báo
+    """
     event = get_object_or_404(Event, id=event_id)
 
     if request.method == "POST":
-        form = BCNEventEditForm(request.POST, instance=event)
+        form = AdminEventEditForm(request.POST, instance=event)
         if form.is_valid():
             form.save()
             messages.success(request, "Cập nhật sự kiện thành công.")
-            return redirect("portal:admin_panel:event_list")  # đổi theo tên list admin của bạn
+            return redirect("portal:admin_panel:event_list")
     else:
-        form = BCNEventEditForm(instance=event)
+        form = AdminEventEditForm(instance=event)
 
-    return render(request, "portal/admin_panel/event_edit.html", {"form": form, "event": event})
+    return render(
+        request,
+        "portal/admin_panel/event_edit.html",
+        {"form": form, "event": event},
+    )
+
+
 # =========================
 # US-C3.4 - Admin xem danh sách tất cả sự kiện (ADD ONLY)
 # =========================
-from django.db.models import F, Value
-from django.db.models.functions import Coalesce
-
 @admin_required
 def admin_event_list(request):
-    """
-    Admin xem danh sách tất cả sự kiện trong hệ thống.
-    AC:
-    - /admin/events/ hiển thị sự kiện của mọi CLB
-    - Mỗi dòng: tên sự kiện, CLB, ngày/giờ, trạng thái
-    - Có action "Sửa" -> trang chỉnh sửa
-    """
     today = timezone.localdate()
 
     qs = (
@@ -264,10 +234,6 @@ def admin_event_list(request):
 
     events = []
     for e in qs:
-        # Trạng thái (đủ cho AC2):
-        # - Đã huỷ nếu is_cancelled
-        # - Nếu có ngày: đã kết thúc / sắp diễn ra
-        # - Nếu không có ngày: chưa đặt lịch
         if getattr(e, "is_cancelled", False):
             status = "Đã huỷ"
         else:
