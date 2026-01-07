@@ -262,7 +262,9 @@ def admin_event_list(request):
 
     events = []
     for e in qs:
-        if getattr(e, "is_cancelled", False):
+        if getattr(e, "is_hidden", False):
+            status = "Đã ẩn"
+        elif getattr(e, "is_cancelled", False):
             status = "Đã huỷ"
         else:
             if e.event_date:
@@ -276,6 +278,7 @@ def admin_event_list(request):
                 "title": e.title,
                 "club_name": e.club.name if e.club else "—",
                 "event_date": e.event_date,
+                "is_hidden": getattr(e, "is_hidden", False),
                 "is_cancelled": getattr(e, "is_cancelled", False),
                 "status": status,
             }
