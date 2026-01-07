@@ -94,17 +94,6 @@
 .ed-org-sub{ color: var(--muted); font-weight: 600; }
 .ed-org-role{ color: var(--muted); margin-top: 2px; font-size: 13px; }
 
-.ed-contact{
-  text-decoration: none;
-  border: 1px solid var(--line);
-  background: #fff;
-  color: var(--text);
-  padding: 10px 14px;
-  border-radius: 12px;
-  font-weight: 700;
-}
-.ed-contact:hover{ background: #f9fafb; }
-
 .ed-section{ margin-top: 18px; }
 .ed-section-title{
   margin: 0 0 12px;
