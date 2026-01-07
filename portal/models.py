@@ -102,6 +102,9 @@ class ClubEvent(models.Model):
     event_date = models.DateField("Ngày tổ chức", blank=True, null=True)
     image_url = models.URLField("Ảnh sự kiện (URL)", blank=True, null=True)
 
+    # ✅ US-C3.6: Ẩn sự kiện (không hiển thị ở public)
+    is_hidden = models.BooleanField("Đã ẩn", default=False)
+    
     # ✅ US-C3.3: Huỷ mềm sự kiện (không xoá record)
     is_cancelled = models.BooleanField("Đã huỷ", default=False)
 

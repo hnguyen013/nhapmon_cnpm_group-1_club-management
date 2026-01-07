@@ -32,20 +32,35 @@
 
         <tbody>
           {% for e in events %}
-          <tr style="{% if e.is_cancelled %}opacity:.65;{% endif %}">
+          <tr style="{% if e.is_cancelled or e.is_hidden %}opacity:.65;{% endif %}">
             <td style="padding:10px;border-bottom:1px solid #f3f4f6;">{{ forloop.counter }}</td>
             <td style="padding:10px;border-bottom:1px solid #f3f4f6;"><b>{{ e.title }}</b></td>
             <td style="padding:10px;border-bottom:1px solid #f3f4f6;">{{ e.club_name }}</td>
+
             <td style="padding:10px;border-bottom:1px solid #f3f4f6;">
               {% if e.event_date %}
                 {{ e.event_date|date:"d/m/Y" }}
               {% else %}
                 —
               {% endif %}
-            </td>
-            <td style="padding:10px;border-bottom:1px solid #f3f4f6;">{{ e.status }}</td>
+            </td>  {# ✅ FIX 1: thêm </td> bị thiếu #}
+
+            <td style="padding:10px;border-bottom:1px solid #f3f4f6;">
+              {{ e.status }}
+            </td>  {# ✅ FIX 2: thêm cột Trạng thái #}
+
             <td style="padding:10px;border-bottom:1px solid #f3f4f6;text-align:right;white-space:nowrap;">
-              <a class="btn btn-secondary" href="{% url 'portal:admin_panel:event_edit' e.id %}">Sửa</a>
+              <a href="{% url 'portal:admin_panel:event_edit' e.id %}">Sửa</a>
+              <span style="margin:0 6px;color:#9ca3af;">/</span>
+
+              <a href="{% url 'portal:admin_panel:event_toggle_hide' e.id %}">
+                {% if e.is_hidden %}Hiện{% else %}Ẩn{% endif %}
+              </a>
+              <span style="margin:0 6px;color:#9ca3af;">/</span>
+
+              <a href="{% url 'portal:admin_panel:event_toggle_cancel' e.id %}">
+                {% if e.is_cancelled %}Bỏ huỷ{% else %}Huỷ{% endif %}
+              </a>
             </td>
           </tr>
           {% endfor %}

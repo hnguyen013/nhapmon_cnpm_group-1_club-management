@@ -61,4 +61,6 @@ urlpatterns = [
 
     # Edit event (đã có)
     path("events/<int:event_id>/edit/", admin_views.admin_event_edit, name="event_edit"),
+    path("events/<int:event_id>/toggle-hide/", admin_views.admin_event_toggle_hide, name="event_toggle_hide"),
+    path("events/<int:event_id>/toggle-cancel/", admin_views.admin_event_toggle_cancel, name="event_toggle_cancel"),
 ]
