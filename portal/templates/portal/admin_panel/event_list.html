@@ -42,10 +42,35 @@
               {% else %}
                 —
               {% endif %}
-            </td>
-            <td style="padding:10px;border-bottom:1px solid #f3f4f6;">{{ e.status }}</td>
             <td style="padding:10px;border-bottom:1px solid #f3f4f6;text-align:right;white-space:nowrap;">
-              <a class="btn btn-secondary" href="{% url 'portal:admin_panel:event_edit' e.id %}">Sửa</a>
+              <a class="btn btn-secondary"
+                href="{% url 'portal:admin_panel:event_edit' e.id %}">
+                Sửa
+              </a>
+
+              {% if not e.is_hidden %}
+                <a class="btn btn-warning"
+                  href="{% url 'portal:admin_panel:event_toggle_hide' e.id %}">
+                  Ẩn
+                </a>
+              {% else %}
+                <a class="btn btn-success"
+                  href="{% url 'portal:admin_panel:event_toggle_hide' e.id %}">
+                  Hiện
+                </a>
+              {% endif %}
+
+              {% if not e.is_cancelled %}
+                <a class="btn btn-danger"
+                  href="{% url 'portal:admin_panel:event_toggle_cancel' e.id %}">
+                  Huỷ
+                </a>
+              {% else %}
+                <a class="btn btn-success"
+                  href="{% url 'portal:admin_panel:event_toggle_cancel' e.id %}">
+                  Bỏ huỷ
+                </a>
+              {% endif %}
             </td>
           </tr>
           {% endfor %}
