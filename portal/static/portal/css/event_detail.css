@@ -197,8 +197,6 @@
 .ed-map:hover{ text-decoration: underline; }
 
 .ed-actions{ padding-top: 14px; }
-
-
 /* Responsive */
 @media (max-width: 980px){
   .ed-grid{ grid-template-columns: 1fr; }
