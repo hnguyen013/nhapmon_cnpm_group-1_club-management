@@ -151,7 +151,10 @@
   font-weight: 700;
 }
 
-.ed-info{ padding: 16px 16px 18px; }
+.ed-info{
+  padding: 18px 18px 20px;
+}
+
 
 .ed-info-row{
   display: grid;
