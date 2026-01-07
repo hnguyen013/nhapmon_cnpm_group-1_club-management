@@ -203,5 +203,5 @@
 @media (max-width: 980px){
   .ed-grid{ grid-template-columns: 1fr; }
   .ed-side{ position: static; }
-  .ed-title{ font-size: 34px; }
+  .ed-title{ font-size: 32px; }
 }
