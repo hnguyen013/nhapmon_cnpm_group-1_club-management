@@ -218,6 +218,34 @@ def admin_event_edit(request, event_id: int):
         {"form": form, "event": event},
     )
 
+# ✅ US-C3.6 — Admin ẩn/huỷ sự kiện (ADD ONLY)
+# =========================
+@admin_required
+def admin_event_toggle_hide(request, event_id: int):
+    e = get_object_or_404(Event, id=event_id)
+    e.is_hidden = not getattr(e, "is_hidden", False)
+    e.save(update_fields=["is_hidden"])
+
+    if e.is_hidden:
+        messages.success(request, "Đã ẩn sự kiện.")
+    else:
+        messages.success(request, "Đã hiện lại sự kiện.")
+
+    return redirect("portal:admin_panel:event_list")
+
+
+@admin_required
+def admin_event_toggle_cancel(request, event_id: int):
+    e = get_object_or_404(Event, id=event_id)
+    e.is_cancelled = not getattr(e, "is_cancelled", False)
+    e.save(update_fields=["is_cancelled"])
+
+    if e.is_cancelled:
+        messages.success(request, "Đã huỷ sự kiện.")
+    else:
+        messages.success(request, "Đã bỏ huỷ sự kiện.")
+
+    return redirect("portal:admin_panel:event_list")
 
 # =========================
 # US-C3.4 - Admin xem danh sách tất cả sự kiện (ADD ONLY)
