@@ -1,3 +1,4 @@
+{# Event detail page - simplified view (no contact, no register) #}
 {% extends "portal/base_home.html" %}
 {% load static %}
 
@@ -8,9 +9,10 @@
 {% block extra_css %}
   <link rel="stylesheet" href="{% static 'portal/css/event_detail.css' %}">
 {% endblock %}
-
 {% block content %}
 <div class="ed-container">
+  <!-- Back to event list -->
+  <div class="ed-topbar">
   <div class="ed-topbar">
     <a class="ed-back" href="{% url 'portal:event_list' %}">← Quay lại danh sách</a>
   </div>
@@ -39,8 +41,6 @@
           </div>
           <div class="ed-org-role">Đơn vị tổ chức</div>
         </div>
-
-        <a class="ed-contact" href="#">Liên hệ</a>
       </div>
 
       <div class="ed-section">
@@ -49,7 +49,7 @@
         {% if event.description %}
           <div class="ed-desc">{{ event.description|linebreaksbr }}</div>
         {% else %}
-          <div class="ed-desc muted">Chưa có mô tả.</div>
+          <div class="ed-desc muted">Sự kiện chưa có mô tả.</div>
         {% endif %}
       </div>
     </section>
@@ -63,7 +63,7 @@
           {% else %}
             <div class="ed-cover-fallback">
               <div class="ed-cover-fallback-title">{{ event.title|default:"Sự kiện" }}</div>
-              <div class="ed-cover-fallback-sub">Sự kiện</div>
+              <div class="ed-cover-fallback-sub">Thông tin chi tiết sự kiện</div>
             </div>
           {% endif %}
         </div>
@@ -92,18 +92,7 @@
             </div>
           </div>
 
-          <div class="ed-info-row">
-            <div class="ed-ico">👥</div>
-            <div class="ed-info-col">
-              <div class="ed-info-label">Người tham gia</div>
-              <div class="ed-info-value">
-                {{ participants_count|default:0 }} người sẽ tham gia sự kiện này
-              </div>
-            </div>
-          </div>
-
           <div class="ed-actions">
-            <button class="ed-btn" type="button">Đăng ký</button>
           </div>
         </div>
       </div>
